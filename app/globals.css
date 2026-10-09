@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --container-width: 164rem;
+  --font-nunito-sans: 'Nunito Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --navy-500: #14213d;
+  --gold-500: #d4a017;
+  --deep-gold: #b8860b;
+  --site-bg: #f8f7f3;
+  --txt-primary: #1f2937;
+  --txt-secondary: #6b7280;
+  --border: #e5e7eb;
+}
+
+.container-custom {
+  max-width: var(--container-width, 164rem);
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.max-w-7xl {
+  max-width: 106rem;
+}
+
+body {
+  color: var(--txt-primary);
+  background: var(--site-bg);
+  font-family: 'Nunito Sans', var(--font-nunito-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "wdth" 100, "YTLC" 500;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Nunito Sans', var(--font-nunito-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-optical-sizing: auto;
+  letter-spacing: -0.01em;
+}
+
+.nunito-sans {
+  font-family: "Nunito Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "wdth" 100, "YTLC" 500;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
