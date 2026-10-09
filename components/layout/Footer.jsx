@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Phone, MessageCircle, Mail, MapPin, ShieldCheck, Truck, Clock, Award, Star } from "lucide-react";
+import { Phone, MessageCircle, Mail, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const Footer = () => {
@@ -35,91 +35,13 @@ export const Footer = () => {
       whileInView="visible"
       viewport={{ once: true, amount: 0.15 }}
       variants={containerVariants}
-      className="bg-white text-gray-900 pt-14 pb-10 border-t border-gray-200 transition-colors"
+      className="bg-white text-gray-900 pt-12 pb-10 border-t border-gray-200 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top 4 Trust Pillars for Wholesale Buyers with Framer Motion */}
-        <motion.div
-          variants={containerVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-12 border-b border-gray-200"
-        >
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -3 }}
-            className="flex items-start gap-3.5 p-3.5 rounded-xl bg-gray-50/80 border border-gray-200/80 transition-colors"
-          >
-            <div className="p-2.5 rounded-lg bg-navy-950 text-gold-400 shrink-0">
-              <Award className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                Direct Mill Rates
-              </h4>
-              <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                Zero middlemen commission. Get authentic factory pricing on bulk lots.
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -3 }}
-            className="flex items-start gap-3.5 p-3.5 rounded-xl bg-gray-50/80 border border-gray-200/80 transition-colors"
-          >
-            <div className="p-2.5 rounded-lg bg-navy-950 text-gold-400 shrink-0">
-              <Truck className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                Pan-India Transport
-              </h4>
-              <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                Fast dispatch via V-Trans, TCI, SafeExpress and Surat transport hubs.
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -3 }}
-            className="flex items-start gap-3.5 p-3.5 rounded-xl bg-gray-50/80 border border-gray-200/80 transition-colors"
-          >
-            <div className="p-2.5 rounded-lg bg-navy-950 text-gold-400 shrink-0">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                GST Compliant
-              </h4>
-              <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                100% genuine tax invoices with HSN codes for hassle-free business claiming.
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -3 }}
-            className="flex items-start gap-3.5 p-3.5 rounded-xl bg-gray-50/80 border border-gray-200/80 transition-colors"
-          >
-            <div className="p-2.5 rounded-lg bg-navy-950 text-gold-400 shrink-0">
-              <Clock className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                Instant WhatsApp Support
-              </h4>
-              <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                Get catalog PDFs, video calls of fabric lots, and instant quotes.
-              </p>
-            </div>
-          </motion.div>
-        </motion.div>
-
         {/* Main Footer Links */}
         <motion.div
           variants={containerVariants}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-12 border-b border-gray-200"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-12 border-b border-gray-200"
         >
           {/* Brand Info */}
           <motion.div variants={itemVariants} className="space-y-4">
