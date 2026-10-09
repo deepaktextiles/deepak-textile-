@@ -9,6 +9,7 @@ import { HeroSlider } from "../components/home/HeroSlider";
 import { TrendingBannerSlider } from "../components/home/TrendingBannerSlider";
 import { SareeStoreBento } from "../components/home/SareeStoreBento";
 import { BestSellerMensSlider } from "../components/home/BestSellerMensSlider";
+import { GoogleReviewsSection } from "../components/home/GoogleReviewsSection";
 
 export default function HomePage() {
   const [settings, setSettings] = useState({
@@ -206,7 +207,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. DIRECT CALL / WHATSAPP BANNER */}
+      {/* 8. GOOGLE REVIEWS & RATING SECTION */}
+      <GoogleReviewsSection />
+
+      {/* 9. DIRECT CALL / WHATSAPP BANNER */}
       <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-navy-500 to-navy-700 rounded-2xl p-8 sm:p-12 text-white shadow-elevated flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-3 text-center md:text-left">

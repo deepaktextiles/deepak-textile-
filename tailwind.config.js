@@ -35,7 +35,7 @@ export default {
           900: "#322403",
         },
         sitebg: {
-          DEFAULT: "#F8F7F3",
+          DEFAULT: "#ffffff",
         },
         txt: {
           primary: "#1F2937",
