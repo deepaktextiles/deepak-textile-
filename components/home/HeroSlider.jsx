@@ -7,7 +7,6 @@ import {
   ChevronRight,
   MessageCircle,
   ArrowRight,
-  Sparkles,
   Truck,
   ShieldCheck,
   Award,
@@ -117,21 +116,10 @@ export const HeroSlider = ({ customSettings }) => {
               {/* Slide Content */}
               <div className="relative z-20 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
                 <div className="max-w-3xl space-y-5 sm:space-y-6 py-16">
-                  {/* Badge */}
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/25 border border-gold-400/40 text-gold-300 text-xs font-bold tracking-wider uppercase backdrop-blur-sm">
-                    <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-                    <span>{slide.badge}</span>
-                  </div>
-
                   {/* Title */}
                   <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-white tracking-tight leading-[1.15] drop-shadow-sm">
                     {slide.title}
                   </h1>
-
-                  {/* Subtitle */}
-                  <p className="text-sm sm:text-base lg:text-lg text-gray-200 leading-relaxed font-light max-w-2xl">
-                    {slide.subtitle}
-                  </p>
 
                   {/* CTA Buttons */}
                   <div className="flex flex-wrap items-center gap-3.5 pt-2">

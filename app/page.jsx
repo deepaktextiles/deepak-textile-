@@ -112,15 +112,9 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
-            <div className="text-xs font-bold text-gold-700 uppercase tracking-widest mb-1">
-              Top Running Catalogs
-            </div>
             <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-500">
               Featured Wholesale Lots
             </h2>
-            <p className="text-xs sm:text-sm text-txt-secondary mt-1">
-              Click any product to inspect fabric specs, MOQ, and contact directly for wholesale dispatch.
-            </p>
           </div>
           <Link
             href="/products"
