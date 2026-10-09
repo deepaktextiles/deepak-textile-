@@ -24,7 +24,7 @@ export default function CategoriesPage() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-[12px] space-y-8">
       <div className="pb-6 border-b border-border">
         <div className="text-xs font-bold text-gold-700 uppercase tracking-widest mb-1">
           Catalog Collections

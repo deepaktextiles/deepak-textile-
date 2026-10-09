@@ -56,13 +56,13 @@ export default function HomePage() {
   const whatsappCleanNumber = (settings.whatsapp || "9825144520").replace(/[^0-9]/g, "");
 
   return (
-    <div className="space-y-14 pb-16">
+    <div className="space-y-7 sm:space-y-14 pb-10 sm:pb-16">
       {/* 1. HERO CAROUSEL SLIDER */}
       <HeroSlider customSettings={settings} />
 
       {/* 2. TOP CATEGORIES (Matching Reference Image) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="text-center mb-10">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="text-center mb-6 sm:mb-10">
           <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-900 tracking-wider uppercase">
             TOP CATEGORIES
           </h2>
@@ -109,8 +109,8 @@ export default function HomePage() {
       <TrendingBannerSlider />
 
       {/* 4. FEATURED PRODUCTS (CLICK TO VIEW FULL DETAILS) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 sm:mb-8">
           <div>
             <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-500">
               Featured Wholesale Lots
@@ -126,13 +126,13 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4].map((n) => (
               <div key={n} className="bg-white rounded-lg border border-border p-4 animate-pulse h-80" />
             ))}
           </div>
         ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             {featuredProducts.map((prod) => (
               <ProductCard key={prod._id || prod.slug} product={prod} />
             ))}
@@ -152,9 +152,9 @@ export default function HomePage() {
       <BestSellerMensSlider />
 
       {/* 7. SURAT WHOLESALE ADVANTAGE SECTION */}
-      <section className="bg-white border-y border-border py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
+      <section className="bg-white border-y border-border py-7 sm:py-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
             <span className="text-xs font-bold text-gold-700 uppercase tracking-widest">
               Why Partner With Deepak Textiles
             </span>
@@ -207,7 +207,7 @@ export default function HomePage() {
       </section>
 
       {/* 5. DIRECT CALL / WHATSAPP BANNER */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-navy-500 to-navy-700 rounded-2xl p-8 sm:p-12 text-white shadow-elevated flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-3 text-center md:text-left">
             <span className="text-xs font-bold text-gold-400 uppercase tracking-widest">

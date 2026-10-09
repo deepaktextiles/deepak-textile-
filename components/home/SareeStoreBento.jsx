@@ -6,9 +6,9 @@ import { Sparkles, ArrowRight } from "lucide-react";
 
 export const SareeStoreBento = () => {
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       {/* Centered Heading Matching Reference Image */}
-      <div className="text-center mb-10">
+      <div className="text-center mb-6 sm:mb-10">
         <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-900 tracking-wider uppercase">
           THE SAREE STORE
         </h2>

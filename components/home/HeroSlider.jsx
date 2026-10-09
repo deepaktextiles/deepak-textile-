@@ -114,7 +114,7 @@ export const HeroSlider = ({ customSettings }) => {
               </div>
 
               {/* Slide Content */}
-              <div className="relative z-20 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
+              <div className="relative z-20 h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
                 <div className="max-w-3xl space-y-5 sm:space-y-6 py-16">
                   {/* Title */}
                   <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-white tracking-tight leading-[1.15] drop-shadow-sm">
@@ -196,7 +196,7 @@ export const HeroSlider = ({ customSettings }) => {
 
       {/* 2. RUNNING ICON TICKER BAR (Directly matching user's reference) */}
       <div className="w-full bg-white border-y border-gray-200 py-3.5 shadow-sm overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 items-center text-center">
             {/* 1 */}
             <div className="flex items-center justify-center gap-2.5 text-xs text-navy-900 font-bold">

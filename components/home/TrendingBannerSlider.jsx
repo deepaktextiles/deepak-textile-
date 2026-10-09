@@ -68,9 +68,9 @@ export const TrendingBannerSlider = () => {
   }, [isPaused, nextSlide]);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       {/* Centered Heading Matching Reference Image */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-5 sm:mb-8">
         <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-900 tracking-wider uppercase">
           TRENDING NOW
         </h2>

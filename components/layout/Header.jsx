@@ -1,23 +1,35 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Phone, MessageCircle, Lock, Menu, X, ShieldCheck } from "lucide-react";
-import { useAdmin } from "../../lib/context/AdminContext";
+import { Phone, MessageCircle, Menu, ShieldCheck, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
+import { MegaMenu } from "./MegaMenu";
+import { MobileSideDrawer } from "./MobileSideDrawer";
 
 export const Header = () => {
   const pathname = usePathname();
-  const { isAuthenticated, logout } = useAdmin();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [megaMenuOpen, setMegaMenuOpen] = useState(false);
+  const leaveTimerRef = useRef(null);
 
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "All Products", href: "/products" },
-    { label: "Categories", href: "/categories" },
-    { label: "About Us", href: "/about" },
-    { label: "Contact Us", href: "/contact" },
-  ];
+  // Close menus on page navigation
+  useEffect(() => {
+    setMegaMenuOpen(false);
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  const handleMouseEnter = () => {
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+    setMegaMenuOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    leaveTimerRef.current = setTimeout(() => {
+      setMegaMenuOpen(false);
+    }, 180);
+  };
 
   return (
     <>
@@ -45,133 +57,150 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* Main Sticky White Header */}
-      <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 shadow-sm transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+      {/* Main Sticky Header with Framer Motion Entrance */}
+      <motion.header
+        initial={{ y: -6, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+        className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 transition-all"
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3.5">
           <div className="flex items-center justify-between gap-4">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 shrink-0">
-              <div className="w-10 h-10 rounded-lg bg-navy-900 border-2 border-gold-500 flex items-center justify-center font-black text-gold-400 text-xl tracking-tighter shadow-sm">
-                DT
-              </div>
-              <div className="flex flex-col">
-                <span className="font-extrabold text-lg sm:text-xl text-navy-900 tracking-wider leading-none">
-                  DEEPAK <span className="text-gold-600">TEXTILES</span>
-                </span>
-                <span className="text-[10px] tracking-widest uppercase font-bold text-gray-500 leading-tight mt-0.5">
-                  Surat Wholesale Hub
-                </span>
-              </div>
-            </Link>
+            {/* Left side: Hamburger button (on mobile) & Logo */}
+            <div className="flex items-center gap-3">
+              {/* Mobile Hamburger to trigger Side Drawer */}
+              <button
+                onClick={() => setMobileMenuOpen(true)}
+                className="md:hidden text-gray-800 hover:text-navy-950 p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+                aria-label="Open Mobile Menu Drawer"
+              >
+                <Menu className="w-6 h-6 stroke-[2.2]" />
+              </button>
+
+              {/* Logo */}
+              <Link href="/" className="flex items-center gap-2.5 shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-navy-900 border-2 border-gold-500 flex items-center justify-center font-black text-gold-400 text-xl tracking-tighter">
+                  DT
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-extrabold text-lg sm:text-xl text-navy-900 tracking-wider leading-none">
+                    DEEPAK <span className="text-gold-600">TEXTILES</span>
+                  </span>
+                  <span className="text-[10px] tracking-widest uppercase font-bold text-gray-500 leading-tight mt-0.5">
+                    Surat Wholesale Hub
+                  </span>
+                </div>
+              </Link>
+            </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-1 lg:gap-3">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-3 py-2 rounded-md text-sm font-semibold transition-all ${
-                      isActive
-                        ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
-                        : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
-                    }`}
+            <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+              <Link
+                href="/"
+                className={`px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                  pathname === "/"
+                    ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
+                    : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
+                }`}
+              >
+                Home
+              </Link>
+
+              {/* Animated Desktop Mega Menu Trigger */}
+              <div
+                className="relative"
+                onMouseEnter={handleMouseEnter}
+              >
+                <button
+                  onClick={() => setMegaMenuOpen((prev) => !prev)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                    megaMenuOpen || pathname.startsWith("/categories") || pathname.includes("category=")
+                      ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
+                      : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
+                  }`}
+                  aria-expanded={megaMenuOpen}
+                >
+                  <span>Wholesale Catalogs</span>
+                  <motion.div
+                    animate={{ rotate: megaMenuOpen ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    {link.label}
-                  </Link>
-                );
-              })}
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                  </motion.div>
+                </button>
+              </div>
+
+              <Link
+                href="/products"
+                className={`px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                  pathname === "/products"
+                    ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
+                    : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
+                }`}
+              >
+                All Products
+              </Link>
+
+              <Link
+                href="/about"
+                className={`px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                  pathname === "/about"
+                    ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
+                    : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
+                }`}
+              >
+                About Us
+              </Link>
+
+              <Link
+                href="/contact"
+                className={`px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                  pathname === "/contact"
+                    ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
+                    : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
+                }`}
+              >
+                Contact Us
+              </Link>
             </nav>
 
-            {/* Right Side Direct Contact & Admin Login */}
+            {/* Right Side Direct Contact */}
             <div className="flex items-center gap-3">
               {/* WhatsApp Direct Button */}
               <a
                 href="https://wa.me/919825144520?text=Hello%20Deepak%20Textiles,%20I%20am%20interested%20in%20wholesale%20catalogs."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm transition-all hover:shadow"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>WhatsApp Desk</span>
               </a>
 
-              {/* Admin Portal Button */}
-              {isAuthenticated ? (
-                <div className="flex items-center gap-2">
-                  <Link
-                    href="/admin"
-                    className="px-3 py-1.5 rounded-lg bg-navy-900 text-gold-400 text-xs font-bold hover:bg-navy-800 transition-colors"
-                  >
-                    Admin Panel
-                  </Link>
-                  <button
-                    onClick={logout}
-                    className="text-xs text-gray-500 hover:text-red-600 p-1 font-semibold"
-                    title="Sign Out"
-                  >
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <Link
-                  href="/admin/login"
-                  className="inline-flex items-center gap-1 text-xs text-gray-700 hover:text-navy-900 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-gold-500 hover:bg-gold-50/30 transition-all font-semibold"
-                  title="Admin Login"
-                >
-                  <Lock className="w-3.5 h-3.5 text-gold-600" />
-                  <span>Admin</span>
-                </Link>
-              )}
-
-              {/* Mobile Hamburger */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden text-gray-700 hover:text-navy-900 p-1.5 rounded-md hover:bg-gray-100"
+              {/* Call on Mobile */}
+              <a
+                href="tel:+919825144520"
+                className="sm:hidden flex items-center justify-center p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                title="Call Mill"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
+                <Phone className="w-5 h-5" />
+              </a>
             </div>
           </div>
-
-          {/* Mobile Drawer */}
-          {mobileMenuOpen && (
-            <div className="md:hidden pt-4 pb-2 border-t border-gray-200 mt-3 space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3 py-2 rounded text-sm font-semibold text-gray-800 hover:bg-gray-100"
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              <div className="pt-2 border-t border-gray-200 flex flex-col gap-2">
-                <a
-                  href="https://wa.me/919825144520?text=Hello%20Deepak%20Textiles,%20I%20am%20interested%20in%20wholesale%20catalogs."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600 text-white text-xs font-bold"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Chat on WhatsApp</span>
-                </a>
-
-                <a
-                  href="tel:+919825144520"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-navy-900 text-xs font-bold"
-                >
-                  <Phone className="w-4 h-4" />
-                  <span>Call +91 98251 44520</span>
-                </a>
-              </div>
-            </div>
-          )}
         </div>
-      </header>
+
+        {/* Desktop Mega Menu Dropdown */}
+        <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+          <MegaMenu isOpen={megaMenuOpen} onClose={() => setMegaMenuOpen(false)} />
+        </div>
+      </motion.header>
+
+      {/* Mobile Side Drawer Sliding from Left (Matching Reference Screenshot) */}
+      <MobileSideDrawer
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+      />
     </>
   );
 };

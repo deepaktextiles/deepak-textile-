@@ -7,7 +7,7 @@ import { Phone, MessageCircle, Mail, MapPin, ShieldCheck, Truck, Clock, Award } 
 export const Footer = () => {
   return (
     <footer className="bg-navy-500 text-gray-300 pt-16 pb-12 border-t border-navy-600">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Top 4 Trust Pillars for Wholesale Buyers */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-12 border-b border-navy-600">
           <div className="flex items-start gap-3.5">
@@ -131,11 +131,6 @@ export const Footer = () => {
                   Contact & Mill Location
                 </Link>
               </li>
-              <li>
-                <Link href="/admin/login" className="text-gray-400 hover:text-gold-400 transition-colors">
-                  Admin Login
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -181,10 +176,6 @@ export const Footer = () => {
           <p>© {new Date().getFullYear()} Deepak Textiles. All Rights Reserved. Wholesale B2B Portal.</p>
           <div className="flex items-center gap-4">
             <span>Minimum Order: Wholesale Lots Only</span>
-            <span>•</span>
-            <Link href="/admin" className="text-gray-300 hover:text-gold-400">
-              Admin Portal
-            </Link>
           </div>
         </div>
       </div>
