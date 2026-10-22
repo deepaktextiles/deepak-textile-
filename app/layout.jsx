@@ -3,6 +3,7 @@ import { Nunito_Sans } from "next/font/google";
 import { AdminProvider } from "../lib/context/AdminContext";
 import { Header } from "../components/layout/Header";
 import { Footer } from "../components/layout/Footer";
+import { WhatsAppButton } from "../components/layout/WhatsAppButton";
 
 const nunitoSans = Nunito_Sans({
   subsets: ["latin"],
@@ -11,10 +12,10 @@ const nunitoSans = Nunito_Sans({
 });
 
 export const metadata = {
-  title: "Deepak Textiles | Surat Wholesale Textile & Garment Supplier",
+  title: "Deepak Textiles | Clothing & Fabric Wholesaler | Darbhanga, Bihar",
   description:
-    "Direct mill wholesale supplier in Surat, Gujarat. Bulk Sarees, Salwar Suits, Kurtis, and Fabrics for retailers and boutique owners across India. Minimum order quantity applicable.",
-  keywords: "wholesale textiles surat, surat saree wholesale, kurti wholesale manufacturer, deepak textiles",
+    "Deepak Textiles (Estd. 2001) - Premier Clothing & Fabric Wholesaler in Darbhanga, Bihar. Bulk Designer Sarees, Suit Pieces, Shirting & Suiting, and Lehenga collections for retailers, resellers, and bulk buyers across India.",
+  keywords: "deepak textiles darbhanga, bihar saree wholesale, fabric wholesaler darbhanga, wholesale suit pieces darbhanga, deepak textiles",
 };
 
 export default function RootLayout({ children }) {
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
+          <WhatsAppButton />
         </AdminProvider>
       </body>
     </html>

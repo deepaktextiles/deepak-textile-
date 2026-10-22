@@ -12,13 +12,13 @@ export default function AboutPage() {
       <section className="bg-navy-900 text-white py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/20 text-gold-300 text-xs font-bold uppercase tracking-wider">
-            Established In Surat, Gujarat
+            Estd. 2001 • Darbhanga, Bihar
           </div>
           <h1 className="text-3xl sm:text-5xl font-heading font-extrabold tracking-tight">
             About Deepak Textiles
           </h1>
           <p className="max-w-2xl mx-auto text-base sm:text-lg text-gray-300 font-light">
-            Surat&apos;s premier textile manufacturer and wholesale powerhouse supplying retail stores, boutiques, and bulk buyers across India with authentic mill-rate apparel.
+            Darbhanga&apos;s premier clothing & fabric wholesaler supplying retailers, boutiques, and bulk buyers across Bihar and India with authentic wholesale apparel since 2001.
           </p>
         </div>
       </section>
@@ -28,16 +28,16 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-5">
             <span className="text-xs font-bold text-gold-700 uppercase tracking-widest">
-              Our Heritage & Quality
+              Our 20+ Years Legacy
             </span>
             <h2 className="text-2xl sm:text-3xl font-heading font-bold text-navy-500">
-              Transforming B2B Textile Sourcing from Surat
+              Trusted Textile Wholesale Partner in North Bihar
             </h2>
             <p className="text-sm text-txt-secondary leading-relaxed">
-              Deepak Textiles was founded with one clear mission: to connect retailers and boutique owners directly to Surat&apos;s textile manufacturing heart without layers of middle brokers inflating prices.
+              Operating since 2001 from Kadirabad Road, Darbhanga, Deepak Textiles was established with a singular focus: to provide shop owners, retailers, resellers, and wholesale buyers with the most reliable access to high-margin ethnic and fabric collections.
             </p>
             <p className="text-sm text-txt-secondary leading-relaxed">
-              Operating out of Surat&apos;s textile epicentre near Ring Road, we produce and source premium silk sarees, cotton salwar suits, designer kurti sets, and high-demand running fabrics. Every roll and lot is checked for colorfastness, thread density, and finish before dispatch.
+              Our comprehensive catalog spans Designer Sarees (printed, cotton & designer work), Suit Pieces & Salwar Suits, Shirting & Suiting for men&apos;s wear, and bridal Lehenga & Readymade garments.
             </p>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
@@ -113,24 +113,24 @@ export default function AboutPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-navy-900 rounded-2xl p-8 sm:p-12 text-center text-white space-y-6">
           <h2 className="text-2xl sm:text-3xl font-heading font-bold">
-            Ready to stock your shop with high-profit Surat wholesale lots?
+            Ready to stock your shop with high-profit wholesale collections?
           </h2>
           <p className="text-sm text-gray-300 max-w-xl mx-auto">
-            Contact our wholesale sales executive on WhatsApp or visit our Surat showroom.
+            Contact our wholesale sales desk on WhatsApp or visit our showroom at Kadirabad Road, Darbhanga.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="https://wa.me/919825144520?text=Hello%20Deepak%20Textiles,%20I%20want%20to%20know%20more%20about%20your%20wholesale%20supply."
+              href="https://wa.me/919308066552?text=Hello%20Deepak%20Textiles,%20I%20want%20to%20know%20more%20about%20your%20wholesale%20supply."
               target="_blank"
               rel="noopener noreferrer"
             >
               <Button variant="whatsapp" size="lg" leftIcon={<MessageCircle className="w-5 h-5" />}>
-                WhatsApp Sales Desk
+                WhatsApp Sales Desk (+91 93080 66552)
               </Button>
             </a>
             <Link href="/contact">
               <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-navy-900">
-                View Surat Mill Location
+                View Darbhanga Location & Map
               </Button>
             </Link>
           </div>

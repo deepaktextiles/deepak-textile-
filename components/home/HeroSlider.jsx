@@ -21,38 +21,48 @@ export const HeroSlider = ({ customSettings }) => {
   const defaultSlides = [
     {
       id: 1,
-      badge: "Festive & Bridal Wholesale Special",
-      title: customSettings?.bannerTitle || "Durga Puja & Wedding Saree Collection",
+      badge: "Deepak Textiles • Darbhanga",
+      title: "Royal Banarasi & Designer Saree Collection",
       subtitle:
-        customSettings?.bannerSubtitle ||
-        "Royal Banarasi, Katan Silk, Georgette & Organza Sarees. Authentic Surat Mill Rates for Retailers & Boutiques.",
+        "Pure Katan Silk, Georgette, Organza & Zari Weave Sarees. Direct wholesale rates for retailers & boutique owners across Bihar & India.",
       image:
-        customSettings?.bannerImage ||
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1920&q=85",
-      link: "/products?category=wholesale-sarees",
+        "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
+      link: "/products?category=sarees",
       btnText: "Explore Saree Lots",
       accent: "from-amber-950/90 via-navy-950/80 to-navy-950/60",
     },
     {
       id: 2,
-      badge: "Direct Mill Salwar Suits",
+      badge: "Wholesale Suit Pieces",
       title: "Designer Dress Materials & Unstitched Suits",
       subtitle:
         "Pure Cambric Cotton, Chanderi Silk & Rayon 3-Piece Sets with matching Dupattas. High margin wholesale lots.",
       image:
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1920&q=85",
+        "/images/selesproductsimages/a3198247-d1d7-47e6-a99b-1e0d14f3ec33.avif",
       link: "/products?category=dress-materials",
-      btnText: "View Dress Materials",
+      btnText: "View Suit Pieces",
       accent: "from-rose-950/90 via-navy-950/80 to-navy-950/60",
     },
     {
       id: 3,
-      badge: "High-Demand Ready Stock",
-      title: "Trending Kurti Sets & Running Fabric Rolls",
+      badge: "Festive & Wedding Special",
+      title: "Heavy Zari & Bridal Saree Collection",
       subtitle:
-        "Ready-to-dispatch Kurti-Pant-Dupatta sets and premium Thaan running materials. Pan-India daily transport booking.",
+        "Handpicked bridal and festive collections ready for dispatch. Fast delivery across North Bihar & Pan-India.",
       image:
-        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1920&q=85",
+        "/images/selesproductsimages/869f376e-f235-4b78-824d-6899c1588dd3.avif",
+      link: "/products?category=sarees",
+      btnText: "View Bridal Lots",
+      accent: "from-purple-950/90 via-navy-950/80 to-navy-950/60",
+    },
+    {
+      id: 4,
+      badge: "Ready Wholesale Stock",
+      title: "Shirting & Suiting, Kurtis, Lehenga & Readymade",
+      subtitle:
+        "High-demand men's fabrics, partywear kurtis & festive lehengas. Serving 1,000+ retail stores since 2001.",
+      image:
+        "/images/selesproductsimages/4add71ea-fd79-47b5-8f73-75dd4f6829cd.avif",
       link: "/products",
       btnText: "Browse Full Catalog",
       accent: "from-indigo-950/90 via-navy-950/80 to-navy-950/60",
@@ -78,7 +88,7 @@ export const HeroSlider = ({ customSettings }) => {
     return () => clearInterval(interval);
   }, [isPaused, nextSlide]);
 
-  const whatsappCleanNumber = (customSettings?.whatsapp || "9825144520").replace(/[^0-9]/g, "");
+  const whatsappCleanNumber = (customSettings?.whatsapp || "919308066552").replace(/[^0-9]/g, "");
 
   return (
     <div className="w-full space-y-0">

@@ -15,13 +15,13 @@ const SettingSchema = new mongoose.Schema(
       default:
         "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=2000&q=80",
     },
-    phone: { type: String, default: "+91 98251 44520" },
-    whatsappNumber: { type: String, default: "+91 98251 44520" },
-    whatsapp: { type: String, default: "+91 98251 44520" },
-    email: { type: String, default: "sales@deepaktextiles.com" },
+    phone: { type: String, default: "+91 93080 66552" },
+    whatsappNumber: { type: String, default: "+91 93080 66552" },
+    whatsapp: { type: String, default: "+91 93080 66552" },
+    email: { type: String, default: "deepaktextiles7@gmail.com" },
     address: {
       type: String,
-      default: "Plot 104-108, Millenium Textile Market, Ring Road, Surat, Gujarat 395002",
+      default: "5V7R+V63, Kadirabad Road, Near Naka No. 2, Banglagarh Colony, Mansaar Colony, Darbhanga, Bihar – 846004",
     },
     gstNumber: { type: String, default: "24AAACD1234F1Z8" },
     gstin: { type: String, default: "24AAACD1234F1Z8" },

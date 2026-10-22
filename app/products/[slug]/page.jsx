@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
@@ -10,6 +10,7 @@ import {
   CreditCard,
   ShoppingBag,
   ChevronRight,
+  ChevronLeft,
   ChevronDown,
   Heart,
   Star,
@@ -18,12 +19,17 @@ import {
   Layers,
   FileText,
   Share2,
+  Maximize2,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { productsApi } from "../../../services/api";
 import { Button } from "../../../components/ui/Button";
 import { EnquiryModal } from "../../../components/wholesale/EnquiryModal";
 import { ProductCard } from "../../../components/product/ProductCard";
+import Image from "next/image";
+import whatsapp from "../../../images/icons/whatsapp221.svg";
+import { SALES_PRODUCT_IMAGES } from "../../../lib/salesImages";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -36,6 +42,9 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState("M");
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [orderQuantity, setOrderQuantity] = useState(1);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
+  const relatedSliderRef = useRef(null);
 
   // Accordions matching reference image media_1791547508325.png
   const [openAccordions, setOpenAccordions] = useState({
@@ -122,25 +131,33 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Gallery images for 2-column grid matching reference image media_1791547493330.jpg
+  // Gallery images from real Deepak Textiles selling product photos (selesproductsimages)
+  const productCustomImages =
+    product.images && product.images.length > 0
+      ? product.images.filter((img) => !img.includes("unsplash.com"))
+      : [];
+
   const galleryImages =
-    product.images && product.images.length >= 4
-      ? product.images
-      : product.images && product.images.length > 0
-      ? [
-          product.images[0],
-          product.images[1] || product.images[0],
-          product.images[2] ||
-            "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
-          product.images[3] ||
-            "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
-        ]
-      : [
-          "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&w=800&q=80",
-        ];
+    productCustomImages.length >= 4
+      ? productCustomImages
+      : productCustomImages.length > 0
+      ? [...productCustomImages, ...SALES_PRODUCT_IMAGES.slice(0, 6 - productCustomImages.length)]
+      : SALES_PRODUCT_IMAGES.slice(0, 6);
+
+  const nextImage = () => {
+    setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
+  };
+
+  const prevImage = () => {
+    setActiveImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
+
+  const scrollRelated = (direction) => {
+    if (relatedSliderRef.current) {
+      const scrollAmount = direction === "left" ? -300 : 300;
+      relatedSliderRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
 
   const wholesalePrice = product.wholesalePrice || product.price || 499;
   const retailPrice =
@@ -158,7 +175,7 @@ export default function ProductDetailPage() {
       : ["XS", "S", "M", "L", "XL", "XXL"];
 
   const whatsappMessage = encodeURIComponent(
-    `Hello Deepak Textiles (Surat), I want to place a wholesale order for:
+    `Hello Deepak Textiles (Darbhanga), I want to place a wholesale order for:
 *${product.name}*
 SKU: ${product.sku || "DT-LOT"}
 Wholesale Rate: ₹${wholesalePrice}/${product.unit || "pc"}
@@ -206,65 +223,131 @@ Please send available video clips of this lot and dispatch details.`
         {/* ========================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
           {/* ======================================================= */}
-          {/* LEFT: 2-COLUMN IMAGE GALLERY (Matching Screenshot 1)    */}
+          {/* LEFT: INTERACTIVE PRODUCT IMAGE CAROUSEL (PROUSAL)       */}
           {/* ======================================================= */}
-          <div className="lg:col-span-7">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {galleryImages.map((img, idx) => (
-                <div
-                  key={idx}
-                  className="relative aspect-[3/4.2] w-full overflow-hidden bg-gray-50 group cursor-pointer"
+          <div className="lg:col-span-7 space-y-3.5">
+            {/* Main Featured Carousel Viewport */}
+            <div className="relative aspect-[3/3.9] sm:aspect-[3/3.7] w-full overflow-hidden rounded-2xl bg-gray-50 border border-gray-200 shadow-sm group select-none">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={activeImageIndex}
+                  src={galleryImages[activeImageIndex]}
+                  alt={`${product.name} wholesale lot view ${activeImageIndex + 1}`}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.01 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="w-full h-full object-cover object-top cursor-zoom-in"
+                  onClick={() => setIsZoomModalOpen(true)}
+                  loading="eager"
+                />
+              </AnimatePresence>
+
+              {/* Prev Slide Arrow */}
+              {galleryImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    prevImage();
+                  }}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-gray-800 shadow-md flex items-center justify-center transition-all opacity-95 sm:opacity-0 group-hover:opacity-100 hover:scale-105 active:scale-95 border border-gray-200/60"
+                  aria-label="Previous Photo"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={img}
-                    alt={`${product.name} view ${idx + 1}`}
-                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                    loading={idx === 0 ? "eager" : "lazy"}
-                  />
+                  <ChevronLeft className="w-5 h-5 stroke-[2.2]" />
+                </button>
+              )}
 
-                  {/* MOQ badge on first photo */}
-                  {idx === 0 && (
-                    <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded">
-                      MOQ: {product.minimumOrderQuantity || 10}{" "}
-                      {product.unit || "pcs"}
-                    </div>
-                  )}
+              {/* Next Slide Arrow */}
+              {galleryImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    nextImage();
+                  }}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-gray-800 shadow-md flex items-center justify-center transition-all opacity-95 sm:opacity-0 group-hover:opacity-100 hover:scale-105 active:scale-95 border border-gray-200/60"
+                  aria-label="Next Photo"
+                >
+                  <ChevronRight className="w-5 h-5 stroke-[2.2]" />
+                </button>
+              )}
 
-                  {/* Rating Badge on bottom left of first photo */}
-                  {idx === 0 && (
-                    <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded text-[11px] font-bold text-gray-900 flex items-center gap-1 border border-gray-100">
-                      <span className="text-amber-500">★</span>
-                      <span>{product.rating || "4.7"}</span>
-                      <span className="text-gray-300">|</span>
-                      <span className="text-gray-500 font-medium">
-                        ({product.reviewsCount || "24"})
-                      </span>
-                    </div>
-                  )}
+              {/* Top Badges: MOQ (Left) & Slide Counter / Maximize (Right) */}
+              <div className="absolute top-3.5 left-3.5 flex items-center gap-2">
+                <span className="bg-navy-950/90 backdrop-blur-xs text-white text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md shadow-xs">
+                  MOQ: {product.minimumOrderQuantity || 10} {product.unit || "pcs"}
+                </span>
+              </div>
 
-                  {/* Heart on bottom right of first photo */}
-                  {idx === 0 && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsWishlisted(!isWishlisted);
-                      }}
-                      className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/90 hover:bg-white backdrop-blur-xs flex items-center justify-center transition-all border border-gray-100"
-                      aria-label="Wishlist"
-                    >
-                      <Heart
-                        className={`w-4 h-4 transition-colors ${
-                          isWishlisted
-                            ? "fill-rose-500 text-rose-500"
-                            : "text-gray-700"
-                        }`}
-                      />
-                    </button>
-                  )}
-                </div>
-              ))}
+              <div className="absolute top-3.5 right-3.5 flex items-center gap-2">
+                <span className="bg-black/65 backdrop-blur-xs text-white text-xs font-semibold px-2.5 py-1 rounded-md">
+                  {activeImageIndex + 1} / {galleryImages.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsZoomModalOpen(true);
+                  }}
+                  className="w-8 h-8 rounded-md bg-white/90 hover:bg-white text-gray-800 flex items-center justify-center shadow-xs transition-colors"
+                  title="Click to Enlarge"
+                  aria-label="Enlarge image"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Bottom Badges: Wholesale Rating (Left) & Wishlist (Right) */}
+              <div className="absolute bottom-3.5 left-3.5 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-md text-xs font-bold text-gray-900 flex items-center gap-1.5 border border-gray-100 shadow-xs">
+                <span className="text-amber-500">★</span>
+                <span>{product.rating || "4.7"}</span>
+                <span className="text-gray-300">|</span>
+                <span className="text-gray-500 font-medium">({product.reviewsCount || "24"})</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsWishlisted(!isWishlisted);
+                }}
+                className="absolute bottom-3.5 right-3.5 w-9 h-9 rounded-full bg-white/90 hover:bg-white backdrop-blur-xs flex items-center justify-center transition-all border border-gray-100 shadow-xs hover:scale-105 active:scale-95"
+                aria-label="Wishlist"
+              >
+                <Heart
+                  className={`w-4 h-4 transition-colors ${
+                    isWishlisted ? "fill-rose-500 text-rose-500" : "text-gray-700"
+                  }`}
+                />
+              </button>
             </div>
+
+            {/* Thumbnail Carousel Track */}
+            {galleryImages.length > 1 && (
+              <div className="flex items-center gap-3 overflow-x-auto pb-1 pt-0.5 scrollbar-thin scrollbar-thumb-gray-200">
+                {galleryImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`relative w-16 h-20 sm:w-20 sm:h-24 rounded-xl overflow-hidden shrink-0 transition-all border-2 ${
+                      activeImageIndex === idx
+                        ? "border-gold-600 ring-2 ring-gold-400/40 scale-102 shadow-sm"
+                        : "border-gray-200 hover:border-gray-400 opacity-70 hover:opacity-100"
+                    }`}
+                    aria-label={`Select product image ${idx + 1}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={img}
+                      alt={`Thumbnail ${idx + 1}`}
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* ======================================================= */}
@@ -359,7 +442,7 @@ Please send available video clips of this lot and dispatch details.`
             {/* Primary Order Action Buttons */}
             <div className="space-y-2.5 pt-2">
               <a
-                href={`https://wa.me/919825144520?text=${whatsappMessage}`}
+                href={`https://wa.me/919308066552?text=${whatsappMessage}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full"
@@ -367,10 +450,20 @@ Please send available video clips of this lot and dispatch details.`
                 <Button
                   variant="whatsapp"
                   size="lg"
-                  className="w-full font-bold bg-emerald-600 hover:bg-emerald-500 text-white py-3.5"
-                  leftIcon={<MessageCircle className="w-5 h-5" />}
+                  className="w-full font-bold py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm"
+                  leftIcon={
+                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center p-0.5 shrink-0 shadow-xs">
+                      <Image
+                        src={whatsapp}
+                        alt="WhatsApp"
+                        width={20}
+                        height={20}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  }
                 >
-                  Order on WhatsApp (Direct Mill)
+                  Order on WhatsApp (Wholesale Direct)
                 </Button>
               </a>
 
@@ -385,7 +478,7 @@ Please send available video clips of this lot and dispatch details.`
                   Request Quote
                 </Button>
                 <a
-                  href="tel:+919825144520"
+                  href="tel:+919308066552"
                   className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-navy-950 hover:bg-navy-900 text-white text-xs font-bold transition-colors"
                 >
                   <Phone className="w-4 h-4 text-gold-400" />
@@ -803,15 +896,18 @@ Please send available video clips of this lot and dispatch details.`
                     >
                       <p>
                         <strong>Manufacturer & Wholesale Supplier:</strong>{" "}
-                        Deepak Textiles Private Limited
+                        Deepak Textiles (Clothing & Fabric Wholesaler, Estd. 2001)
                       </p>
                       <p>
-                        <strong>Mill Address:</strong> Shop 204-206, 2nd Floor,
-                        Radharaman Textile Market, Ring Road, Surat, Gujarat -
-                        395002
+                        <strong>Wholesale Showroom Address:</strong> 5V7R+V63,
+                        Kadirabad Road, Near Naka No. 2, Banglagarh Colony,
+                        Mansaar Colony, Darbhanga, Bihar – 846004, India
                       </p>
                       <p>
-                        <strong>GSTIN:</strong> 24AAACD1234F1Z5
+                        <strong>Phone / WhatsApp:</strong> 093080 66552 / 85446 63335
+                      </p>
+                      <p>
+                        <strong>Business Categories:</strong> Sarees, Suit Pieces, Shirting & Suiting, Lehenga & Readymade
                       </p>
                       <p>
                         <strong>Country of Origin:</strong> India
@@ -825,24 +921,58 @@ Please send available video clips of this lot and dispatch details.`
         </div>
 
         {/* ========================================================= */}
-        {/* RELATED WHOLESALE PRODUCTS                                */}
+        {/* RELATED WHOLESALE PRODUCTS CAROUSEL                       */}
         {/* ========================================================= */}
         {relatedProducts.length > 0 && (
           <div className="pt-12 border-t border-gray-200 space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl sm:text-2xl font-heading font-medium text-gray-900">
-                You May Also Like
-              </h2>
-              <Link
-                href={`/products?category=${product.category?.slug}`}
-                className="text-xs font-bold text-navy-950 hover:underline uppercase tracking-wider"
-              >
-                View More {product.category?.name}
-              </Link>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-heading font-bold text-gray-900">
+                  You May Also Like
+                </h2>
+                <p className="text-xs text-gray-500">
+                  Recommended wholesale lots for your boutique or retail store
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => scrollRelated("left")}
+                  className="w-9 h-9 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center text-gray-700 shadow-xs transition-colors"
+                  aria-label="Scroll left"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollRelated("right")}
+                  className="w-9 h-9 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center text-gray-700 shadow-xs transition-colors"
+                  aria-label="Scroll right"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+                <Link
+                  href={`/products?category=${product.category?.slug}`}
+                  className="hidden sm:inline-block ml-2 text-xs font-bold text-navy-950 hover:underline uppercase tracking-wider"
+                >
+                  View All
+                </Link>
+              </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+
+            {/* Scrollable Products Carousel Track */}
+            <div
+              ref={relatedSliderRef}
+              className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth scrollbar-thin scrollbar-thumb-gray-200"
+            >
               {relatedProducts.map((p) => (
-                <ProductCard key={p._id || p.slug} product={p} />
+                <div
+                  key={p._id || p.slug}
+                  className="min-w-[220px] sm:min-w-[270px] max-w-[270px] shrink-0 snap-start"
+                >
+                  <ProductCard product={p} />
+                </div>
               ))}
             </div>
           </div>
@@ -854,6 +984,71 @@ Please send available video clips of this lot and dispatch details.`
           onClose={() => setIsModalOpen(false)}
           product={product}
         />
+
+        {/* Fullscreen High-Resolution Image Zoom Modal */}
+        <AnimatePresence>
+          {isZoomModalOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
+              onClick={() => setIsZoomModalOpen(false)}
+            >
+              <button
+                type="button"
+                onClick={() => setIsZoomModalOpen(false)}
+                className="absolute top-4 right-4 text-white hover:text-gold-400 p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors z-10"
+                aria-label="Close Preview"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <div
+                className="relative max-h-[90vh] max-w-[90vw] flex items-center justify-center"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <motion.img
+                  initial={{ scale: 0.94 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0.94 }}
+                  src={galleryImages[activeImageIndex]}
+                  alt="High Resolution Wholesale View"
+                  className="max-h-[85vh] max-w-[85vw] object-contain rounded-xl shadow-2xl select-none"
+                />
+
+                {/* Modal Navigation Arrows */}
+                {galleryImages.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        prevImage();
+                      }}
+                      className="absolute left-2 sm:-left-12 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors shadow-lg"
+                      aria-label="Previous"
+                    >
+                      <ChevronLeft className="w-6 h-6 stroke-[2.5]" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        nextImage();
+                      }}
+                      className="absolute right-2 sm:-right-12 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors shadow-lg"
+                      aria-label="Next"
+                    >
+                      <ChevronRight className="w-6 h-6 stroke-[2.5]" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

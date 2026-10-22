@@ -6,6 +6,7 @@ import { MessageCircle, Phone, ArrowRight, ShieldCheck, Truck, Package, Sparkles
 import { productsApi, categoriesApi, settingsApi } from "../services/api";
 import { ProductCard } from "../components/product/ProductCard";
 import { HeroSlider } from "../components/home/HeroSlider";
+import { SalesProductsSlider } from "../components/home/SalesProductsSlider";
 import { TrendingBannerSlider } from "../components/home/TrendingBannerSlider";
 import { SareeStoreBento } from "../components/home/SareeStoreBento";
 import { BestSellerMensSlider } from "../components/home/BestSellerMensSlider";
@@ -13,11 +14,11 @@ import { GoogleReviewsSection } from "../components/home/GoogleReviewsSection";
 
 export default function HomePage() {
   const [settings, setSettings] = useState({
-    bannerTitle: "Surat's Trusted Wholesale Textile & Garment Hub",
-    bannerSubtitle: "Direct Mill Rates • Premium Sarees, Suits, Kurti Sets & Fabrics • Supplying 5,000+ Retailers Across India",
+    bannerTitle: "Deepak Textiles — Clothing & Fabric Wholesaler",
+    bannerSubtitle: "Darbhanga, Bihar • Bulk Designer Sarees, Suit Pieces, Shirting & Suiting, Lehenga & Readymade • Estd. 2001",
     bannerImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80",
-    phone: "+91 98251 44520",
-    whatsapp: "+91 98251 44520",
+    phone: "+91 93080 66552",
+    whatsapp: "+91 93080 66552",
   });
   const [categories, setCategories] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -54,14 +55,17 @@ export default function HomePage() {
     fetchData();
   }, []);
 
-  const whatsappCleanNumber = (settings.whatsapp || "9825144520").replace(/[^0-9]/g, "");
+  const whatsappCleanNumber = (settings.whatsapp || "919308066552").replace(/[^0-9]/g, "");
 
   return (
     <div className="space-y-7 sm:space-y-14 pb-10 sm:pb-16">
       {/* 1. HERO CAROUSEL SLIDER */}
       <HeroSlider customSettings={settings} />
 
-      {/* 2. TOP CATEGORIES (Matching Reference Image) */}
+      {/* 2. REAL SELLING PRODUCTS SHOWCASE SLIDER */}
+      <SalesProductsSlider />
+
+      {/* 3. TOP CATEGORIES (Matching Reference Image) */}
       <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="text-center mb-6 sm:mb-10">
           <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-900 tracking-wider uppercase">
@@ -237,7 +241,7 @@ export default function HomePage() {
             </a>
 
             <a
-              href={`tel:${settings.phone || "+919825144520"}`}
+              href={`tel:${settings.phone || "+919308066552"}`}
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white hover:bg-gray-100 text-navy-500 font-bold text-sm shadow transition-colors"
             >
               <Phone className="w-5 h-5" />

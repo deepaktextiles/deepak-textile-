@@ -24,7 +24,7 @@ export const SareeStoreBento = () => {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=85"
+            src="/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"
             alt="Deepak Gold Silk Sarees"
             className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />
@@ -56,7 +56,7 @@ export const SareeStoreBento = () => {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=900&q=85"
+              src="/images/selesproductsimages/c99af3a8-4de0-4934-9bd3-6412c605d0ac.avif"
               alt="Durga Pujo Saree Collection"
               className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
             />
@@ -80,7 +80,7 @@ export const SareeStoreBento = () => {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=900&q=85"
+              src="/images/selesproductsimages/869f376e-f235-4b78-824d-6899c1588dd3.avif"
               alt="Karwa Chauth Saree Collection"
               className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
             />
@@ -105,7 +105,7 @@ export const SareeStoreBento = () => {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&w=900&q=85"
+            src="/images/selesproductsimages/f3382385-847b-4bfe-9f4e-04ec15d92fb8.avif"
             alt="Ready to Wear Sarees"
             className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />

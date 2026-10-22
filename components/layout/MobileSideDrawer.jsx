@@ -17,6 +17,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { categoriesApi, settingsApi } from "../../services/api";
+import { WhatsAppIcon } from "../ui/WhatsAppIcon";
 
 export const MobileSideDrawer = ({ isOpen, onClose }) => {
   const [categories, setCategories] = useState([]);
@@ -78,8 +79,8 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
     }));
   };
 
-  const whatsappNumber = (settings?.whatsapp || settings?.whatsappNumber || "9825144520").replace(/[^0-9]/g, "");
-  const phoneNumber = settings?.phone || "+91 98251 44520";
+  const whatsappNumber = (settings?.whatsapp || settings?.whatsappNumber || "919308066552").replace(/[^0-9]/g, "");
+  const phoneNumber = settings?.phone || "+91 93080 66552";
 
   // Fallback categories if database has not returned yet
   const displayCategories = categories.length > 0 ? categories : [
@@ -356,13 +357,13 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
                         className="bg-gray-50/70 border-t border-gray-100 px-7 py-3 space-y-2 text-[11px] font-bold text-gray-700 tracking-wider overflow-hidden"
                       >
                         <Link href="/about" onClick={onClose} className="block py-1 hover:text-gold-700">
-                          • About Our Manufacturing & Mills
+                          • About Our 20+ Years Heritage
                         </Link>
                         <Link href="/contact" onClick={onClose} className="block py-1 hover:text-gold-700">
-                          • Surat Mill Location & Sales Desk
+                          • Darbhanga Location & Sales Desk
                         </Link>
                         <div className="py-1 text-gray-500 font-semibold lowercase">
-                          gst: 24aaacd1234f1z5 (surat)
+                          Darbhanga, Bihar – 846004
                         </div>
                       </motion.div>
                     )}
@@ -374,15 +375,15 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
               <div className="p-5 bg-gray-50 border-t border-gray-200 space-y-2 text-xs text-gray-600">
                 <div className="flex items-center gap-2">
                   <Truck className="w-4 h-4 text-gold-600 shrink-0" />
-                  <span className="font-semibold text-[11px]">Pan-India Safe Parcel Booking</span>
+                  <span className="font-semibold text-[11px]">Pan-India & Bihar Safe Parcel Booking</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span className="font-semibold text-[11px]">100% Factory Mill Quality Guarantee</span>
+                  <span className="font-semibold text-[11px]">100% Wholesaler Quality Guarantee</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-navy-900 shrink-0" />
-                  <span className="font-semibold text-[11px]">Radharaman Market, Ring Road, Surat</span>
+                  <span className="font-semibold text-[11px]">Kadirabad Road, Naka No. 2, Darbhanga, Bihar</span>
                 </div>
               </div>
             </div>
@@ -393,9 +394,11 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
                 href={`https://wa.me/${whatsappNumber}?text=Hello%20Deepak%20Textiles,%20please%20send%20wholesale%20catalogs.`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs tracking-wider uppercase transition-colors"
+                className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs tracking-wider uppercase transition-colors"
               >
-                <MessageCircle className="w-4 h-4" />
+                <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center p-0.5 shrink-0">
+                  <WhatsAppIcon className="w-full h-full" color="#25D366" />
+                </div>
                 <span>WhatsApp</span>
               </a>
 
@@ -404,7 +407,7 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
                 className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg bg-navy-900 hover:bg-navy-800 text-white font-extrabold text-xs tracking-wider uppercase transition-colors"
               >
                 <Phone className="w-4 h-4 text-gold-400" />
-                <span>Call Mill</span>
+                <span>Call Desk</span>
               </a>
             </div>
           </motion.aside>

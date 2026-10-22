@@ -7,6 +7,7 @@ import { Phone, MessageCircle, Menu, ShieldCheck, ChevronDown } from "lucide-rea
 import { motion } from "framer-motion";
 import { MegaMenu } from "./MegaMenu";
 import { MobileSideDrawer } from "./MobileSideDrawer";
+import { WhatsAppIcon } from "../ui/WhatsAppIcon";
 
 export const Header = () => {
   const pathname = usePathname();
@@ -33,25 +34,25 @@ export const Header = () => {
 
   return (
     <>
-      {/* Top Surat B2B Bar */}
+      {/* Top Darbhanga B2B Bar */}
       <div className="bg-navy-900 text-gray-300 text-xs py-2 px-4 border-b border-navy-800 hidden sm:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1.5 text-gold-400 font-semibold">
               <ShieldCheck className="w-3.5 h-3.5" />
-              Surat Wholesale Textile Manufacturer & Mill Supplier (Gujarat)
+              Darbhanga Wholesale Textile Hub • Estd. 2001 (Bihar)
             </span>
             <span className="text-gray-500">•</span>
-            <span className="text-gray-300">Direct Mill Rates • GST Invoices • Pan-India Transport</span>
+            <span className="text-gray-300">Sarees • Suit Pieces • Shirting & Suiting • Lehenga & Readymade</span>
           </div>
 
           <div className="flex items-center gap-4">
             <a
-              href="tel:+919825144520"
+              href="tel:+919308066552"
               className="flex items-center gap-1.5 text-gray-200 hover:text-gold-400 transition-colors font-medium"
             >
               <Phone className="w-3.5 h-3.5 text-gold-400" />
-              <span>Sales Desk: +91 98251 44520</span>
+              <span>Sales Desk: +91 93080 66552</span>
             </a>
           </div>
         </div>
@@ -88,7 +89,7 @@ export const Header = () => {
                     DEEPAK <span className="text-gold-600">TEXTILES</span>
                   </span>
                   <span className="text-[10px] tracking-widest uppercase font-bold text-gray-500 leading-tight mt-0.5">
-                    Surat Wholesale Hub
+                    Darbhanga Wholesale Hub
                   </span>
                 </div>
               </Link>
@@ -169,22 +170,37 @@ export const Header = () => {
             <div className="flex items-center gap-3">
               {/* WhatsApp Direct Button */}
               <a
-                href="https://wa.me/919825144520?text=Hello%20Deepak%20Textiles,%20I%20am%20interested%20in%20wholesale%20catalogs."
+                href="https://wa.me/919308066552?text=Hello%20Deepak%20Textiles,%20I%20am%20interested%20in%20wholesale%20catalogs."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all"
+                className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-sm hover:shadow"
               >
-                <MessageCircle className="w-4 h-4" />
+                <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center p-0.5">
+                  <WhatsAppIcon className="w-full h-full" color="#25D366" />
+                </div>
                 <span>WhatsApp Desk</span>
+              </a>
+
+              {/* WhatsApp on Mobile */}
+              <a
+                href="https://wa.me/919308066552?text=Hello%20Deepak%20Textiles,%20I%20am%20interested%20in%20wholesale%20catalogs."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sm:hidden flex items-center justify-center p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                title="Chat on WhatsApp"
+              >
+                <div className="w-6 h-6 rounded-full flex items-center justify-center">
+                  <WhatsAppIcon className="w-full h-full" color="#25D366" />
+                </div>
               </a>
 
               {/* Call on Mobile */}
               <a
-                href="tel:+919825144520"
-                className="sm:hidden flex items-center justify-center p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                title="Call Mill"
+                href="tel:+919308066552"
+                className="sm:hidden flex items-center justify-center p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200"
+                title="Call Desk"
               >
-                <Phone className="w-5 h-5" />
+                <Phone className="w-4 h-4" />
               </a>
             </div>
           </div>

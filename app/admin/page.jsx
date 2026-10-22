@@ -524,23 +524,23 @@ export default function AdminDashboardPage() {
                   label="Sales Desk Call Phone"
                   value={settings.phone}
                   onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
-                  placeholder="+91 98251 44520"
+                  placeholder="+91 93080 66552"
                 />
 
                 <Input
                   label="WhatsApp Order Number"
                   value={settings.whatsapp}
                   onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
-                  placeholder="+91 98251 44520"
+                  placeholder="+91 93080 66552"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
-                  label="Surat Mill / Showroom Address"
+                  label="Darbhanga Showroom Address"
                   value={settings.address}
                   onChange={(e) => setSettings({ ...settings, address: e.target.value })}
-                  placeholder="Ring Road, Surat, Gujarat - 395002"
+                  placeholder="Kadirabad Road, Near Naka No. 2, Darbhanga, Bihar – 846004"
                 />
 
                 <Input

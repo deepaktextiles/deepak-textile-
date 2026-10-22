@@ -28,16 +28,16 @@ export const seedDatabase = async () => {
   // 2. Settings & Banner
   await Setting.create({
     companyName: "Deepak Textiles",
-    tagline: "Premium Textiles. Trusted Wholesale Supply.",
-    bannerTitle: "Premium Textiles. Trusted Wholesale Supply.",
+    tagline: "Clothing & Fabric Wholesaler • Estd. 2001 (Darbhanga, Bihar)",
+    bannerTitle: "Deepak Textiles — Darbhanga",
     bannerSubtitle:
-      "Quality fabrics and fashion collections for retailers, resellers and bulk buyers across India. Direct Surat mill rates.",
+      "Wholesale Designer Sarees, Suit Pieces, Shirting & Suiting, and Lehenga collections for retailers, resellers, and bulk buyers across Bihar & India.",
     bannerImage:
       "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=2000&q=80",
-    phone: "+91 98251 44520",
-    whatsappNumber: "+91 98251 44520",
-    email: "sales@deepaktextiles.com",
-    address: "Plot 104-108, Millenium Textile Market, Ring Road, Surat, Gujarat 395002",
+    phone: "+91 93080 66552",
+    whatsappNumber: "+91 93080 66552",
+    email: "deepaktextiles7@gmail.com",
+    address: "5V7R+V63, Kadirabad Road, Near Naka No. 2, Banglagarh Colony, Mansaar Colony, Darbhanga, Bihar – 846004",
     gstNumber: "24AAACD1234F1Z8",
   });
 
@@ -94,12 +94,14 @@ export const seedDatabase = async () => {
       slug: "royal-banarasi-katan-silk-saree",
       sku: "DT-SAR-001",
       description:
-        "Hand-woven Banarasi Katan Silk Saree with heavy gold zari border and rich pallu. Sourced directly from our Surat weaving unit. Each piece accompanied by unstitched matching blouse piece.",
+        "Hand-woven Banarasi Katan Silk Saree with heavy gold zari border and rich pallu. Sourced directly from our wholesale weaving unit. Each piece accompanied by unstitched matching blouse piece.",
       shortDescription: "Pure Katan Silk with heavy contrast zari work. Standard wholesale lot of 10 sarees.",
       category: catMap["sarees"],
       images: [
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80",
-        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=900&q=80",
+        "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
+        "/images/selesproductsimages/869f376e-f235-4b78-824d-6899c1588dd3.avif",
+        "/images/selesproductsimages/c99af3a8-4de0-4934-9bd3-6412c605d0ac.avif",
+        "/images/selesproductsimages/f3382385-847b-4bfe-9f4e-04ec15d92fb8.avif",
       ],
       price: 4500,
       wholesalePrice: 2150,
@@ -121,7 +123,9 @@ export const seedDatabase = async () => {
       shortDescription: "Chanderi top + santoon bottom + printed dupatta. Lot of 15 sets.",
       category: catMap["dress-materials"],
       images: [
-        "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=900&q=80",
+        "/images/selesproductsimages/a3198247-d1d7-47e6-a99b-1e0d14f3ec33.avif",
+        "/images/selesproductsimages/74d77734-dbb6-4cbe-b8af-e057e719ea5d.avif",
+        "/images/selesproductsimages/1980c85d-cd71-4c64-9f1e-f545a1601d80.avif",
       ],
       price: 2400,
       wholesalePrice: 1050,
@@ -143,7 +147,9 @@ export const seedDatabase = async () => {
       shortDescription: "14kg Liva Rayon printed kurtis in assorted sizes. Factory direct pack of 20.",
       category: catMap["kurta-sets"],
       images: [
-        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=900&q=80",
+        "/images/selesproductsimages/4add71ea-fd79-47b5-8f73-75dd4f6829cd.avif",
+        "/images/selesproductsimages/1db7adea-a0bd-484d-b9ba-8f6d4064a653.avif",
+        "/images/selesproductsimages/ed94ff37-0778-4c5f-956e-f6e7632ec20a.avif",
       ],
       price: 1100,
       wholesalePrice: 420,
@@ -165,7 +171,8 @@ export const seedDatabase = async () => {
       shortDescription: "60s combed pure cotton fabric roll. Wholesale lot of 100 meters minimum.",
       category: catMap["fabrics"],
       images: [
-        "https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?auto=format&fit=crop&w=900&q=80",
+        "/images/selesproductsimages/b58da001-d913-4eb8-a7fd-d59f96d1a1fb.avif",
+        "/images/selesproductsimages/44260183-a811-4528-a8c3-097b4bf91ebb.avif",
       ],
       price: 220,
       wholesalePrice: 115,
@@ -187,7 +194,8 @@ export const seedDatabase = async () => {
       shortDescription: "Sheer organza tissue with intricate cutwork embroidery. MOQ 10 pieces.",
       category: catMap["sarees"],
       images: [
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80",
+        "/images/selesproductsimages/7bc3e582-f0d0-4032-8993-7e3d7b22cfa9.avif",
+        "/images/selesproductsimages/c103ca16-770d-4e39-a5c1-a99ac9107c2e.avif",
       ],
       price: 3600,
       wholesalePrice: 1650,
@@ -205,11 +213,12 @@ export const seedDatabase = async () => {
       slug: "pure-linen-slub-mens-kurta-fabric",
       sku: "DT-MEN-402",
       description:
-        "Breathable 100% natural linen slub fabric in contemporary pastel hues. Outstanding texture and comfort from our Surat looms.",
+        "Breathable 100% natural linen slub fabric in contemporary pastel hues. Outstanding texture and comfort from our looms.",
       shortDescription: "Natural linen slub shirting and kurta fabric. 50 meters minimum roll.",
       category: catMap["mens-wear"],
       images: [
-        "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=80",
+        "/images/selesproductsimages/4356516e-60b6-4ee7-80c6-20ced56be91e.avif",
+        "/images/selesproductsimages/63083d40-b817-4f44-ad71-e53409bf962a.avif",
       ],
       price: 490,
       wholesalePrice: 280,

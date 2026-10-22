@@ -11,9 +11,9 @@ export const TrendingBannerSlider = () => {
   const banners = [
     {
       id: 1,
-      image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1920&q=85",
+      image: "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
       title: "SILK SAREE SALE",
-      subtitle: "Exclusive Surat Mill Katan & Banarasi Lots",
+      subtitle: "Exclusive Darbhanga Wholesale Katan & Banarasi Lots",
       priceTag: "Starting ₹599/-",
       link: "/products?category=wholesale-sarees",
       btnText: "SHOP NOW",
@@ -21,7 +21,7 @@ export const TrendingBannerSlider = () => {
     },
     {
       id: 2,
-      image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1920&q=85",
+      image: "/images/selesproductsimages/a3198247-d1d7-47e6-a99b-1e0d14f3ec33.avif",
       title: "COTTON SUIT DHAMAKA",
       subtitle: "Pure Cambric Cotton & Chanderi 3-Piece Sets",
       priceTag: "Starting ₹450/-",
@@ -31,7 +31,7 @@ export const TrendingBannerSlider = () => {
     },
     {
       id: 3,
-      image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1920&q=85",
+      image: "/images/selesproductsimages/4add71ea-fd79-47b5-8f73-75dd4f6829cd.avif",
       title: "DESIGNER KURTI LOTS",
       subtitle: "Ready-to-Ship Pant-Dupatta Sets for Retailers",
       priceTag: "Starting ₹299/-",
@@ -41,7 +41,7 @@ export const TrendingBannerSlider = () => {
     },
     {
       id: 4,
-      image: "https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&w=1920&q=85",
+      image: "/images/selesproductsimages/7bc3e582-f0d0-4032-8993-7e3d7b22cfa9.avif",
       title: "WEDDING LEHENGA FEST",
       subtitle: "Semi-Stitched Bridal & Partywear Collection",
       priceTag: "Starting ₹1,299/-",

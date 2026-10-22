@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { Phone, MessageCircle, Mail, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
+import { WhatsAppIcon } from "../ui/WhatsAppIcon";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -54,15 +55,16 @@ export const Footer = () => {
               </span>
             </div>
             <p className="text-xs text-gray-600 leading-relaxed">
-              Leading Surat-based manufacturer and wholesale supplier of premium Sarees, Salwar Suits, Kurti Sets, and unstitched dress materials. Serving over 5,000+ retail stores across India.
+              Leading Darbhanga-based clothing & fabric wholesaler established in 2001. Supplying bulk Designer Sarees, Suit Pieces & Salwar Suits, Shirting & Suiting, and Lehenga & Readymade collections for retailers, resellers, and boutique owners across Bihar & India.
             </p>
             <div className="text-xs text-gold-700 font-bold">
-              GSTIN: 24AAACD1234F1Z5 • Surat, Gujarat
+              Kadirabad Road, Naka No. 2, Darbhanga, Bihar – 846004
             </div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-900">
               <span className="font-bold text-amber-500 flex items-center gap-0.5">
-                4.9 ★★★★★
+                4.7 ★★★★★
               </span>
+              <span className="text-gray-500">Google Verified Wholesaler</span>
               <span className="text-gray-300">|</span>
               <span className="text-[11px] text-gray-600 font-medium">1,480+ Google Reviews</span>
             </div>
@@ -124,36 +126,41 @@ export const Footer = () => {
           {/* Direct Sales Desk Contact */}
           <motion.div variants={itemVariants} className="space-y-3.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900 mb-4">
-              Surat Wholesale Desk
+              Darbhanga Wholesale Desk
             </h4>
             <div className="flex items-start gap-2.5 text-xs text-gray-700">
               <MapPin className="w-4 h-4 text-gold-600 shrink-0 mt-0.5" />
               <span>
-                Shop 204-206, 2nd Floor, Radharaman Textile Market, Ring Road, Surat, Gujarat - 395002
+                5V7R+V63, Kadirabad Road, Near Naka No. 2, Banglagarh Colony, Darbhanga, Bihar – 846004
               </span>
             </div>
             <div className="flex items-center gap-2.5 text-xs text-gray-700">
               <Phone className="w-4 h-4 text-gold-600 shrink-0" />
-              <a href="tel:+919825144520" className="hover:text-navy-950 font-medium transition-colors">
-                +91 98251 44520 / +91 94268 11200
+              <a href="tel:+919308066552" className="hover:text-navy-950 font-medium transition-colors">
+                +91 93080 66552 / +91 85446 63335
               </a>
             </div>
             <div className="flex items-center gap-2.5 text-xs">
-              <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center shrink-0">
+                <WhatsAppIcon className="w-full h-full" color="#25D366" />
+              </div>
               <a
-                href="https://wa.me/919825144520?text=Hello%20Deepak%20Textiles,%20please%20send%20wholesale%20catalogs."
+                href="https://wa.me/919308066552?text=Hello%20Deepak%20Textiles,%20please%20send%20wholesale%20catalogs."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-700 hover:text-emerald-800 font-semibold hover:underline"
               >
-                +91 98251 44520 (WhatsApp Order Desk)
+                +91 93080 66552 (WhatsApp Wholesale)
               </a>
             </div>
             <div className="flex items-center gap-2.5 text-xs text-gray-700">
               <Mail className="w-4 h-4 text-gold-600 shrink-0" />
-              <a href="mailto:info@deepaktextiles.com" className="hover:text-navy-950 font-medium transition-colors">
-                info@deepaktextiles.com
+              <a href="mailto:deepaktextiles7@gmail.com" className="hover:text-navy-950 font-medium transition-colors">
+                deepaktextiles7@gmail.com
               </a>
+            </div>
+            <div className="text-[11px] text-gray-500 pt-1">
+              Mon–Sat: 10 AM – 9 PM • Sun: 10 AM – 4 PM
             </div>
           </motion.div>
         </motion.div>
@@ -163,9 +170,9 @@ export const Footer = () => {
           variants={itemVariants}
           className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500"
         >
-          <p>© {currentYear} Deepak Textiles. All Rights Reserved. Surat Wholesale B2B Portal.</p>
+          <p>© {currentYear} Deepak Textiles. All Rights Reserved. Darbhanga Wholesale B2B Portal.</p>
           <div className="flex items-center gap-4 text-gray-600 font-medium">
-            <span>Minimum Order: Wholesale Lots Only</span>
+            <span>Wholesale & Bulk Orders Only</span>
           </div>
         </motion.div>
       </div>
