@@ -15,11 +15,11 @@ export const Button = ({
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-semibold transition-all duration-200 rounded-md focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed select-none";
+    "inline-flex items-center justify-center font-semibold font-poppins transition-all duration-200 rounded-md focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed select-none";
 
   const variants = {
     primary:
-      "bg-gold-500 hover:bg-gold-600 text-navy-500 shadow-sm hover:shadow-gold active:scale-[0.99]",
+      "bg-[#C00000] hover:bg-[#A80000] text-white shadow-sm active:scale-[0.99]",
     navy:
       "bg-navy-500 hover:bg-navy-600 text-white shadow-sm active:scale-[0.99]",
     whatsapp:
@@ -27,7 +27,7 @@ export const Button = ({
     outline:
       "border border-border bg-white text-txt-primary hover:bg-sitebg hover:border-navy-300",
     "gold-outline":
-      "border border-gold-500 bg-transparent text-gold-500 hover:bg-gold-500 hover:text-navy-500",
+      "border border-[#C00000] bg-transparent text-[#C00000] hover:bg-[#C00000] hover:text-white",
     danger: "bg-danger text-white hover:bg-red-700",
   };
 

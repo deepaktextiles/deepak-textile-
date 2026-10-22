@@ -135,7 +135,7 @@ export const HeroSlider = ({ customSettings }) => {
                   <div className="flex flex-wrap items-center gap-3.5 pt-2">
                     <Link
                       href={slide.link}
-                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 font-extrabold text-xs sm:text-sm tracking-wide uppercase shadow-lg hover:shadow-gold-500/30 transition-all transform hover:-translate-y-0.5"
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-[#C00000] hover:bg-[#A80000] text-white font-extrabold text-xs sm:text-sm tracking-wide uppercase transition-all transform hover:-translate-y-0.5 font-poppins"
                     >
                       <span>{slide.btnText}</span>
                       <ArrowRight className="w-4 h-4" />

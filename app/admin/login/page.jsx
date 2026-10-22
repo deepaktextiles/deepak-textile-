@@ -12,8 +12,12 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { login, isAuthenticated, loading: authLoading } = useAdmin();
 
-  const [email, setEmail] = useState("admin@deepaktextiles.com");
-  const [password, setPassword] = useState("Admin@123");
+  const [email, setEmail] = useState(
+    process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@deepaktextiles.com"
+  );
+  const [password, setPassword] = useState(
+    process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "Admin@123"
+  );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -43,30 +47,28 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#0B1528] flex items-center justify-center px-4 py-12 select-none">
       <div className="max-w-md w-full space-y-6">
         {/* Brand header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-xl bg-gold-500 text-navy-500 font-black text-2xl flex items-center justify-center mx-auto shadow-md">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-navy-950 font-black text-2xl flex items-center justify-center mx-auto shadow-xl shadow-amber-500/25">
             DT
           </div>
-          <h1 className="text-2xl font-heading font-extrabold text-navy-500">
-            Deepak Textiles — Admin Portal
+          <h1 className="text-2xl font-heading font-extrabold text-white tracking-wide">
+            Deepak Textiles Control Center
           </h1>
-          <p className="text-xs text-txt-secondary">
-            Authorized wholesale administration access only.
+          <p className="text-xs text-amber-400/90 font-semibold uppercase tracking-wider">
+            Wholesale Administrator Portal
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl border border-border p-6 sm:p-8 shadow-card space-y-5">
-          <div className="flex items-center gap-2 p-3 rounded-lg bg-gold-50 border border-gold-200 text-xs text-gold-900">
-            <ShieldCheck className="w-4 h-4 text-gold-700 shrink-0" />
-            <span>
-              Default Login: <strong>admin@deepaktextiles.com</strong> / <strong>Admin@123</strong>
-            </span>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-2xl space-y-5">
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+            <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>Authorized access only. Session protected by JWT.</span>
           </div>
-
+          
           {error && (
             <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">
               <AlertCircle className="w-4 h-4 shrink-0" />
@@ -99,7 +101,7 @@ export default function AdminLoginPage() {
               type="submit"
               variant="primary"
               size="lg"
-              className="w-full font-bold bg-gold-500 hover:bg-gold-400 text-navy-500 mt-2"
+              className="w-full font-bold bg-[#C00000] hover:bg-[#A80000] text-white mt-2"
               isLoading={submitting}
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
@@ -108,7 +110,7 @@ export default function AdminLoginPage() {
           </form>
 
           <div className="text-center pt-2">
-            <Link href="/" className="text-xs text-txt-secondary hover:text-navy-500">
+            <Link href="/" className="text-xs text-txt-secondary hover:text-navy-900 font-medium">
               ← Return to Wholesale Catalog
             </Link>
           </div>

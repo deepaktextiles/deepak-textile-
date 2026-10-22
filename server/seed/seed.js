@@ -17,13 +17,17 @@ export const seedDatabase = async () => {
   console.log("[Seed] Initializing Deepak Textiles wholesale catalog...");
 
   // 1. Admin
+  const adminName = process.env.ADMIN_NAME || "Deepak Agarwal (Owner)";
+  const adminEmail = (process.env.ADMIN_EMAIL || "admin@deepaktextiles.com").toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD || "Admin@123";
+
   await Admin.create({
-    name: "Deepak Agarwal (Owner)",
-    email: "admin@deepaktextiles.com",
-    password: "Admin@123",
+    name: adminName,
+    email: adminEmail,
+    password: adminPassword,
     role: "admin",
   });
-  console.log("[Seed] Admin created: admin@deepaktextiles.com / Admin@123");
+  console.log(`[Seed] Admin created: ${adminEmail} / ${adminPassword}`);
 
   // 2. Settings & Banner
   await Setting.create({

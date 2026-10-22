@@ -99,7 +99,7 @@ export const Header = () => {
             <nav className="hidden md:flex items-center gap-1 lg:gap-2">
               <Link
                 href="/"
-                className={`px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                className={`px-3 py-2 text-sm font-semibold transition-all ${
                   pathname === "/"
                     ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
                     : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
@@ -115,7 +115,7 @@ export const Header = () => {
               >
                 <button
                   onClick={() => setMegaMenuOpen((prev) => !prev)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                  className={`inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold transition-all ${
                     megaMenuOpen || pathname.startsWith("/categories") || pathname.includes("category=")
                       ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
                       : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
@@ -134,7 +134,7 @@ export const Header = () => {
 
               <Link
                 href="/products"
-                className={`px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                className={`px-3 py-2 text-sm font-semibold transition-all ${
                   pathname === "/products"
                     ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
                     : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
@@ -145,7 +145,7 @@ export const Header = () => {
 
               <Link
                 href="/about"
-                className={`px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                className={`px-3 py-2 text-sm font-semibold transition-all ${
                   pathname === "/about"
                     ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
                     : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
@@ -156,7 +156,7 @@ export const Header = () => {
 
               <Link
                 href="/contact"
-                className={`px-3 py-2 rounded-md text-sm font-semibold transition-all ${
+                className={`px-3 py-2 text-sm font-semibold transition-all ${
                   pathname === "/contact"
                     ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
                     : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"

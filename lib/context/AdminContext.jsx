@@ -12,18 +12,44 @@ export const AdminProvider = ({ children }) => {
   useEffect(() => {
     const checkAdmin = async () => {
       const token = typeof window !== "undefined" ? localStorage.getItem("dt_admin_token") : null;
+      const cachedProfile = typeof window !== "undefined" ? localStorage.getItem("dt_admin_profile") : null;
+
+      if (token && cachedProfile) {
+        try {
+          setAdmin(JSON.parse(cachedProfile));
+        } catch {
+          // Ignore json parse error
+        }
+      }
+
       if (token) {
         try {
           const res = await adminApi.getMe();
           if (res.success && res.admin) {
             setAdmin(res.admin);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("dt_admin_profile", JSON.stringify(res.admin));
+            }
           } else {
             removeAdminToken();
+            if (typeof window !== "undefined") {
+              localStorage.removeItem("dt_admin_profile");
+            }
+            setAdmin(null);
           }
-        } catch {
-          removeAdminToken();
-          setAdmin(null);
+        } catch (err) {
+          // If strictly unauthenticated (401/403), remove token
+          const msg = err?.message || "";
+          if (msg.includes("401") || msg.includes("403") || msg.includes("expired") || msg.includes("Invalid")) {
+            removeAdminToken();
+            if (typeof window !== "undefined") {
+              localStorage.removeItem("dt_admin_profile");
+            }
+            setAdmin(null);
+          }
         }
+      } else {
+        setAdmin(null);
       }
       setLoading(false);
     };
@@ -35,6 +61,9 @@ export const AdminProvider = ({ children }) => {
     if (res.success && res.token) {
       setAdminToken(res.token);
       setAdmin(res.admin);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("dt_admin_profile", JSON.stringify(res.admin));
+      }
       return true;
     }
     return false;
@@ -42,6 +71,9 @@ export const AdminProvider = ({ children }) => {
 
   const logout = () => {
     removeAdminToken();
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("dt_admin_profile");
+    }
     setAdmin(null);
   };
 

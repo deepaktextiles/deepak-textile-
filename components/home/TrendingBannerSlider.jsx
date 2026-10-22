@@ -1,12 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const TrendingBannerSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+
+  const startXRef = useRef(0);
+  const isDragActiveRef = useRef(false);
+  const hasMovedRef = useRef(false);
+  const containerRef = useRef(null);
 
   const banners = [
     {
@@ -43,14 +50,98 @@ export const TrendingBannerSlider = () => {
     setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
   }, [banners.length]);
 
-  // Auto-slide every 4.5 seconds (pauses on hover)
+  // Auto-slide every 4.5 seconds (pauses on hover or during drag)
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || isDragging) return;
     const interval = setInterval(() => {
       nextSlide();
     }, 4500);
     return () => clearInterval(interval);
-  }, [isPaused, nextSlide]);
+  }, [isPaused, isDragging, nextSlide]);
+
+  // Drag start (Mouse / Touch)
+  const handleDragStart = (clientX) => {
+    startXRef.current = clientX;
+    isDragActiveRef.current = true;
+    hasMovedRef.current = false;
+    setIsDragging(true);
+    setIsPaused(true);
+  };
+
+  // Drag move (Mouse / Touch)
+  const handleDragMove = (clientX) => {
+    if (!isDragActiveRef.current) return;
+    const diff = clientX - startXRef.current;
+    if (Math.abs(diff) > 5) {
+      hasMovedRef.current = true;
+    }
+    setDragOffset(diff);
+  };
+
+  // Drag end (Mouse / Touch)
+  const handleDragEnd = () => {
+    if (!isDragActiveRef.current) return;
+    isDragActiveRef.current = false;
+    setIsDragging(false);
+
+    const threshold = 50; // Drag threshold to trigger slide change
+    if (dragOffset < -threshold) {
+      nextSlide();
+    } else if (dragOffset > threshold) {
+      prevSlide();
+    }
+
+    setDragOffset(0);
+    setTimeout(() => {
+      hasMovedRef.current = false;
+    }, 50);
+  };
+
+  // Mouse Handlers
+  const handleMouseDown = (e) => {
+    if (e.button !== 0) return; // Only left click
+    handleDragStart(e.clientX);
+  };
+
+  const handleMouseMove = (e) => {
+    handleDragMove(e.clientX);
+  };
+
+  const handleMouseUp = () => {
+    handleDragEnd();
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragActiveRef.current) {
+      handleDragEnd();
+    }
+    setIsPaused(false);
+  };
+
+  // Touch Handlers
+  const handleTouchStart = (e) => {
+    if (e.touches.length > 0) {
+      handleDragStart(e.touches[0].clientX);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length > 0) {
+      handleDragMove(e.touches[0].clientX);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    handleDragEnd();
+  };
+
+  // Prevent link navigation if the user was dragging
+  const handleLinkClick = (e) => {
+    if (hasMovedRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
@@ -62,39 +153,63 @@ export const TrendingBannerSlider = () => {
         <div className="w-16 h-1 bg-gold-500 mx-auto mt-2.5 rounded-full" />
       </div>
 
-      {/* Wide Rounded Image Slider Container - 100% Clean Image, No Overlay, No Text */}
+      {/* Wide Rounded Image Slider Container with Mouse Drag & Touch Swipe */}
       <div
-        className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg border border-gray-200 aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[280px] md:min-h-[340px] select-none bg-navy-950 group"
+        ref={containerRef}
         onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
+        onMouseLeave={handleMouseLeave}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className={`relative w-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg border border-gray-200 aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[280px] md:min-h-[340px] select-none bg-navy-950 group ${
+          isDragging ? "cursor-grabbing" : "cursor-grab"
+        }`}
+        style={{ touchAction: "pan-y" }}
       >
-        {banners.map((banner, index) => {
-          const isActive = index === currentSlide;
-          return (
+        {/* Carousel Track */}
+        <div
+          className="flex h-full w-full"
+          style={{
+            transform: `translateX(calc(-${currentSlide * 100}% + ${dragOffset}px))`,
+            transition: isDragging
+              ? "none"
+              : "transform 500ms cubic-bezier(0.25, 1, 0.5, 1)",
+          }}
+        >
+          {banners.map((banner) => (
             <div
               key={banner.id}
-              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-              }`}
+              className="min-w-full w-full h-full shrink-0 relative select-none"
             >
-              {/* Full Clean Banner Image Link without any overlay or text */}
-              <Link href={banner.link} className="block w-full h-full relative">
+              <Link
+                href={banner.link}
+                onClick={handleLinkClick}
+                draggable={false}
+                className="block w-full h-full relative select-none pointer-events-auto"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={banner.image}
                   alt={banner.title}
-                  className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                  draggable={false}
+                  className="w-full h-full object-cover object-center pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-[1.01]"
                 />
               </Link>
             </div>
-          );
-        })}
+          ))}
+        </div>
 
         {/* Prev / Next Chevrons */}
         <button
           type="button"
-          onClick={prevSlide}
-          className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-md"
+          onClick={(e) => {
+            e.stopPropagation();
+            prevSlide();
+          }}
+          className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-md pointer-events-auto"
           aria-label="Previous Slide"
         >
           <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -102,20 +217,26 @@ export const TrendingBannerSlider = () => {
 
         <button
           type="button"
-          onClick={nextSlide}
-          className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-md"
+          onClick={(e) => {
+            e.stopPropagation();
+            nextSlide();
+          }}
+          className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-md pointer-events-auto"
           aria-label="Next Slide"
         >
           <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
 
         {/* Bottom Slide Indicators */}
-        <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
+        <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 pointer-events-auto">
           {banners.map((_, idx) => (
             <button
               key={idx}
               type="button"
-              onClick={() => setCurrentSlide(idx)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentSlide(idx);
+              }}
               className={`transition-all duration-300 rounded-full h-2 ${
                 currentSlide === idx
                   ? "w-7 sm:w-8 bg-gold-400 shadow-sm"

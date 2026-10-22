@@ -1,13 +1,12 @@
 import "./globals.css";
-import { Nunito_Sans } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { AdminProvider } from "../lib/context/AdminContext";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
-import { WhatsAppButton } from "../components/layout/WhatsAppButton";
+import { StoreLayout } from "../components/layout/StoreLayout";
 
-const nunitoSans = Nunito_Sans({
+const poppins = Poppins({
   subsets: ["latin"],
-  variable: "--font-nunito-sans",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
   display: "swap",
 });
 
@@ -20,21 +19,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={nunitoSans.variable}>
+    <html lang="en" className={poppins.variable}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className={`${nunitoSans.className} min-h-screen flex flex-col bg-sitebg text-txt-primary`}>
+      <body className={`${poppins.className} min-h-screen flex flex-col bg-sitebg text-txt-primary font-poppins`}>
         <AdminProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <WhatsAppButton />
+          <StoreLayout>{children}</StoreLayout>
         </AdminProvider>
       </body>
     </html>

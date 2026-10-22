@@ -11,6 +11,7 @@ import { TrendingBannerSlider } from "../components/home/TrendingBannerSlider";
 import { SareeStoreBento } from "../components/home/SareeStoreBento";
 import { BestSellerMensSlider } from "../components/home/BestSellerMensSlider";
 import { GoogleReviewsSection } from "../components/home/GoogleReviewsSection";
+import { WhyPartnerSection } from "../components/home/WhyPartnerSection";
 
 export default function HomePage() {
   const [settings, setSettings] = useState({
@@ -157,59 +158,7 @@ export default function HomePage() {
       <BestSellerMensSlider />
 
       {/* 7. SURAT WHOLESALE ADVANTAGE SECTION */}
-      <section className="bg-white border-y border-border py-7 sm:py-16">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-            <span className="text-xs font-bold text-gold-700 uppercase tracking-widest">
-              Why Partner With Deepak Textiles
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-500 mt-1">
-              Direct Textile Sourcing from Surat
-            </h2>
-            <p className="text-xs sm:text-sm text-txt-secondary mt-2">
-              Whether you run a retail shop, showroom, boutique, or online clothing store, we supply high-demand designs at the best wholesale rates.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-xl border border-border bg-sitebg hover:border-gold-400 transition-colors">
-              <div className="w-12 h-12 rounded-lg bg-navy-500 text-gold-400 flex items-center justify-center font-bold text-xl mb-4">
-                01
-              </div>
-              <h3 className="font-heading font-bold text-base text-navy-500 mb-2">
-                Factory Mill Direct Rates
-              </h3>
-              <p className="text-xs text-txt-secondary leading-relaxed">
-                By cutting out distributors, broker commissions, and third-party margins, you get bottom-line Surat mill rates directly from our manufacturing floors.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl border border-border bg-sitebg hover:border-gold-400 transition-colors">
-              <div className="w-12 h-12 rounded-lg bg-navy-500 text-gold-400 flex items-center justify-center font-bold text-xl mb-4">
-                02
-              </div>
-              <h3 className="font-heading font-bold text-base text-navy-500 mb-2">
-                High-Volume Stock Ready for Dispatch
-              </h3>
-              <p className="text-xs text-txt-secondary leading-relaxed">
-                Huge inventory ready in our Surat warehouse. Daily parcel packing and tie-ups with leading transport agencies ensure fast delivery across all Indian states.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl border border-border bg-sitebg hover:border-gold-400 transition-colors">
-              <div className="w-12 h-12 rounded-lg bg-navy-500 text-gold-400 flex items-center justify-center font-bold text-xl mb-4">
-                03
-              </div>
-              <h3 className="font-heading font-bold text-base text-navy-500 mb-2">
-                WhatsApp Video Calling & Samples
-              </h3>
-              <p className="text-xs text-txt-secondary leading-relaxed">
-                Cannot travel to Surat? No problem. Connect with our sales manager on WhatsApp video call to inspect fabric texture, border zari, and print finishes in real time.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <WhyPartnerSection whatsappNumber={whatsappCleanNumber} />
 
       {/* 8. GOOGLE REVIEWS & RATING SECTION */}
       <GoogleReviewsSection />

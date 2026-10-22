@@ -21,6 +21,7 @@ import {
   Eye,
 } from "lucide-react";
 import { useAdmin } from "../../lib/context/AdminContext";
+import { useAdminTab } from "../../lib/context/AdminTabContext";
 import { settingsApi, productsApi, categoriesApi, enquiriesApi } from "../../services/api";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
@@ -31,8 +32,7 @@ import { Modal } from "../../components/ui/Modal";
 export default function AdminDashboardPage() {
   const router = useRouter();
   const { admin, isAuthenticated, loading: authLoading, logout } = useAdmin();
-
-  const [activeTab, setActiveTab] = useState("banner"); // 'banner', 'products', 'categories', 'enquiries'
+  const { activeTab, setActiveTab } = useAdminTab();
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
