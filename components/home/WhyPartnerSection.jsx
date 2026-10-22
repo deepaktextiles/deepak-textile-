@@ -64,7 +64,7 @@ export const WhyPartnerSection = ({ whatsappNumber = "919308066552" }) => {
         "Direct fabric sample dispatch",
         "Instant catalog PDF on phone",
       ],
-      actionText: "Book Video Call",
+      actionText: "Book Now (Video Call)",
       actionLink: `https://wa.me/${whatsappNumber}?text=Hello%20Deepak%20Textiles,%20I%20want%20to%20book%20a%20WhatsApp%20video%20call%20to%20inspect%20wholesale%20stock.`,
       isExternal: true,
     },
@@ -176,10 +176,32 @@ export const WhyPartnerSection = ({ whatsappNumber = "919308066552" }) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 shrink-0">
+            <a
+              href={`https://wa.me/${whatsappNumber}?text=Hello%20Deepak%20Textiles,%20I%20want%20to%20book%20a%20wholesale%20order.`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                padding: "18px",
+                fontWeight: 400,
+                borderRadius: "4px",
+                letterSpacing: "0.5px",
+                fontSize: "14px",
+              }}
+              className="bg-[#C00000] hover:bg-[#A80000] text-white transition-all inline-flex items-center justify-center font-poppins shadow-md text-center leading-none"
+            >
+              Book Now
+            </a>
             <Link
               href="/contact"
-              className="px-4 py-2.5 rounded-xl bg-[#C00000] hover:bg-[#A80000] text-white font-bold text-xs shadow-md transition-colors"
+              style={{
+                padding: "18px",
+                fontWeight: 400,
+                borderRadius: "4px",
+                letterSpacing: "0.5px",
+                fontSize: "14px",
+              }}
+              className="bg-[#C00000] hover:bg-[#A80000] text-white transition-all inline-flex items-center justify-center font-poppins shadow-md text-center leading-none"
             >
               Contact Wholesale Desk
             </Link>

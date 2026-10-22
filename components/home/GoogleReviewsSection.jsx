@@ -94,8 +94,29 @@ const reviewsData = [
   },
 ];
 
+import { reviewsApi } from "../../services/api";
+
 export const GoogleReviewsSection = () => {
+  const [reviews, setReviews] = React.useState(reviewsData);
   const scrollContainerRef = useRef(null);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    async function fetchReviews() {
+      try {
+        const res = await reviewsApi.getAll({ activeOnly: "true" });
+        if (isMounted && res.success && Array.isArray(res.reviews) && res.reviews.length > 0) {
+          setReviews(res.reviews);
+        }
+      } catch (err) {
+        // Fallback to default reviewsData
+      }
+    }
+    fetchReviews();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const scroll = (direction) => {
     if (scrollContainerRef.current) {
@@ -174,9 +195,11 @@ export const GoogleReviewsSection = () => {
           ref={scrollContainerRef}
           className="flex gap-4 sm:gap-6 overflow-x-auto pt-8 pb-4 scrollbar-none snap-x snap-mandatory"
         >
-          {reviewsData.map((review) => (
+          {reviews.map((review) => {
+            const initial = review.initial || (review.name ? review.name.charAt(0).toUpperCase() : "V");
+            return (
             <div
-              key={review.id}
+              key={review._id || review.id}
               className="w-[85vw] sm:w-[360px] lg:w-[380px] shrink-0 snap-start bg-white rounded-xl border border-gray-200 p-5 sm:p-6 flex flex-col justify-between hover:border-gold-500 transition-colors"
             >
               <div className="space-y-4">
@@ -184,9 +207,9 @@ export const GoogleReviewsSection = () => {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-10 h-10 rounded-full ${review.avatarBg} text-white flex items-center justify-center font-bold text-sm shrink-0`}
+                      className={`w-10 h-10 rounded-full ${review.avatarBg || "bg-[#C00000]"} text-white flex items-center justify-center font-bold text-sm shrink-0`}
                     >
-                      {review.initial}
+                      {initial}
                     </div>
                     <div>
                       <h4 className="font-heading font-bold text-sm text-navy-950 leading-tight">
@@ -229,7 +252,8 @@ export const GoogleReviewsSection = () => {
                 <span>Verified Surat Mill Direct Buyer</span>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Bottom Trust Highlights */}

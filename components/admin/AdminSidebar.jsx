@@ -15,6 +15,7 @@ import {
   X,
   ChevronRight,
   Store,
+  Star,
 } from "lucide-react";
 import { useAdmin } from "../../lib/context/AdminContext";
 import { useAdminTab } from "../../lib/context/AdminTabContext";
@@ -27,9 +28,9 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }) {
   const navItems = [
     {
       id: "banner",
-      label: "Hero Banner & Store",
+      label: "Hero & Trending Banners",
       icon: ImageIcon,
-      description: "Homepage hero, phone & address",
+      description: "Homepage carousels & sliders",
     },
     {
       id: "products",
@@ -41,13 +42,25 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }) {
       id: "categories",
       label: "Categories",
       icon: Layers,
-      description: "Sarees, Suits, Fabrics",
+      description: "Sarees, Suits, Kurtis, Fabrics",
     },
     {
       id: "enquiries",
       label: "Buyer Inquiries",
       icon: Inbox,
       description: "Wholesale quote requests",
+    },
+    {
+      id: "reviews",
+      label: "Customer Reviews",
+      icon: Star,
+      description: "Google reviews & testimonials",
+    },
+    {
+      id: "settings",
+      label: "Showroom & Settings",
+      icon: Store,
+      description: "Phone, WhatsApp, GSTIN, Address",
     },
   ];
 

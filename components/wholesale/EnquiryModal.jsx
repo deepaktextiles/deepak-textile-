@@ -137,9 +137,20 @@ export const EnquiryModal = ({ isOpen, onClose, product = null }) => {
             <Button type="button" variant="outline" size="sm" onClick={handleClose}>
               Cancel
             </Button>
-            <Button type="submit" variant="primary" size="sm" isLoading={loading}>
-              Submit Inquiry
-            </Button>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                padding: "14px 22px",
+                fontWeight: 400,
+                borderRadius: "4px",
+                letterSpacing: "0.5px",
+                fontSize: "14px",
+              }}
+              className="bg-[#C00000] hover:bg-[#A80000] text-white transition-all font-poppins shadow-sm disabled:opacity-50"
+            >
+              {loading ? "Submitting..." : "Book Wholesale Order"}
+            </button>
           </div>
         </form>
       )}

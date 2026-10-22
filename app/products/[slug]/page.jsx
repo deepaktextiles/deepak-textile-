@@ -447,39 +447,56 @@ Please send available video clips of this lot and dispatch details.`
                 rel="noopener noreferrer"
                 className="block w-full"
               >
-                <Button
-                  variant="whatsapp"
-                  size="lg"
-                  className="w-full font-bold py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm"
-                  leftIcon={
-                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center p-0.5 shrink-0 shadow-xs">
-                      <Image
-                        src={whatsapp}
-                        alt="WhatsApp"
-                        width={20}
-                        height={20}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                  }
+                <button
+                  type="button"
+                  style={{
+                    padding: "18px",
+                    fontWeight: 400,
+                    borderRadius: "4px",
+                    letterSpacing: "0.5px",
+                    fontSize: "14px",
+                  }}
+                  className="w-full bg-[#C00000] hover:bg-[#A80000] text-white transition-all inline-flex items-center justify-center gap-2.5 font-poppins shadow-md leading-none select-none"
                 >
-                  Order on WhatsApp (Wholesale Direct)
-                </Button>
+                  <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center p-0.5 shrink-0 shadow-xs">
+                    <Image
+                      src={whatsapp}
+                      alt="WhatsApp"
+                      width={18}
+                      height={18}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <span>Book Now on WhatsApp (Wholesale Direct)</span>
+                </button>
               </a>
 
               <div className="grid grid-cols-2 gap-2.5">
-                <Button
-                  variant="outline"
-                  size="md"
+                <button
+                  type="button"
                   onClick={() => setIsModalOpen(true)}
-                  className="w-full font-bold border-gray-300 text-gray-800 hover:bg-gray-50"
-                  leftIcon={<FileText className="w-4 h-4" />}
+                  style={{
+                    padding: "14px 18px",
+                    fontWeight: 400,
+                    borderRadius: "4px",
+                    letterSpacing: "0.5px",
+                    fontSize: "14px",
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2 border border-gray-300 text-gray-800 hover:bg-gray-50 transition-colors font-poppins leading-none select-none"
                 >
-                  Request Quote
-                </Button>
+                  <FileText className="w-4 h-4 text-gray-600" />
+                  <span>Request Quote</span>
+                </button>
                 <a
                   href="tel:+919308066552"
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-navy-950 hover:bg-navy-900 text-white text-xs font-bold transition-colors"
+                  style={{
+                    padding: "14px 18px",
+                    fontWeight: 400,
+                    borderRadius: "4px",
+                    letterSpacing: "0.5px",
+                    fontSize: "14px",
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-navy-950 hover:bg-navy-900 text-white transition-colors font-poppins leading-none select-none"
                 >
                   <Phone className="w-4 h-4 text-gold-400" />
                   <span>Call Sales Desk</span>

@@ -1,4 +1,25 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+function getApiBaseUrl() {
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname;
+    const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+    const envUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    // If running on a live domain like deepaktextile.in, always use same-origin /api
+    // to avoid Mixed Content (HTTPS -> HTTP) and localhost connection failures!
+    if (!isLocalhost) {
+      if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1")) {
+        return "/api";
+      }
+      return envUrl;
+    }
+
+    return envUrl || "/api";
+  }
+
+  // Server-side (Node.js / SSR)
+  const backend = process.env.BACKEND_API_URL || "http://127.0.0.1:5000";
+  return `${backend}/api`;
+}
 
 const getToken = () => {
   if (typeof window !== "undefined") {
@@ -31,7 +52,9 @@ async function apiRequest(endpoint, options = {}) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const url = `${API_BASE_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+  const baseUrl = getApiBaseUrl().replace(/\/+$/, "");
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = `${baseUrl}${cleanEndpoint}`;
 
   try {
     const res = await fetch(url, {
@@ -131,7 +154,7 @@ export const enquiriesApi = {
     }),
 };
 
-// Settings & Banners
+// Settings
 export const settingsApi = {
   get: () => apiRequest("/settings"),
   update: (data) =>
@@ -140,3 +163,66 @@ export const settingsApi = {
       body: JSON.stringify(data),
     }),
 };
+
+// Banners CRUD (Hero & Trending)
+export const bannersApi = {
+  getAll: (params = {}) => {
+    const query = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== "") query.append(k, String(v));
+    });
+    const qs = query.toString();
+    return apiRequest(`/banners${qs ? `?${qs}` : ""}`);
+  },
+  getById: (id) => apiRequest(`/banners/${id}`),
+  create: (data) =>
+    apiRequest("/banners", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  update: (id, data) =>
+    apiRequest(`/banners/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  delete: (id) =>
+    apiRequest(`/banners/${id}`, {
+      method: "DELETE",
+    }),
+};
+
+// Customer Reviews & Testimonials CRUD
+export const reviewsApi = {
+  getAll: (params = {}) => {
+    const query = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== "") query.append(k, String(v));
+    });
+    const qs = query.toString();
+    return apiRequest(`/reviews${qs ? `?${qs}` : ""}`);
+  },
+  create: (data) =>
+    apiRequest("/reviews", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  update: (id, data) =>
+    apiRequest(`/reviews/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  delete: (id) =>
+    apiRequest(`/reviews/${id}`, {
+      method: "DELETE",
+    }),
+};
+
+// File Upload API (From Device)
+export const uploadApi = {
+  uploadImage: (base64Data, filename) =>
+    apiRequest("/upload", {
+      method: "POST",
+      body: JSON.stringify({ image: base64Data, filename }),
+    }),
+};
+

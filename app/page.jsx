@@ -183,15 +183,29 @@ export default function HomePage() {
               href={`https://wa.me/${whatsappCleanNumber}?text=Hello%20Deepak%20Textiles,%20I%20want%20to%20order%20bulk%20wholesale%20stock.`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow transition-colors"
+              style={{
+                padding: "18px 24px",
+                fontWeight: 400,
+                borderRadius: "4px",
+                letterSpacing: "0.5px",
+                fontSize: "14px",
+              }}
+              className="inline-flex items-center justify-center gap-2 bg-[#C00000] hover:bg-[#A80000] text-white shadow transition-all font-poppins leading-none"
             >
               <MessageCircle className="w-5 h-5" />
-              <span>WhatsApp Us Now</span>
+              <span>Book Now on WhatsApp</span>
             </a>
 
             <a
               href={`tel:${settings.phone || "+919308066552"}`}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white hover:bg-gray-100 text-navy-500 font-bold text-sm shadow transition-colors"
+              style={{
+                padding: "18px 24px",
+                fontWeight: 400,
+                borderRadius: "4px",
+                letterSpacing: "0.5px",
+                fontSize: "14px",
+              }}
+              className="inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-navy-500 shadow transition-all font-poppins leading-none"
             >
               <Phone className="w-5 h-5" />
               <span>Call Sales Desk</span>

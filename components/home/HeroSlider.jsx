@@ -13,6 +13,7 @@ import {
   Layers,
   RotateCcw,
 } from "lucide-react";
+import { bannersApi } from "../../services/api.js";
 
 export const HeroSlider = ({ customSettings }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -69,7 +70,24 @@ export const HeroSlider = ({ customSettings }) => {
     },
   ];
 
-  const slides = defaultSlides;
+  const [slides, setSlides] = useState(defaultSlides);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const res = await bannersApi.getAll();
+        if (res.success && Array.isArray(res.banners) && res.banners.length > 0) {
+          const activeBanners = res.banners.filter((b) => b.active !== false);
+          if (activeBanners.length > 0) {
+            setSlides(activeBanners);
+          }
+        }
+      } catch (err) {
+        console.error("Could not load banners:", err);
+      }
+    };
+    fetchBanners();
+  }, []);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -103,7 +121,7 @@ export const HeroSlider = ({ customSettings }) => {
           const isActive = index === currentSlide;
           return (
             <div
-              key={slide.id}
+              key={slide._id || slide.id || index}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
                 isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
               }`}
@@ -113,59 +131,85 @@ export const HeroSlider = ({ customSettings }) => {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={slide.image}
-                  alt={slide.title}
+                  alt={slide.title || "Deepak Textiles Banner"}
                   className={`w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
                     isActive ? "scale-105" : "scale-100"
                   }`}
                 />
-                {/* Gradient Overlays */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${slide.accent}`} />
-                <div className="absolute inset-0 bg-black/30" />
+                {/* Gradient Overlays only if title text is present */}
+                {slide.title && (
+                  <>
+                    <div className={`absolute inset-0 bg-gradient-to-r ${slide.accent || "from-black/80 via-black/40 to-transparent"}`} />
+                    <div className="absolute inset-0 bg-black/30" />
+                  </>
+                )}
               </div>
 
-              {/* Slide Content */}
-              <div className="relative z-20 h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
-                <div className="max-w-3xl space-y-5 sm:space-y-6 py-16">
-                  {/* Title */}
-                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-white tracking-tight leading-[1.15] drop-shadow-sm">
-                    {slide.title}
-                  </h1>
+              {/* Slide Content or Full Clickable Graphic Link */}
+              {slide.title ? (
+                <div className="relative z-20 h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
+                  <div className="max-w-3xl space-y-5 sm:space-y-6 py-16">
+                    {slide.badge && (
+                      <span className="inline-block px-3 py-1 rounded-full bg-gold-500/20 text-gold-400 border border-gold-500/30 text-xs font-bold uppercase tracking-wider">
+                        {slide.badge}
+                      </span>
+                    )}
 
-                  {/* CTA Buttons */}
-                  <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                    <Link
-                      href={slide.link}
-                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-[#C00000] hover:bg-[#A80000] text-white font-extrabold text-xs sm:text-sm tracking-wide uppercase transition-all transform hover:-translate-y-0.5 font-poppins"
-                    >
-                      <span>{slide.btnText}</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
+                    <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-white tracking-tight leading-[1.15] drop-shadow-sm">
+                      {slide.title}
+                    </h1>
 
-                    <a
-                      href={`https://wa.me/${whatsappCleanNumber}?text=Hello%20Deepak%20Textiles,%20please%20send%20wholesale%20rates%20for%20${encodeURIComponent(
-                        slide.title
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all transform hover:-translate-y-0.5"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      <span>WhatsApp Order Desk</span>
-                    </a>
-                  </div>
+                    {slide.subtitle && (
+                      <p className="text-sm sm:text-lg text-gray-200 max-w-2xl font-normal leading-relaxed">
+                        {slide.subtitle}
+                      </p>
+                    )}
 
-                  {/* Micro Wholesale Notice */}
-                  <div className="pt-4 flex items-center gap-4 text-xs text-gray-300 font-medium">
-                    <span className="flex items-center gap-1.5 text-gold-400">
-                      ★ Direct Surat Mill Rates
-                    </span>
-                    <span className="text-gray-500">•</span>
-                    <span>MOQ: 10 to 20 Pcs Lots</span>
-                    <span className="text-gray-500">•</span>
-                    <span>GST Invoiced</span>
+                    {/* CTA Buttons */}
+                    <div className="flex flex-wrap items-center gap-3.5 pt-2">
+                      <Link
+                        href={slide.link || "/products"}
+                        style={{
+                          padding: "18px 24px",
+                          fontWeight: 400,
+                          borderRadius: "4px",
+                          letterSpacing: "0.5px",
+                          fontSize: "14px",
+                        }}
+                        className="inline-flex items-center gap-2 bg-[#C00000] hover:bg-[#A80000] text-white transition-all transform hover:-translate-y-0.5 font-poppins shadow-md leading-none"
+                      >
+                        <span>{slide.btnText || "Explore Wholesale"}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+
+                      <a
+                        href={`https://wa.me/${whatsappCleanNumber}?text=Hello%20Deepak%20Textiles,%20please%20send%20wholesale%20rates%20for%20${encodeURIComponent(
+                          slide.title
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          padding: "18px 24px",
+                          fontWeight: 400,
+                          borderRadius: "4px",
+                          letterSpacing: "0.5px",
+                          fontSize: "14px",
+                        }}
+                        className="inline-flex items-center gap-2 bg-[#C00000] hover:bg-[#A80000] text-white shadow-md transition-all transform hover:-translate-y-0.5 font-poppins leading-none"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span>Book Now</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <Link
+                  href={slide.link || "/products"}
+                  className="absolute inset-0 z-20 block w-full h-full cursor-pointer"
+                  aria-label="View Banner Collection"
+                />
+              )}
             </div>
           );
         })}

@@ -3,8 +3,37 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { bannersApi } from "../../services/api";
+
+const DEFAULT_SLIDES = [
+  {
+    _id: "default-1",
+    image: "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
+    title: "Royal Banarasi Silk Saree",
+    link: "/products?category=wholesale-sarees",
+  },
+  {
+    _id: "default-2",
+    image: "/images/selesproductsimages/a3198247-d1d7-47e6-a99b-1e0d14f3ec33.avif",
+    title: "Designer Cotton & Chanderi Suit Piece",
+    link: "/products?category=dress-materials",
+  },
+  {
+    _id: "default-3",
+    image: "/images/selesproductsimages/4add71ea-fd79-47b5-8f73-75dd4f6829cd.avif",
+    title: "Rayon Kurti & Pant Sets",
+    link: "/products?category=kurti-sets",
+  },
+  {
+    _id: "default-4",
+    image: "/images/selesproductsimages/7bc3e582-f0d0-4032-8993-7e3d7b22cfa9.avif",
+    title: "Heavy Organza Festive Collection",
+    link: "/products?category=lehenga-choli",
+  },
+];
 
 export const TrendingBannerSlider = () => {
+  const [banners, setBanners] = useState(DEFAULT_SLIDES);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -15,32 +44,23 @@ export const TrendingBannerSlider = () => {
   const hasMovedRef = useRef(false);
   const containerRef = useRef(null);
 
-  const banners = [
-    {
-      id: 1,
-      image: "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
-      title: "Royal Banarasi Silk Saree",
-      link: "/products?category=wholesale-sarees",
-    },
-    {
-      id: 2,
-      image: "/images/selesproductsimages/a3198247-d1d7-47e6-a99b-1e0d14f3ec33.avif",
-      title: "Designer Cotton & Chanderi Suit Piece",
-      link: "/products?category=dress-materials",
-    },
-    {
-      id: 3,
-      image: "/images/selesproductsimages/4add71ea-fd79-47b5-8f73-75dd4f6829cd.avif",
-      title: "Rayon Kurti & Pant Sets",
-      link: "/products?category=kurti-sets",
-    },
-    {
-      id: 4,
-      image: "/images/selesproductsimages/7bc3e582-f0d0-4032-8993-7e3d7b22cfa9.avif",
-      title: "Heavy Organza Festive Collection",
-      link: "/products?category=lehenga-choli",
-    },
-  ];
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchTrending() {
+      try {
+        const res = await bannersApi.getAll({ type: "trending", activeOnly: "true" });
+        if (isMounted && res.success && Array.isArray(res.banners) && res.banners.length > 0) {
+          setBanners(res.banners);
+        }
+      } catch (err) {
+        // Fallback to default slides on error
+      }
+    }
+    fetchTrending();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % banners.length);
