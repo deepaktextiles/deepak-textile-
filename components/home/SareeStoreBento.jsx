@@ -40,9 +40,9 @@ export const SareeStoreBento = () => {
                 GOLD
               </span>
             </div>
-            <span className="mt-3 text-xs font-bold text-gray-200 uppercase tracking-widest group-hover:text-gold-400 transition-colors flex items-center gap-1">
-              <span>Pure Zari Silk Lots</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            <span className="mt-3 text-xs font-bold text-[#000000] bg-white/95 backdrop-blur-sm px-3.5 py-1.5 rounded-full uppercase tracking-widest group-hover:bg-white transition-all flex items-center gap-1 shadow-md">
+              <span className="text-[#000000]">Pure Zari Silk Lots</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#000000] group-hover:translate-x-1 transition-transform" />
             </span>
           </div>
         </Link>
@@ -67,7 +67,7 @@ export const SareeStoreBento = () => {
               <h3 className="font-heading font-black text-lg sm:text-xl md:text-2xl text-yellow-400 tracking-wider uppercase drop-shadow-md group-hover:text-yellow-300 transition-colors">
                 DURGA PUJO
               </h3>
-              <p className="text-[11px] text-gray-300 font-semibold tracking-wide mt-0.5">
+              <p className="inline-block text-[11px] text-[#000000] bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full font-bold tracking-wide mt-1.5 shadow-sm">
                 Festive Wholesale Lots
               </p>
             </div>
@@ -91,7 +91,7 @@ export const SareeStoreBento = () => {
               <h3 className="font-heading font-black text-lg sm:text-xl md:text-2xl text-yellow-400 tracking-wider uppercase drop-shadow-md group-hover:text-yellow-300 transition-colors">
                 KARWA CHAUTH
               </h3>
-              <p className="text-[11px] text-gray-300 font-semibold tracking-wide mt-0.5">
+              <p className="inline-block text-[11px] text-[#000000] bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full font-bold tracking-wide mt-1.5 shadow-sm">
                 Red & Bridal Special Saree Lots
               </p>
             </div>
@@ -116,7 +116,7 @@ export const SareeStoreBento = () => {
             <h3 className="font-heading font-black text-lg sm:text-2xl text-yellow-400 tracking-wider uppercase leading-snug drop-shadow-md group-hover:text-yellow-300 transition-colors">
               READY TO<br />WEAR SAREES
             </h3>
-            <p className="text-xs text-gray-300 font-semibold tracking-wide mt-1">
+            <p className="inline-block text-xs text-[#000000] bg-white/95 backdrop-blur-sm px-3.5 py-1.5 rounded-full font-bold tracking-wide mt-2 shadow-sm">
               Pre-Stitched & Designer Drape Lots
             </p>
           </div>

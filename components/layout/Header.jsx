@@ -173,10 +173,10 @@ export const Header = () => {
                 href="https://wa.me/919308066552?text=Hello%20Deepak%20Textiles,%20I%20am%20interested%20in%20wholesale%20catalogs."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-sm hover:shadow"
+                className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold transition-all shadow-sm hover:shadow"
               >
-                <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center p-0.5">
-                  <WhatsAppIcon className="w-full h-full" color="#25D366" />
+                <div className="w-4 h-4 flex items-center justify-center">
+                  <WhatsAppIcon className="w-full h-full" color="#ffffff" phoneColor="#25D366" />
                 </div>
                 <span>WhatsApp Desk</span>
               </a>
@@ -186,11 +186,11 @@ export const Header = () => {
                 href="https://wa.me/919308066552?text=Hello%20Deepak%20Textiles,%20I%20am%20interested%20in%20wholesale%20catalogs."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="sm:hidden flex items-center justify-center p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                className="sm:hidden flex items-center justify-center p-1.5 rounded-lg bg-[#25D366] text-white hover:bg-[#20ba5a] shadow-xs"
                 title="Chat on WhatsApp"
               >
-                <div className="w-6 h-6 rounded-full flex items-center justify-center">
-                  <WhatsAppIcon className="w-full h-full" color="#25D366" />
+                <div className="w-6 h-6 flex items-center justify-center">
+                  <WhatsAppIcon className="w-full h-full" color="#ffffff" phoneColor="#25D366" />
                 </div>
               </a>
 

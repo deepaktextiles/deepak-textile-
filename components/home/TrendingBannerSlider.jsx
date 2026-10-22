@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const TrendingBannerSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -12,42 +12,26 @@ export const TrendingBannerSlider = () => {
     {
       id: 1,
       image: "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
-      title: "SILK SAREE SALE",
-      subtitle: "Exclusive Darbhanga Wholesale Katan & Banarasi Lots",
-      priceTag: "Starting ₹599/-",
+      title: "Royal Banarasi Silk Saree",
       link: "/products?category=wholesale-sarees",
-      btnText: "SHOP NOW",
-      theme: "from-amber-950/80 via-black/40 to-transparent",
     },
     {
       id: 2,
       image: "/images/selesproductsimages/a3198247-d1d7-47e6-a99b-1e0d14f3ec33.avif",
-      title: "COTTON SUIT DHAMAKA",
-      subtitle: "Pure Cambric Cotton & Chanderi 3-Piece Sets",
-      priceTag: "Starting ₹450/-",
+      title: "Designer Cotton & Chanderi Suit Piece",
       link: "/products?category=dress-materials",
-      btnText: "SHOP NOW",
-      theme: "from-rose-950/80 via-black/40 to-transparent",
     },
     {
       id: 3,
       image: "/images/selesproductsimages/4add71ea-fd79-47b5-8f73-75dd4f6829cd.avif",
-      title: "DESIGNER KURTI LOTS",
-      subtitle: "Ready-to-Ship Pant-Dupatta Sets for Retailers",
-      priceTag: "Starting ₹299/-",
+      title: "Rayon Kurti & Pant Sets",
       link: "/products?category=kurti-sets",
-      btnText: "SHOP NOW",
-      theme: "from-indigo-950/80 via-black/40 to-transparent",
     },
     {
       id: 4,
       image: "/images/selesproductsimages/7bc3e582-f0d0-4032-8993-7e3d7b22cfa9.avif",
-      title: "WEDDING LEHENGA FEST",
-      subtitle: "Semi-Stitched Bridal & Partywear Collection",
-      priceTag: "Starting ₹1,299/-",
+      title: "Heavy Organza Festive Collection",
       link: "/products?category=lehenga-choli",
-      btnText: "SHOP NOW",
-      theme: "from-red-950/80 via-black/40 to-transparent",
     },
   ];
 
@@ -59,17 +43,18 @@ export const TrendingBannerSlider = () => {
     setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
   }, [banners.length]);
 
+  // Auto-slide every 4.5 seconds (pauses on hover)
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
       nextSlide();
-    }, 5000);
+    }, 4500);
     return () => clearInterval(interval);
   }, [isPaused, nextSlide]);
 
   return (
     <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-      {/* Centered Heading Matching Reference Image */}
+      {/* Centered Heading */}
       <div className="text-center mb-5 sm:mb-8">
         <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-900 tracking-wider uppercase">
           TRENDING NOW
@@ -77,9 +62,9 @@ export const TrendingBannerSlider = () => {
         <div className="w-16 h-1 bg-gold-500 mx-auto mt-2.5 rounded-full" />
       </div>
 
-      {/* Wide Rounded Image Slider Container */}
+      {/* Wide Rounded Image Slider Container - 100% Clean Image, No Overlay, No Text */}
       <div
-        className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg border border-gray-200 aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[280px] md:min-h-[340px] select-none bg-navy-950"
+        className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg border border-gray-200 aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[280px] md:min-h-[340px] select-none bg-navy-950 group"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
@@ -92,41 +77,14 @@ export const TrendingBannerSlider = () => {
                 isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
               }`}
             >
-              {/* Full Background Banner Image */}
+              {/* Full Clean Banner Image Link without any overlay or text */}
               <Link href={banner.link} className="block w-full h-full relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={banner.image}
                   alt={banner.title}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                 />
-
-                {/* Subtle Right / Side Contrast Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-l ${banner.theme}`} />
-
-                {/* Graphic Banner Overlay (Right side emblem + price tag matching reference) */}
-                <div className="absolute inset-y-0 right-6 sm:right-12 md:right-20 flex flex-col items-center justify-center text-center text-white z-20 space-y-2 sm:space-y-3">
-                  {/* Decorative Ornamental Badge */}
-                  <div className="relative px-5 py-2.5 sm:px-8 sm:py-4 rounded-xl bg-gradient-to-br from-navy-900/90 via-navy-950/90 to-navy-900/90 border-2 border-gold-400 shadow-xl backdrop-blur-sm">
-                    <div className="flex items-center justify-center gap-1.5 text-gold-400 text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-0.5">
-                      <Sparkles className="w-3 h-3" />
-                      <span>DEEPAK TEXTILES</span>
-                    </div>
-                    <h3 className="text-base sm:text-2xl md:text-3xl font-heading font-black text-gold-300 tracking-wider uppercase drop-shadow">
-                      {banner.title}
-                    </h3>
-                  </div>
-
-                  {/* Price Tag Callout */}
-                  <div className="text-lg sm:text-2xl md:text-3xl font-heading font-black text-white tracking-tight drop-shadow-md">
-                    {banner.priceTag}
-                  </div>
-
-                  {/* Golden Yellow Button */}
-                  <span className="inline-block px-5 py-1.5 sm:px-7 sm:py-2 rounded bg-gold-500 hover:bg-gold-400 text-navy-950 font-black text-[11px] sm:text-xs tracking-wider uppercase shadow-md transition-all">
-                    {banner.btnText}
-                  </span>
-                </div>
               </Link>
             </div>
           );
@@ -134,6 +92,7 @@ export const TrendingBannerSlider = () => {
 
         {/* Prev / Next Chevrons */}
         <button
+          type="button"
           onClick={prevSlide}
           className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-md"
           aria-label="Previous Slide"
@@ -142,6 +101,7 @@ export const TrendingBannerSlider = () => {
         </button>
 
         <button
+          type="button"
           onClick={nextSlide}
           className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-md"
           aria-label="Next Slide"
@@ -154,11 +114,12 @@ export const TrendingBannerSlider = () => {
           {banners.map((_, idx) => (
             <button
               key={idx}
+              type="button"
               onClick={() => setCurrentSlide(idx)}
               className={`transition-all duration-300 rounded-full h-2 ${
                 currentSlide === idx
                   ? "w-7 sm:w-8 bg-gold-400 shadow-sm"
-                  : "w-2 bg-white/50 hover:bg-white/80"
+                  : "w-2 bg-white/60 hover:bg-white/90"
               }`}
               aria-label={`Go to slide ${idx + 1}`}
             />

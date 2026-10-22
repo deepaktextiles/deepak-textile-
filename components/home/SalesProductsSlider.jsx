@@ -94,10 +94,7 @@ export const SalesProductsSlider = () => {
                   {item.badge}
                 </span>
 
-                {/* MOQ Badge Top Right */}
-                <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-gold-500 text-navy-950 text-[10px] font-extrabold uppercase shadow-xs">
-                  MOQ: {item.moq} Pcs
-                </span>
+             
 
                 {/* Profit Margin Bottom Left */}
                 <span className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-bold shadow-xs">
@@ -141,8 +138,8 @@ export const SalesProductsSlider = () => {
                   rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-xs"
                 >
-                  <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center p-0.5 shrink-0">
-                    <WhatsAppIcon className="w-full h-full" color="#25D366" />
+                  <div className="w-4 h-4 flex items-center justify-center shrink-0">
+                    <WhatsAppIcon className="w-full h-full" color="#ffffff" phoneColor="#059669" />
                   </div>
                   <span>Order on WhatsApp</span>
                 </a>

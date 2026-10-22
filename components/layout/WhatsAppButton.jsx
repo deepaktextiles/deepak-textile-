@@ -56,21 +56,22 @@ export const WhatsAppButton = ({
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        className="group relative flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-[0_10px_25px_-5px_rgba(37,211,102,0.45)] hover:shadow-[0_15px_30px_-5px_rgba(37,211,102,0.6)] border border-emerald-100 transition-all duration-300"
+        className="group relative flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#25D366] hover:bg-[#20ba5a] shadow-[0_10px_25px_-5px_rgba(37,211,102,0.65)] hover:shadow-[0_15px_35px_-5px_rgba(37,211,102,0.85)] border border-emerald-400/40 transition-all duration-300"
       >
         {/* Subtle Ambient Pulse Wave */}
-        <span className="absolute -inset-1 rounded-full bg-emerald-500/25 animate-ping pointer-events-none" />
+        <span className="absolute -inset-1 rounded-full bg-[#25D366]/40 animate-ping pointer-events-none" />
 
-        {/* Crisp White Backdrop for the SVG handset cutout */}
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center overflow-hidden">
+        {/* User's Exact WhatsApp Icon with White Handset */}
+        <div className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center">
           <WhatsAppIcon
-            className="w-full h-full transform transition-transform duration-300 group-hover:rotate-6"
+            className="w-full h-full transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 drop-shadow-sm"
             color="#25D366"
+            phoneColor="#ffffff"
           />
         </div>
 
         {/* Active Online Indicator Badge */}
-        <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" />
+        <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-white border-2 border-[#25D366] rounded-full shadow-sm" />
       </motion.a>
     </aside>
   );
