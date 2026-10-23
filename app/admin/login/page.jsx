@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Lock, Mail, ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
 import { useAdmin } from "../../../lib/context/AdminContext";
 import { Button } from "../../../components/ui/Button";
@@ -51,8 +52,15 @@ export default function AdminLoginPage() {
       <div className="max-w-md w-full space-y-6">
         {/* Brand header */}
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-navy-950 font-black text-2xl flex items-center justify-center mx-auto shadow-xl shadow-amber-500/25">
-            DT
+          <div className="w-16 h-16 rounded-2xl overflow-hidden bg-white p-1.5 border border-slate-700/60 shadow-xl shadow-black/25 mx-auto flex items-center justify-center">
+            <Image
+              src="/images/icons/logo.jpeg"
+              alt="Deepak Textiles"
+              width={64}
+              height={64}
+              className="w-full h-full object-contain"
+              priority
+            />
           </div>
           <h1 className="text-2xl font-heading font-extrabold text-white tracking-wide">
             Deepak Textiles Control Center

@@ -15,6 +15,11 @@ export const metadata = {
   description:
     "Deepak Textiles (Estd. 2001) - Premier Clothing & Fabric Wholesaler in Darbhanga, Bihar. Bulk Designer Sarees, Suit Pieces, Shirting & Suiting, and Lehenga collections for retailers, resellers, and bulk buyers across India.",
   keywords: "deepak textiles darbhanga, bihar saree wholesale, fabric wholesaler darbhanga, wholesale suit pieces darbhanga, deepak textiles",
+  icons: {
+    icon: "/images/icons/logo.jpeg",
+    shortcut: "/images/icons/logo.jpeg",
+    apple: "/images/icons/logo.jpeg",
+  },
 };
 
 export default function RootLayout({ children }) {

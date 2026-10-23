@@ -137,36 +137,31 @@ export const HeroSlider = ({ customSettings }) => {
                   }`}
                 />
                 {/* Gradient Overlays only if title text is present */}
-                {slide.title && (
-                  <>
-                    <div className={`absolute inset-0 bg-gradient-to-r ${slide.accent || "from-black/80 via-black/40 to-transparent"}`} />
-                    <div className="absolute inset-0 bg-black/30" />
-                  </>
-                )}
+              
               </div>
 
               {/* Slide Content or Full Clickable Graphic Link */}
               {slide.title ? (
                 <div className="relative z-20 h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
                   <div className="max-w-3xl space-y-5 sm:space-y-6 py-16">
-                    {slide.badge && (
+                    {/* {slide.badge && (
                       <span className="inline-block px-3 py-1 rounded-full bg-gold-500/20 text-gold-400 border border-gold-500/30 text-xs font-bold uppercase tracking-wider">
                         {slide.badge}
                       </span>
-                    )}
+                    )} */}
 
-                    <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-white tracking-tight leading-[1.15] drop-shadow-sm">
+                 {/* '   <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-white tracking-tight leading-[1.15] drop-shadow-sm">
                       {slide.title}
-                    </h1>
+                    </h1>' */}
 
-                    {slide.subtitle && (
+                    {/* {slide.subtitle && (
                       <p className="text-sm sm:text-lg text-gray-200 max-w-2xl font-normal leading-relaxed">
                         {slide.subtitle}
                       </p>
-                    )}
+                    )} */}
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-wrap items-center gap-3.5 pt-2">
+                    {/* <div className="flex flex-wrap items-center gap-3.5 pt-2">
                       <Link
                         href={slide.link || "/products"}
                         style={{
@@ -200,7 +195,7 @@ export const HeroSlider = ({ customSettings }) => {
                         <MessageCircle className="w-4 h-4" />
                         <span>Book Now</span>
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               ) : (

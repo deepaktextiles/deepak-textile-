@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, MessageCircle, Mail, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { WhatsAppIcon } from "../ui/WhatsAppIcon";
@@ -47,8 +48,14 @@ export const Footer = () => {
           {/* Brand Info */}
           <motion.div variants={itemVariants} className="space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-lg bg-navy-950 border border-gold-500 flex items-center justify-center font-black text-gold-400 text-lg">
-                DT
+              <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-gray-200 bg-white flex items-center justify-center shrink-0 shadow-xs">
+                <Image
+                  src="/images/icons/logo.jpeg"
+                  alt="Deepak Textiles"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain p-0.5"
+                />
               </div>
               <span className="font-extrabold text-lg text-gray-950 tracking-wider">
                 DEEPAK <span className="text-gold-600">TEXTILES</span>

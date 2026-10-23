@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -87,8 +88,14 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }) {
           }}
           className="flex items-center gap-3 group"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-navy-950 font-black text-xl flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
-            DT
+          <div className="w-10 h-10 rounded-xl overflow-hidden bg-white p-1 border border-slate-700/60 shadow-lg shadow-black/20 group-hover:scale-105 transition-transform shrink-0 flex items-center justify-center">
+            <Image
+              src="/images/icons/logo.jpeg"
+              alt="Deepak Textiles"
+              width={40}
+              height={40}
+              className="w-full h-full object-contain"
+            />
           </div>
           <div>
             <span className="font-heading font-extrabold text-sm sm:text-base text-white tracking-wide block leading-tight">

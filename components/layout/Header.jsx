@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Phone, MessageCircle, Menu, ShieldCheck, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
@@ -80,17 +81,16 @@ export const Header = () => {
               </button>
 
               {/* Logo */}
-              <Link href="/" className="flex items-center gap-2.5 shrink-0">
-                <div className="w-10 h-10 rounded-lg bg-navy-900 border-2 border-gold-500 flex items-center justify-center font-black text-gold-400 text-xl tracking-tighter">
-                  DT
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-extrabold text-lg sm:text-xl text-navy-900 tracking-wider leading-none">
-                    DEEPAK <span className="text-gold-600">TEXTILES</span>
-                  </span>
-                  <span className="text-[10px] tracking-widest uppercase font-bold text-gray-500 leading-tight mt-0.5">
-                    Darbhanga Wholesale Hub
-                  </span>
+              <Link href="/" className="flex items-center shrink-0 group" aria-label="Deepak Textiles Home">
+                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border border-gray-200/80 bg-white flex items-center justify-center shrink-0 shadow-xs group-hover:border-gold-500 group-hover:shadow-md transition-all">
+                  <Image
+                    src="/images/icons/logo.jpeg"
+                    alt="Deepak Textiles"
+                    width={56}
+                    height={56}
+                    className="w-full h-full object-contain p-0.5"
+                    priority
+                  />
                 </div>
               </Link>
             </div>
