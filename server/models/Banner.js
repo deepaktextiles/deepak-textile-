@@ -6,6 +6,7 @@ const BannerSchema = new mongoose.Schema(
     subtitle: { type: String, default: "" },
     badge: { type: String, default: "Deepak Textiles • Darbhanga" },
     image: { type: String, required: true },
+    mobileImage: { type: String, default: "" },
     link: { type: String, default: "/products" },
     btnText: { type: String, default: "Explore Wholesale Lots" },
     accent: { type: String, default: "from-amber-950/90 via-navy-950/80 to-navy-950/60" },

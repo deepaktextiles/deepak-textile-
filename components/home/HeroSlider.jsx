@@ -128,16 +128,25 @@ export const HeroSlider = ({ customSettings }) => {
             >
               {/* Background Image with Zoom animation */}
               <div className="absolute inset-0 overflow-hidden">
+                {/* Desktop Banner: Strictly hidden on mobile (< 768px), visible on md+ */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={slide.image}
-                  alt={slide.title || "Deepak Textiles Banner"}
-                  className={`w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
+                  alt={slide.title || "Deepak Textiles Desktop Banner"}
+                  className={`hidden md:block w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
                     isActive ? "scale-105" : "scale-100"
                   }`}
                 />
-                {/* Gradient Overlays only if title text is present */}
-              
+
+                {/* Mobile Banner: Strictly visible on mobile (< 768px), hidden on md+ */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={slide.mobileImage || slide.image}
+                  alt={slide.title || "Deepak Textiles Mobile Banner"}
+                  className={`block md:hidden w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
+                    isActive ? "scale-105" : "scale-100"
+                  }`}
+                />
               </div>
 
               {/* Slide Content or Full Clickable Graphic Link */}

@@ -210,12 +210,21 @@ export const TrendingBannerSlider = () => {
                 draggable={false}
                 className="block w-full h-full relative select-none pointer-events-auto"
               >
+                {/* Desktop Banner: Strictly hidden on mobile (< 768px), visible on md+ */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={banner.image}
                   alt={banner.title}
                   draggable={false}
-                  className="w-full h-full object-cover object-center pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-[1.01]"
+                  className="hidden md:block w-full h-full object-cover object-center pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-[1.01]"
+                />
+                {/* Mobile Banner: Strictly visible on mobile (< 768px), hidden on md+ */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={banner.mobileImage || banner.image}
+                  alt={banner.title}
+                  draggable={false}
+                  className="block md:hidden w-full h-full object-cover object-center pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-[1.01]"
                 />
               </Link>
             </div>

@@ -28,7 +28,7 @@ export const Input = ({ label, error, helperText, leftIcon, rightIcon, className
           {...props}
         />
         {rightIcon && (
-          <div className="absolute right-3 text-txt-secondary pointer-events-none flex items-center">
+          <div className="absolute right-3 text-txt-secondary flex items-center">
             {rightIcon}
           </div>
         )}

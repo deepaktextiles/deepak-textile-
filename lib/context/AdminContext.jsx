@@ -69,6 +69,21 @@ export const AdminProvider = ({ children }) => {
     return false;
   };
 
+  const refreshAdmin = async () => {
+    try {
+      const res = await adminApi.getMe();
+      if (res.success && res.admin) {
+        setAdmin(res.admin);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("dt_admin_profile", JSON.stringify(res.admin));
+        }
+        return res.admin;
+      }
+    } catch {
+      // Ignore
+    }
+  };
+
   const logout = () => {
     removeAdminToken();
     if (typeof window !== "undefined") {
@@ -78,7 +93,7 @@ export const AdminProvider = ({ children }) => {
   };
 
   return (
-    <AdminContext.Provider value={{ admin, isAuthenticated: !!admin, loading, login, logout }}>
+    <AdminContext.Provider value={{ admin, isAuthenticated: !!admin, loading, login, logout, refreshAdmin }}>
       {children}
     </AdminContext.Provider>
   );

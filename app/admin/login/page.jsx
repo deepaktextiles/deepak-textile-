@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Lock, Mail, ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
+import { Lock, Mail, ArrowRight, ShieldCheck, AlertCircle, Eye, EyeOff, Database } from "lucide-react";
 import { useAdmin } from "../../../lib/context/AdminContext";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
@@ -13,12 +13,9 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { login, isAuthenticated, loading: authLoading } = useAdmin();
 
-  const [email, setEmail] = useState(
-    process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@deepaktextiles.com"
-  );
-  const [password, setPassword] = useState(
-    process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "Admin@123"
-  );
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -31,14 +28,20 @@ export default function AdminLoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (!email.trim() || !password) {
+      setError("Please enter your admin email and password.");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
-      const ok = await login(email, password);
+      const ok = await login(email.trim(), password);
       if (ok) {
         router.push("/admin");
       } else {
-        setError("Invalid email or password. Please try again.");
+        setError("Invalid administrator credentials. Please check your email and password.");
       }
     } catch (err) {
       setError(err.message || "Failed to login. Please verify server is running.");
@@ -72,9 +75,15 @@ export default function AdminLoginPage() {
 
         {/* Form Card */}
         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-2xl space-y-5">
-          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-            <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
-            <span>Authorized access only. Session protected by JWT.</span>
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
+              <span className="font-medium">Database-Verified Admin Access</span>
+            </div>
+            <div className="flex items-center gap-1 text-[11px] text-amber-700/80 font-mono">
+              <Database className="w-3 h-3" />
+              <span>MongoDB</span>
+            </div>
           </div>
           
           {error && (
@@ -90,18 +99,35 @@ export default function AdminLoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@deepaktextiles.com"
+              placeholder="Enter your admin email"
               leftIcon={<Mail className="w-4 h-4 text-gray-400" />}
+              autoComplete="email"
               required
             />
 
             <Input
               label="Admin Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Enter your admin password"
               leftIcon={<Lock className="w-4 h-4 text-gray-400" />}
+              rightIcon={
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="text-gray-400 hover:text-gray-600 focus:outline-none p-1"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              }
+              autoComplete="current-password"
               required
             />
 

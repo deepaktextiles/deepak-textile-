@@ -80,6 +80,16 @@ export const adminApi = {
       body: JSON.stringify(credentials),
     }),
   getMe: () => apiRequest("/admin/me"),
+  updateProfile: (data) =>
+    apiRequest("/admin/profile", {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  changePassword: (data) =>
+    apiRequest("/admin/change-password", {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
 };
 
 // Products

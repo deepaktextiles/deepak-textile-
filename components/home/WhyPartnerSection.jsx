@@ -79,10 +79,7 @@ export const WhyPartnerSection = ({ whatsappNumber = "919308066552" }) => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-900 text-xs font-bold uppercase tracking-widest mb-3.5 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
-            <span>Why Retailers Choose Deepak Textiles</span>
-          </div>
+         
 
           <h2 className="text-2xl sm:text-4xl font-heading font-extrabold text-navy-950 tracking-tight leading-tight">
             Direct Textile Sourcing from Surat
@@ -118,9 +115,7 @@ export const WhyPartnerSection = ({ whatsappNumber = "919308066552" }) => {
                       <Icon className="w-7 h-7" />
                     </div>
 
-                    <span className="relative z-10 text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 group-hover:border-amber-300 group-hover:bg-amber-50 group-hover:text-amber-900 transition-colors">
-                      {feature.badge}
-                    </span>
+                  
                   </div>
 
                   {/* Title & Description */}

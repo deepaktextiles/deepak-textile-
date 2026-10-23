@@ -142,12 +142,12 @@ export const getBannerById = async (req, res) => {
 
 export const createBanner = async (req, res) => {
   try {
-    const { title, subtitle, badge, image, link, btnText, order, active, type = "hero" } = req.body;
+    const { title, subtitle, badge, image, mobileImage, link, btnText, order, active, type = "hero" } = req.body;
 
     if (!image) {
       return res.status(400).json({
         success: false,
-        message: "Banner image is required.",
+        message: "Banner desktop image is required.",
       });
     }
 
@@ -156,6 +156,7 @@ export const createBanner = async (req, res) => {
       subtitle: subtitle ? subtitle.trim() : "",
       badge: badge ? badge.trim() : "",
       image: image.trim(),
+      mobileImage: mobileImage ? mobileImage.trim() : "",
       link: link ? link.trim() : "/products",
       btnText: btnText ? btnText.trim() : "",
       order: Number(order) || 0,
@@ -180,12 +181,13 @@ export const updateBanner = async (req, res) => {
       return res.status(404).json({ success: false, message: "Banner not found" });
     }
 
-    const { title, subtitle, badge, image, link, btnText, order, active, type } = req.body;
+    const { title, subtitle, badge, image, mobileImage, link, btnText, order, active, type } = req.body;
 
     if (title !== undefined) banner.title = title.trim();
     if (subtitle !== undefined) banner.subtitle = subtitle.trim();
     if (badge !== undefined) banner.badge = badge.trim();
     if (image !== undefined) banner.image = image.trim();
+    if (mobileImage !== undefined) banner.mobileImage = mobileImage.trim();
     if (link !== undefined) banner.link = link.trim();
     if (btnText !== undefined) banner.btnText = btnText.trim();
     if (order !== undefined) banner.order = Number(order);
