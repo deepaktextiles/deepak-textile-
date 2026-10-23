@@ -1,9 +1,10 @@
 import fs from "fs";
 import path from "path";
+import cloudinary, { isCloudinaryConfigured } from "../config/cloudinary.js";
 
 export const uploadImage = async (req, res) => {
   try {
-    const { image, filename = "upload" } = req.body;
+    const { image, filename = "upload", folder = "deepak_textiles" } = req.body;
 
     if (!image) {
       return res.status(400).json({
@@ -12,12 +13,43 @@ export const uploadImage = async (req, res) => {
       });
     }
 
-    // Match base64 data URL
+    // Validate base64 format or URL
+    const isDataUri = image.startsWith("data:");
+    if (!isDataUri && !image.startsWith("http://") && !image.startsWith("https://")) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid image format. Expected base64 data URL or HTTP link.",
+      });
+    }
+
+    // 1. Prioritize Cloudinary Upload
+    if (isCloudinaryConfigured()) {
+      try {
+        const uploadResponse = await cloudinary.uploader.upload(image, {
+          folder: folder,
+          resource_type: "auto",
+          tags: ["deepak_textiles", "b2b_catalog"],
+        });
+
+        return res.status(200).json({
+          success: true,
+          message: "Image successfully uploaded to Cloudinary.",
+          url: uploadResponse.secure_url,
+          public_id: uploadResponse.public_id,
+          format: uploadResponse.format,
+          bytes: uploadResponse.bytes,
+        });
+      } catch (cloudinaryError) {
+        console.error("Cloudinary upload failed, falling back to local file storage:", cloudinaryError.message);
+      }
+    }
+
+    // 2. Fallback: Local Storage (in case Cloudinary is offline or unconfigured)
     const matches = image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     if (!matches || matches.length !== 3) {
       return res.status(400).json({
         success: false,
-        message: "Invalid image format. Expected base64 data URL.",
+        message: "Invalid base64 data URL format.",
       });
     }
 
@@ -52,13 +84,13 @@ export const uploadImage = async (req, res) => {
 
     const publicUrl = `/uploads/${uniqueName}`;
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Image uploaded successfully from device.",
+      message: "Image saved to local storage.",
       url: publicUrl,
     });
   } catch (error) {
-    console.error("Upload error:", error);
+    console.error("Upload controller error:", error);
     res.status(500).json({
       success: false,
       message: error.message || "Failed to upload image.",
