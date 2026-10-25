@@ -2,9 +2,19 @@
 
 import React, { useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, MessageCircle, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MessageCircle,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+} from "lucide-react";
 import { WhatsAppIcon } from "../ui/WhatsAppIcon";
-import { SALES_PRODUCT_SHOWCASE, SALES_PRODUCT_IMAGES } from "../../lib/salesImages";
+import {
+  SALES_PRODUCT_SHOWCASE,
+  SALES_PRODUCT_IMAGES,
+} from "../../lib/salesImages";
 
 export const SalesProductsSlider = () => {
   const scrollRef = useRef(null);
@@ -21,15 +31,12 @@ export const SalesProductsSlider = () => {
       {/* Section Header with Carousel Controls */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-gray-200 pb-4">
         <div>
-          <div className="flex items-center gap-2 text-gold-700 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-3.5 h-3.5 text-gold-600" />
-            <span>Deepak Textiles • Active Selling Catalog</span>
-          </div>
           <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-900 tracking-tight">
             Wholesale Selling Collection
           </h2>
           <p className="text-xs sm:text-sm text-gray-600 mt-1">
-            Real showroom stock photos — Designer Sarees, Suit Pieces & Readymade lots ready for immediate dispatch across Bihar & India.
+            Real showroom stock photos — Designer Sarees, Suit Pieces &
+            Readymade lots ready for immediate dispatch across Bihar & India.
           </p>
         </div>
 
@@ -66,10 +73,10 @@ export const SalesProductsSlider = () => {
       >
         {SALES_PRODUCT_SHOWCASE.map((item) => {
           const discount = Math.round(
-            ((item.retailPrice - item.wholesalePrice) / item.retailPrice) * 100
+            ((item.retailPrice - item.wholesalePrice) / item.retailPrice) * 100,
           );
           const whatsappMsg = encodeURIComponent(
-            `Hello Deepak Textiles, I want to inquire about wholesale stock for: *${item.title}* (Wholesale Rate: ₹${item.wholesalePrice}, MOQ: ${item.moq} pcs). Please send catalog & video.`
+            `Hello Deepak Textiles, I want to inquire about wholesale stock for: *${item.title}* (Wholesale Rate: ₹${item.wholesalePrice}, MOQ: ${item.moq} pcs). Please send catalog & video.`,
           );
 
           return (
@@ -94,8 +101,6 @@ export const SalesProductsSlider = () => {
                   {item.badge}
                 </span>
 
-             
-
                 {/* Profit Margin Bottom Left */}
                 <span className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-bold shadow-xs">
                   {discount}% Margin
@@ -118,7 +123,9 @@ export const SalesProductsSlider = () => {
                 {/* Price Display */}
                 <div className="flex items-baseline justify-between pt-1 border-t border-gray-100">
                   <div>
-                    <span className="text-[10px] text-gray-500 block">Wholesale Rate</span>
+                    <span className="text-[10px] text-gray-500 block">
+                      Wholesale Rate
+                    </span>
                     <span className="text-base font-extrabold text-navy-950">
                       ₹{item.wholesalePrice}
                     </span>
@@ -139,7 +146,11 @@ export const SalesProductsSlider = () => {
                   className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-xs"
                 >
                   <div className="w-4 h-4 flex items-center justify-center shrink-0">
-                    <WhatsAppIcon className="w-full h-full" color="#ffffff" phoneColor="#059669" />
+                    <WhatsAppIcon
+                      className="w-full h-full"
+                      color="#ffffff"
+                      phoneColor="#059669"
+                    />
                   </div>
                   <span>Order on WhatsApp</span>
                 </a>

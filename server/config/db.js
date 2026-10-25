@@ -9,7 +9,7 @@ export const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(primaryUri, {
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 2000,
     });
     isConnected = true;
     console.log(`[MongoDB] Connected successfully to host: ${conn.connection.host} (${conn.connection.name})`);
@@ -20,7 +20,7 @@ export const connectDB = async () => {
     try {
       const { MongoMemoryServer } = await import("mongodb-memory-server");
       const mongod = await MongoMemoryServer.create({
-        instance: { dbName: "deepak_textiles" },
+        instance: { dbName: "deepak_textiles", launchTimeout: 60000 },
       });
       const memoryUri = mongod.getUri();
       const conn = await mongoose.connect(memoryUri);

@@ -40,11 +40,6 @@ app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 // Static uploads directory
 app.use("/uploads", express.static(path.join(process.cwd(), "public", "uploads")));
 
-// Health Check
-app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "healthy", service: "Deepak Textiles API" });
-});
-
 // Mounted Routes
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
@@ -73,7 +68,6 @@ const start = async () => {
       console.log(`===============================================`);
       console.log(` DEEPAK TEXTILES WHOLESALE SERVER (Pure JS)`);
       console.log(` Running on: http://localhost:${PORT}`);
-      console.log(` Health:     http://localhost:${PORT}/api/health`);
       console.log(`===============================================`);
     });
   } catch (err) {

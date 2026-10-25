@@ -17,7 +17,7 @@ function getApiBaseUrl() {
   }
 
   // Server-side (Node.js / SSR)
-  const backend = process.env.BACKEND_API_URL || "http://127.0.0.1:5000";
+  const backend = process.env.NEXT_PUBLIC_SITE_URL || process.env.BACKEND_API_URL || "http://127.0.0.1:3000";
   return `${backend}/api`;
 }
 
@@ -62,7 +62,19 @@ async function apiRequest(endpoint, options = {}) {
       headers,
     });
 
-    const data = await res.json();
+    const contentType = res.headers.get("content-type") || "";
+    let data;
+    if (contentType.includes("application/json")) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { message: text || `Server returned error (${res.status})` };
+      }
+    }
+
     if (!res.ok) {
       throw new Error(data.message || `Request failed (${res.status})`);
     }
