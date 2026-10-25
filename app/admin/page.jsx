@@ -1791,12 +1791,6 @@ export default function AdminDashboardPage() {
 
           {/* DUAL BANNER UPLOAD: 1. DESKTOP & 2. MOBILE SEPARATE FIELDS */}
           <div className="space-y-4 pt-1">
-            <div className="p-3 bg-amber-50/90 border border-amber-200/90 rounded-xl text-xs text-amber-950 flex items-start gap-2 shadow-xs">
-              <span className="font-bold text-base leading-none mt-0.5">💡</span>
-              <p className="leading-relaxed">
-                <strong>Desktop vs Mobile Responsive Separation:</strong> Computer / Laptop screens par Desktop banner dikhega. Mobile phone screens par Mobile banner dikhega. Mobile wala desktop mai nahi dikhega aur desktop wala mobile mai nahi dikhega!
-              </p>
-            </div>
 
             {/* FIELD 1: DESKTOP BANNER IMAGE */}
             <div className="p-4 rounded-2xl border-2 border-slate-200 bg-white space-y-3">
@@ -2009,14 +2003,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* DESTINATION / CLICK LINK */}
-          <Input
-            label="Banner Click Destination Link (Where should users go when clicked?)"
-            value={bannerForm.link}
-            onChange={(e) => setBannerForm({ ...bannerForm, link: e.target.value })}
-            placeholder="e.g. /products?category=sarees"
-            helperText="When buyers click on this banner, they will be taken to this page."
-          />
+
 
           {/* ACTIVE TOGGLE */}
           <div className="flex items-center gap-2 pt-1 pb-1">
