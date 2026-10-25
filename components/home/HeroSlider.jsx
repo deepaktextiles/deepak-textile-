@@ -15,6 +15,19 @@ import {
 } from "lucide-react";
 import { bannersApi } from "../../services/api.js";
 
+const getOptimizedBannerUrl = (url, isMobile = false) => {
+  if (!url || typeof url !== "string") return url;
+  if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
+    if (!url.includes("/f_auto") && !url.includes("/q_") && !url.includes("/w_")) {
+      const transform = isMobile
+        ? "w_1080,c_scale,q_100,f_auto,e_sharpen:40"
+        : "w_1920,c_scale,q_100,f_auto,e_sharpen:50";
+      return url.replace("/upload/", `/upload/${transform}/`);
+    }
+  }
+  return url;
+};
+
 export const HeroSlider = ({ customSettings }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -76,7 +89,11 @@ export const HeroSlider = ({ customSettings }) => {
     const fetchBanners = async () => {
       try {
         const res = await bannersApi.getAll();
-        if (res.success && Array.isArray(res.banners) && res.banners.length > 0) {
+        if (
+          res.success &&
+          Array.isArray(res.banners) &&
+          res.banners.length > 0
+        ) {
           const activeBanners = res.banners.filter((b) => b.active !== false);
           if (activeBanners.length > 0) {
             setSlides(activeBanners);
@@ -106,13 +123,15 @@ export const HeroSlider = ({ customSettings }) => {
     return () => clearInterval(interval);
   }, [isPaused, nextSlide]);
 
-  const whatsappCleanNumber = (customSettings?.whatsapp || "919308066552").replace(/[^0-9]/g, "");
+  const whatsappCleanNumber = (
+    customSettings?.whatsapp || "919308066552"
+  ).replace(/[^0-9]/g, "");
 
   return (
     <div className="w-full space-y-0">
       {/* 1. MAIN HERO SLIDER */}
       <section
-        className="relative w-full overflow-hidden bg-navy-950 min-h-[480px] sm:min-h-[540px] lg:min-h-[600px] flex items-center select-none"
+        className="relative w-full overflow-hidden bg-navy-950 aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[300px] md:min-h-[380px] lg:min-h-[440px] flex items-center select-none"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
@@ -123,29 +142,43 @@ export const HeroSlider = ({ customSettings }) => {
             <div
               key={slide._id || slide.id || index}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                isActive
+                  ? "opacity-100 z-10"
+                  : "opacity-0 z-0 pointer-events-none"
               }`}
             >
-              {/* Background Image with Zoom animation */}
+              {/* Background Image with Crisp HD rendering */}
               <div className="absolute inset-0 overflow-hidden">
                 {/* Desktop Banner: Strictly hidden on mobile (< 768px), visible on md+ */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={slide.image}
+                  src={getOptimizedBannerUrl(slide.image, false)}
                   alt={slide.title || "Deepak Textiles Desktop Banner"}
-                  className={`hidden md:block w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
-                    isActive ? "scale-105" : "scale-100"
-                  }`}
+                  loading="eager"
+                  fetchPriority={isActive ? "high" : "auto"}
+                  decoding="async"
+                  style={{
+                    imageRendering: "-webkit-optimize-contrast",
+                    WebkitBackfaceVisibility: "hidden",
+                    backfaceVisibility: "hidden",
+                  }}
+                  className="hidden md:block w-full h-full object-cover object-center pointer-events-none"
                 />
 
                 {/* Mobile Banner: Strictly visible on mobile (< 768px), hidden on md+ */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={slide.mobileImage || slide.image}
+                  src={getOptimizedBannerUrl(slide.mobileImage || slide.image, true)}
                   alt={slide.title || "Deepak Textiles Mobile Banner"}
-                  className={`block md:hidden w-full h-full object-cover object-center transition-transform duration-7000 ease-out ${
-                    isActive ? "scale-105" : "scale-100"
-                  }`}
+                  loading="eager"
+                  fetchPriority={isActive ? "high" : "auto"}
+                  decoding="async"
+                  style={{
+                    imageRendering: "-webkit-optimize-contrast",
+                    WebkitBackfaceVisibility: "hidden",
+                    backfaceVisibility: "hidden",
+                  }}
+                  className="block md:hidden w-full h-full object-cover object-center pointer-events-none"
                 />
               </div>
 
@@ -159,7 +192,7 @@ export const HeroSlider = ({ customSettings }) => {
                       </span>
                     )} */}
 
-                 {/* '   <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-white tracking-tight leading-[1.15] drop-shadow-sm">
+                    {/* '   <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-white tracking-tight leading-[1.15] drop-shadow-sm">
                       {slide.title}
                     </h1>' */}
 

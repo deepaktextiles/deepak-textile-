@@ -5,6 +5,19 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { bannersApi } from "../../services/api";
 
+const getOptimizedBannerUrl = (url, isMobile = false) => {
+  if (!url || typeof url !== "string") return url;
+  if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
+    if (!url.includes("/f_auto") && !url.includes("/q_") && !url.includes("/w_")) {
+      const transform = isMobile
+        ? "w_1080,c_scale,q_100,f_auto,e_sharpen:40"
+        : "w_1920,c_scale,q_100,f_auto,e_sharpen:50";
+      return url.replace("/upload/", `/upload/${transform}/`);
+    }
+  }
+  return url;
+};
+
 const DEFAULT_SLIDES = [
   {
     _id: "default-1",
@@ -213,18 +226,32 @@ export const TrendingBannerSlider = () => {
                 {/* Desktop Banner: Strictly hidden on mobile (< 768px), visible on md+ */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={banner.image}
-                  alt={banner.title}
+                  src={getOptimizedBannerUrl(banner.image, false)}
+                  alt={banner.title || "Trending Banner"}
                   draggable={false}
-                  className="hidden md:block w-full h-full object-cover object-center pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-[1.01]"
+                  loading="eager"
+                  decoding="async"
+                  style={{
+                    imageRendering: "-webkit-optimize-contrast",
+                    WebkitBackfaceVisibility: "hidden",
+                    backfaceVisibility: "hidden",
+                  }}
+                  className="hidden md:block w-full h-full object-cover object-center pointer-events-none select-none"
                 />
                 {/* Mobile Banner: Strictly visible on mobile (< 768px), hidden on md+ */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={banner.mobileImage || banner.image}
-                  alt={banner.title}
+                  src={getOptimizedBannerUrl(banner.mobileImage || banner.image, true)}
+                  alt={banner.title || "Trending Mobile Banner"}
                   draggable={false}
-                  className="block md:hidden w-full h-full object-cover object-center pointer-events-none select-none transition-transform duration-700 ease-out group-hover:scale-[1.01]"
+                  loading="eager"
+                  decoding="async"
+                  style={{
+                    imageRendering: "-webkit-optimize-contrast",
+                    WebkitBackfaceVisibility: "hidden",
+                    backfaceVisibility: "hidden",
+                  }}
+                  className="block md:hidden w-full h-full object-cover object-center pointer-events-none select-none"
                 />
               </Link>
             </div>
