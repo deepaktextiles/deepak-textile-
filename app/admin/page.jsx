@@ -101,12 +101,17 @@ export default function AdminDashboardPage() {
     address: "",
     gstin: "",
   });
+  const [uploadingSettingsBanner, setUploadingSettingsBanner] = useState(false);
 
   // 2. Products state
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
+  const [uploadingProductImages, setUploadingProductImages] = useState(false);
+  const [productUploadProgress, setProductUploadProgress] = useState("");
+  const [newImageUrlInput, setNewImageUrlInput] = useState("");
+  const [showUrlInput, setShowUrlInput] = useState(false);
   const [productForm, setProductForm] = useState({
     name: "",
     category: "",
@@ -116,7 +121,7 @@ export default function AdminDashboardPage() {
     minimumOrderQuantity: "10",
     fabric: "Banarasi Silk",
     color: "Multi / Catalog Set",
-    images: "",
+    images: [],
     description: "",
     stock: "100",
     unit: "piece",
@@ -126,6 +131,7 @@ export default function AdminDashboardPage() {
   // 3. Category State & Edit
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [uploadingCategoryImage, setUploadingCategoryImage] = useState(false);
   const [categoryForm, setCategoryForm] = useState({
     name: "",
     image: "",
@@ -482,6 +488,54 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Handle Showroom / MegaMenu Promotional Banner File Upload
+  const handleSettingsBannerUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setErrorMessage("Please select a valid image file (JPG, PNG, WebP).");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setErrorMessage("Image file size should be less than 10MB.");
+      return;
+    }
+
+    setUploadingSettingsBanner(true);
+    setErrorMessage("");
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const base64Data = reader.result;
+          const res = await uploadApi.uploadImage(base64Data, file.name);
+          if (res.success && res.url) {
+            setSettings((prev) => ({ ...prev, bannerImage: res.url }));
+            setSuccessMessage("Showroom promotional banner uploaded successfully!");
+            setTimeout(() => setSuccessMessage(""), 3500);
+          } else {
+            setErrorMessage(res.message || "Failed to upload image.");
+          }
+        } catch (uploadErr) {
+          setErrorMessage(uploadErr.message || "Error uploading image to server.");
+        } finally {
+          setUploadingSettingsBanner(false);
+        }
+      };
+      reader.onerror = () => {
+        setErrorMessage("Could not read image file from device.");
+        setUploadingSettingsBanner(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setErrorMessage(err.message || "Failed to read file.");
+      setUploadingSettingsBanner(false);
+    }
+  };
+
   // Open Add Product Modal
   const handleOpenAddProduct = () => {
     setEditingProductId(null);
@@ -494,18 +548,27 @@ export default function AdminDashboardPage() {
       minimumOrderQuantity: "10",
       fabric: "Banarasi Silk",
       color: "Catalog Matching Set",
-      images: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
+      images: [],
       description: "Direct Surat mill production lot. Premium finish with matching blouse / accessories.",
       stock: "100",
       unit: "piece",
       featured: true,
     });
+    setNewImageUrlInput("");
+    setShowUrlInput(false);
     setProductModalOpen(true);
   };
 
   // Open Edit Product Modal
   const handleOpenEditProduct = (prod) => {
     setEditingProductId(prod._id);
+    let initialImages = [];
+    if (Array.isArray(prod.images)) {
+      initialImages = prod.images.filter((img) => Boolean(img && typeof img === "string" && img.trim()));
+    } else if (typeof prod.images === "string" && prod.images.trim()) {
+      initialImages = prod.images.split("\n").map((u) => u.trim()).filter(Boolean);
+    }
+
     setProductForm({
       name: prod.name || "",
       category: prod.category?._id || prod.category || categories[0]?._id || "",
@@ -515,13 +578,160 @@ export default function AdminDashboardPage() {
       minimumOrderQuantity: prod.minimumOrderQuantity || "10",
       fabric: prod.fabric || "",
       color: prod.color || "",
-      images: Array.isArray(prod.images) ? prod.images.join("\n") : prod.images || "",
+      images: initialImages,
       description: prod.description || "",
       stock: prod.stock || "100",
       unit: prod.unit || "piece",
       featured: prod.featured !== undefined ? prod.featured : true,
     });
+    setNewImageUrlInput("");
+    setShowUrlInput(false);
     setProductModalOpen(true);
+  };
+
+  // Upload Multiple Product Images from Device (Mobile / Desktop)
+  const handleProductImageUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const validFiles = files.filter((f) => f.type.startsWith("image/"));
+    if (validFiles.length === 0) {
+      setErrorMessage("Please select valid image files (JPG, PNG, WebP).");
+      return;
+    }
+
+    const oversized = validFiles.find((f) => f.size > 10 * 1024 * 1024);
+    if (oversized) {
+      setErrorMessage(`Image "${oversized.name}" exceeds 10MB limit.`);
+      return;
+    }
+
+    setUploadingProductImages(true);
+    setErrorMessage("");
+
+    const uploadedUrls = [];
+    try {
+      for (let i = 0; i < validFiles.length; i++) {
+        const file = validFiles[i];
+        setProductUploadProgress(`Uploading photo ${i + 1} of ${validFiles.length}: ${file.name}...`);
+
+        const base64Data = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error(`Failed to read file: ${file.name}`));
+          reader.readAsDataURL(file);
+        });
+
+        const res = await uploadApi.uploadImage(base64Data, file.name);
+        if (res.success && res.url) {
+          uploadedUrls.push(res.url);
+        } else {
+          throw new Error(res.message || `Failed to upload ${file.name}`);
+        }
+      }
+
+      setProductForm((prev) => {
+        const current = Array.isArray(prev.images)
+          ? prev.images
+          : typeof prev.images === "string" && prev.images.trim()
+          ? prev.images.split("\n").map((u) => u.trim()).filter(Boolean)
+          : [];
+        return {
+          ...prev,
+          images: [...current, ...uploadedUrls],
+        };
+      });
+
+      setSuccessMessage(`${uploadedUrls.length} product image(s) uploaded successfully!`);
+      setTimeout(() => setSuccessMessage(""), 3500);
+    } catch (err) {
+      setErrorMessage(err.message || "Failed to upload one or more images.");
+    } finally {
+      setUploadingProductImages(false);
+      setProductUploadProgress("");
+      e.target.value = "";
+    }
+  };
+
+  // Remove single image from productForm
+  const handleRemoveProductImage = (indexToRemove) => {
+    setProductForm((prev) => {
+      const current = Array.isArray(prev.images) ? [...prev.images] : [];
+      current.splice(indexToRemove, 1);
+      return { ...prev, images: current };
+    });
+  };
+
+  // Set selected image as Primary / Main thumbnail (index 0)
+  const handleSetPrimaryProductImage = (index) => {
+    setProductForm((prev) => {
+      const current = Array.isArray(prev.images) ? [...prev.images] : [];
+      if (index > 0 && index < current.length) {
+        const [selected] = current.splice(index, 1);
+        current.unshift(selected);
+      }
+      return { ...prev, images: current };
+    });
+  };
+
+  // Add an image by direct web link / URL
+  const handleAddProductImageUrl = (url) => {
+    const trimmed = (url || "").trim();
+    if (!trimmed) return;
+    setProductForm((prev) => {
+      const current = Array.isArray(prev.images) ? [...prev.images] : [];
+      return { ...prev, images: [...current, trimmed] };
+    });
+    setNewImageUrlInput("");
+    setShowUrlInput(false);
+  };
+
+  // Category file upload handler
+  const handleCategoryFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setErrorMessage("Please select a valid image file (JPG, PNG, WebP).");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setErrorMessage("Category image size should be less than 10MB.");
+      return;
+    }
+
+    setUploadingCategoryImage(true);
+    setErrorMessage("");
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const base64Data = reader.result;
+          const res = await uploadApi.uploadImage(base64Data, file.name);
+          if (res.success && res.url) {
+            setCategoryForm((prev) => ({ ...prev, image: res.url }));
+            setSuccessMessage("Category image uploaded successfully!");
+            setTimeout(() => setSuccessMessage(""), 3500);
+          } else {
+            setErrorMessage(res.message || "Failed to upload image.");
+          }
+        } catch (uploadErr) {
+          setErrorMessage(uploadErr.message || "Error uploading image.");
+        } finally {
+          setUploadingCategoryImage(false);
+        }
+      };
+      reader.onerror = () => {
+        setErrorMessage("Could not read image file.");
+        setUploadingCategoryImage(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setErrorMessage(err.message || "Failed to read file.");
+      setUploadingCategoryImage(false);
+    }
   };
 
   // Save Product (Create or Update)
@@ -530,10 +740,20 @@ export default function AdminDashboardPage() {
     setSuccessMessage("");
     setErrorMessage("");
 
-    const imageList = productForm.images
-      .split("\n")
-      .map((url) => url.trim())
-      .filter((url) => url.length > 0);
+    let imageList = [];
+    if (Array.isArray(productForm.images)) {
+      imageList = productForm.images.filter((url) => typeof url === "string" && url.trim().length > 0);
+    } else if (typeof productForm.images === "string") {
+      imageList = productForm.images
+        .split("\n")
+        .map((url) => url.trim())
+        .filter((url) => url.length > 0);
+    }
+
+    if (imageList.length === 0) {
+      setErrorMessage("Please upload at least 1 image for the wholesale product.");
+      return;
+    }
 
     const payload = {
       name: productForm.name,
@@ -544,7 +764,7 @@ export default function AdminDashboardPage() {
       minimumOrderQuantity: Number(productForm.minimumOrderQuantity) || 1,
       fabric: productForm.fabric,
       color: productForm.color,
-      images: imageList.length > 0 ? imageList : ["https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"],
+      images: imageList,
       description: productForm.description,
       stock: Number(productForm.stock) || 100,
       unit: productForm.unit,
@@ -1572,6 +1792,103 @@ export default function AdminDashboardPage() {
               />
             </div>
 
+            {/* Showroom / MegaMenu Promotional Banner */}
+            <div className="p-4 rounded-2xl border-2 border-slate-200 bg-white space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-navy-500">
+                    Showroom / Mega Menu Promotional Banner
+                  </label>
+                  <span className="text-[11px] text-txt-secondary">
+                    Displayed in the website navigation dropdown menu and store promotional cards
+                  </span>
+                </div>
+                {settings.bannerImage && (
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800 uppercase tracking-wide">
+                    Banner Active
+                  </span>
+                )}
+              </div>
+
+              <div className="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-4 text-center bg-slate-50/80 hover:bg-blue-50/20 transition-all">
+                <input
+                  type="file"
+                  id="settingsBannerUploadInput"
+                  accept="image/*"
+                  onChange={handleSettingsBannerUpload}
+                  className="hidden"
+                  disabled={uploadingSettingsBanner}
+                />
+
+                {uploadingSettingsBanner ? (
+                  <div className="py-6 flex flex-col items-center justify-center space-y-2 text-blue-600">
+                    <RefreshCw className="w-8 h-8 animate-spin" />
+                    <p className="text-xs font-bold font-poppins">Uploading showroom banner from device...</p>
+                    <p className="text-[11px] text-txt-secondary">Please wait a moment...</p>
+                  </div>
+                ) : settings.bannerImage ? (
+                  <div className="space-y-3">
+                    <div className="relative aspect-[21/9] max-h-48 w-full rounded-xl overflow-hidden border border-border shadow-xs bg-navy-950">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={settings.bannerImage}
+                        alt="Showroom Banner Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                      <label
+                        htmlFor="settingsBannerUploadInput"
+                        className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold transition-all shadow-xs"
+                      >
+                        <UploadCloud className="w-3.5 h-3.5" />
+                        <span>Change Photo from Device</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setSettings({ ...settings, bannerImage: "" })}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-red-100 text-red-600 text-xs font-bold transition-all"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-4 flex flex-col items-center justify-center space-y-2">
+                    <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                      <UploadCloud className="w-6 h-6" />
+                    </div>
+                    <label
+                      htmlFor="settingsBannerUploadInput"
+                      className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-all"
+                    >
+                      <UploadCloud className="w-4 h-4" />
+                      <span>Upload Banner from Device</span>
+                    </label>
+                    <p className="text-[11px] text-txt-secondary">
+                      Recommended: 1200x500 or 1600x600 px (JPG, PNG, WEBP)
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* URL input fallback */}
+              <details className="group pt-0.5">
+                <summary className="text-[11px] text-txt-secondary hover:text-navy-500 cursor-pointer select-none font-medium">
+                  ▸ Or enter Banner Image URL directly instead
+                </summary>
+                <div className="pt-2">
+                  <Input
+                    placeholder="https://images.unsplash.com/... or /images/..."
+                    value={settings.bannerImage}
+                    onChange={(e) => setSettings({ ...settings, bannerImage: e.target.value })}
+                  />
+                </div>
+              </details>
+            </div>
+
             <div className="pt-2 flex justify-end">
               <Button
                 type="submit"
@@ -1672,15 +1989,158 @@ export default function AdminDashboardPage() {
             />
           </div>
 
-          <Textarea
-            label="Product Image URLs (One URL per line)"
-            rows={3}
-            value={productForm.images}
-            onChange={(e) => setProductForm({ ...productForm, images: e.target.value })}
-            placeholder="https://images.unsplash.com/..."
-            helperText="Provide direct image links (Unsplash or any hosted image). First link will be main thumbnail."
-            required
-          />
+          {/* PRODUCT IMAGES UPLOAD SECTION */}
+          <div className="space-y-3 pt-1">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold uppercase tracking-wider text-navy-500">
+                Product Images (Upload from Device) *
+              </label>
+              <span className="text-[11px] font-medium text-txt-secondary">
+                {Array.isArray(productForm.images) ? productForm.images.length : 0} image(s) selected
+              </span>
+            </div>
+
+            {/* UPLOAD DROPZONE / BUTTON */}
+            <div className="border-2 border-dashed border-slate-300 hover:border-gold-500 rounded-xl p-4 text-center bg-slate-50/70 hover:bg-gold-50/20 transition-all">
+              <input
+                type="file"
+                id="productImageDeviceUpload"
+                accept="image/*"
+                multiple
+                onChange={handleProductImageUpload}
+                className="hidden"
+                disabled={uploadingProductImages}
+              />
+
+              {uploadingProductImages ? (
+                <div className="py-4 flex flex-col items-center justify-center space-y-2 text-gold-600">
+                  <RefreshCw className="w-7 h-7 animate-spin text-amber-600" />
+                  <p className="text-xs font-bold font-poppins text-navy-500">
+                    {productUploadProgress || "Uploading images from device..."}
+                  </p>
+                  <p className="text-[11px] text-txt-secondary">Processing image files, please wait...</p>
+                </div>
+              ) : (
+                <label
+                  htmlFor="productImageDeviceUpload"
+                  className="cursor-pointer flex flex-col items-center justify-center py-2.5 space-y-2"
+                >
+                  <div className="w-12 h-12 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center shadow-xs">
+                    <UploadCloud className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-sm font-bold text-navy-500 hover:text-gold-600 underline">
+                      Choose images from your device (Computer / Phone)
+                    </span>
+                    <span className="text-xs text-txt-secondary block mt-0.5">
+                      Select one or multiple photos (JPG, PNG, WEBP — Max 10MB each)
+                    </span>
+                  </div>
+                </label>
+              )}
+            </div>
+
+            {/* PREVIEW THUMBNAILS GRID */}
+            {Array.isArray(productForm.images) && productForm.images.length > 0 && (
+              <div className="space-y-2">
+                <div className="text-[11px] font-semibold text-txt-secondary flex items-center justify-between">
+                  <span>Uploaded Images (First image is primary thumbnail)</span>
+                  <button
+                    type="button"
+                    onClick={() => setProductForm({ ...productForm, images: [] })}
+                    className="text-red-500 hover:text-red-700 text-[11px] underline"
+                  >
+                    Remove all
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5 max-h-56 overflow-y-auto p-1 border border-slate-100 rounded-lg">
+                  {productForm.images.map((imgUrl, idx) => (
+                    <div
+                      key={idx}
+                      className={`relative group rounded-lg overflow-hidden border-2 bg-slate-100 aspect-square shadow-xs ${
+                        idx === 0 ? "border-gold-500 ring-2 ring-gold-400/40" : "border-slate-200"
+                      }`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={imgUrl}
+                        alt={`Product image ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+
+                      {/* Main / Primary Indicator */}
+                      {idx === 0 ? (
+                        <span className="absolute top-1 left-1 bg-gold-500 text-navy-950 font-extrabold text-[9px] px-1.5 py-0.5 rounded shadow">
+                          ★ Main
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleSetPrimaryProductImage(idx)}
+                          className="absolute top-1 left-1 bg-black/60 hover:bg-gold-500 hover:text-navy-950 text-white text-[9px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Set as Main Thumbnail"
+                        >
+                          Set Main
+                        </button>
+                      )}
+
+                      {/* Remove Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveProductImage(idx)}
+                        className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full shadow opacity-90 hover:opacity-100 transition-opacity"
+                        title="Remove image"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* OPTIONAL ADD VIA URL OPTION */}
+            <div className="pt-0.5">
+              {!showUrlInput ? (
+                <button
+                  type="button"
+                  onClick={() => setShowUrlInput(true)}
+                  className="text-[11px] text-blue-600 hover:underline flex items-center gap-1 font-medium"
+                >
+                  <Plus className="w-3 h-3" /> Or add image by URL / paste link
+                </button>
+              ) : (
+                <div className="flex gap-2 items-center bg-slate-50 p-2 rounded-lg border border-slate-200">
+                  <Input
+                    placeholder="https://images.unsplash.com/photo-..."
+                    value={newImageUrlInput}
+                    onChange={(e) => setNewImageUrlInput(e.target.value)}
+                    className="text-xs flex-1"
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleAddProductImageUrl(newImageUrlInput)}
+                    className="text-xs font-semibold whitespace-nowrap"
+                  >
+                    Add URL
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowUrlInput(false);
+                      setNewImageUrlInput("");
+                    }}
+                    className="text-xs text-slate-400 hover:text-slate-600 px-1"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
 
           <Textarea
             label="Product Description / Fabric Details"
@@ -1724,12 +2184,100 @@ export default function AdminDashboardPage() {
             required
           />
 
-          <Input
-            label="Category Image URL"
-            value={categoryForm.image}
-            onChange={(e) => setCategoryForm({ ...categoryForm, image: e.target.value })}
-            placeholder="https://images.unsplash.com/..."
-          />
+          {/* CATEGORY IMAGE UPLOAD SECTION */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold uppercase tracking-wider text-navy-500">
+                Category Image (Upload from Device)
+              </label>
+              {categoryForm.image && (
+                <span className="text-[11px] font-semibold text-emerald-600">✓ Image Attached</span>
+              )}
+            </div>
+
+            <div className="border-2 border-dashed border-slate-300 hover:border-[#C00000] rounded-xl p-4 text-center bg-slate-50/80 hover:bg-red-50/20 transition-all">
+              <input
+                type="file"
+                id="categoryImageUploadInput"
+                accept="image/*"
+                onChange={handleCategoryFileUpload}
+                className="hidden"
+                disabled={uploadingCategoryImage}
+              />
+
+              {uploadingCategoryImage ? (
+                <div className="py-6 flex flex-col items-center justify-center space-y-2 text-[#C00000]">
+                  <RefreshCw className="w-8 h-8 animate-spin" />
+                  <p className="text-xs font-bold font-poppins">Uploading category image from device...</p>
+                  <p className="text-[11px] text-txt-secondary">Please wait a moment...</p>
+                </div>
+              ) : categoryForm.image ? (
+                <div className="space-y-3">
+                  <div className="relative aspect-[16/9] max-h-48 w-full rounded-xl overflow-hidden border border-border shadow-xs bg-slate-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={categoryForm.image}
+                      alt="Category Preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2 right-2">
+                      <span className="px-2.5 py-1 rounded-md bg-emerald-600 text-white text-[10px] font-bold shadow-xs">
+                        ✓ Current Image
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <label
+                      htmlFor="categoryImageUploadInput"
+                      className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold transition-all shadow-xs"
+                    >
+                      <UploadCloud className="w-3.5 h-3.5" />
+                      <span>Change Photo from Device</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setCategoryForm({ ...categoryForm, image: "" })}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-red-100 text-red-600 text-xs font-bold transition-all"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Remove</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-4 flex flex-col items-center justify-center space-y-2">
+                  <div className="w-12 h-12 rounded-xl bg-red-50 text-[#C00000] flex items-center justify-center">
+                    <UploadCloud className="w-6 h-6" />
+                  </div>
+                  <label
+                    htmlFor="categoryImageUploadInput"
+                    className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#C00000] hover:bg-[#A80000] text-white text-xs font-bold shadow-sm transition-all"
+                  >
+                    <UploadCloud className="w-4 h-4" />
+                    <span>Upload Category Image from Device</span>
+                  </label>
+                  <p className="text-[11px] text-txt-secondary">
+                    Supports JPG, PNG, WEBP (Max 10MB)
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* URL input fallback */}
+            <details className="group pt-0.5">
+              <summary className="text-[11px] text-txt-secondary hover:text-navy-500 cursor-pointer select-none font-medium">
+                ▸ Or enter Category Image URL directly instead
+              </summary>
+              <div className="pt-2">
+                <Input
+                  placeholder="https://images.unsplash.com/... or /images/..."
+                  value={categoryForm.image}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, image: e.target.value })}
+                />
+              </div>
+            </details>
+          </div>
 
           <Textarea
             label="Category Description"
