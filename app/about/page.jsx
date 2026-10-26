@@ -55,7 +55,7 @@ export default function AboutPage() {
           <div className="relative rounded-2xl overflow-hidden border border-border shadow-elevated">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80"
+              src="/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"
               alt="Surat Textile Mill"
               className="w-full h-full object-cover"
             />

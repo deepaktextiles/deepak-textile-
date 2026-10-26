@@ -11,7 +11,7 @@ export const BestSellerMensSlider = () => {
     {
       id: 1,
       title: "Jackets and Coats",
-      image: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=85",
+      image: "/images/selesproductsimages/4add71ea-fd79-47b5-8f73-75dd4f6829cd.avif",
       borderColor: "border-[#b82548]",
       barBg: "bg-[#b82548]",
       link: "/products?search=Jacket",
@@ -19,7 +19,7 @@ export const BestSellerMensSlider = () => {
     {
       id: 2,
       title: "Track Pants & Casuals",
-      image: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?auto=format&fit=crop&w=800&q=85",
+      image: "/images/selesproductsimages/1980c85d-cd71-4c64-9f1e-f545a1601d80.avif",
       borderColor: "border-[#b47012]",
       barBg: "bg-[#b47012]",
       link: "/products?search=Fabric",
@@ -27,7 +27,7 @@ export const BestSellerMensSlider = () => {
     {
       id: 3,
       title: "Kurta Pajama",
-      image: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=800&q=85",
+      image: "/images/selesproductsimages/ed94ff37-0778-4c5f-956e-f6e7632ec20a.avif",
       borderColor: "border-black",
       barBg: "bg-black",
       link: "/products?search=Kurta",
@@ -35,7 +35,7 @@ export const BestSellerMensSlider = () => {
     {
       id: 4,
       title: "Sherwani",
-      image: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?auto=format&fit=crop&w=800&q=85",
+      image: "/images/selesproductsimages/b58da001-d913-4eb8-a7fd-d59f96d1a1fb.avif",
       borderColor: "border-black",
       barBg: "bg-black",
       link: "/products?search=Sherwani",
@@ -43,7 +43,7 @@ export const BestSellerMensSlider = () => {
     {
       id: 5,
       title: "Jodhpuri Suit",
-      image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=85",
+      image: "/images/selesproductsimages/44260183-a811-4528-a8c3-097b4bf91ebb.avif",
       borderColor: "border-black",
       barBg: "bg-black",
       link: "/products?search=Suit",
@@ -51,7 +51,7 @@ export const BestSellerMensSlider = () => {
     {
       id: 6,
       title: "Shirting & Suiting Thaan",
-      image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=800&q=85",
+      image: "/images/selesproductsimages/7bc3e582-f0d0-4032-8993-7e3d7b22cfa9.avif",
       borderColor: "border-[#14213d]",
       barBg: "bg-[#14213d]",
       link: "/products?category=fabrics-running-material",

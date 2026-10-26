@@ -17,7 +17,7 @@ export default function HomePage() {
   const [settings, setSettings] = useState({
     bannerTitle: "Deepak Textiles — Clothing & Fabric Wholesaler",
     bannerSubtitle: "Darbhanga, Bihar • Bulk Designer Sarees, Suit Pieces, Shirting & Suiting, Lehenga & Readymade • Estd. 2001",
-    bannerImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
     phone: "+91 93080 66552",
     whatsapp: "+91 93080 66552",
   });
@@ -75,40 +75,46 @@ export default function HomePage() {
           <div className="w-16 h-1 bg-gold-500 mx-auto mt-3 rounded-full" />
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 sm:gap-8">
-          {(categories.length > 0 ? categories.slice(0, 4) : [
-            { name: "SAREES", slug: "wholesale-sarees", image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80" },
-            { name: "DRESS MATERIALS", slug: "dress-materials", image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80" },
-            { name: "KURTA SETS", slug: "kurti-sets", image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80" },
-            { name: "LEHENGA CHOLI", slug: "lehenga-choli", image: "https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&w=800&q=80" },
-          ]).map((cat) => (
-            <Link
-              key={cat._id || cat.slug}
-              href={`/products?category=${cat.slug}`}
-              className="group flex flex-col items-center"
-            >
-              {/* Card Image Box with rounded border like reference */}
-              <div className="w-full aspect-[4/4.2] rounded-2xl overflow-hidden border-2 border-navy-900/90 shadow-sm group-hover:shadow-xl group-hover:border-gold-500 transition-all duration-300 bg-white">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={
-                    cat.image ||
-                    "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
-                  }
-                  alt={cat.name}
-                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                />
+        {loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 sm:gap-8">
+            {[1, 2, 3, 4].map((n) => (
+              <div key={n} className="flex flex-col items-center animate-pulse">
+                <div className="w-full aspect-[4/4.2] rounded-2xl bg-gray-200 border-2 border-gray-300" />
+                <div className="h-4 w-28 bg-gray-200 rounded mt-3.5" />
               </div>
+            ))}
+          </div>
+        ) : categories.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 sm:gap-8">
+            {categories.slice(0, 4).map((cat) => (
+              <Link
+                key={cat._id || cat.slug}
+                href={`/products?category=${cat.slug}`}
+                className="group flex flex-col items-center"
+              >
+                {/* Card Image Box with rounded border like reference */}
+                <div className="w-full aspect-[4/4.2] rounded-2xl overflow-hidden border-2 border-navy-900/90 shadow-sm group-hover:shadow-xl group-hover:border-gold-500 transition-all duration-300 bg-white">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      cat.image ||
+                      "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"
+                    }
+                    alt={cat.name}
+                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
 
-              {/* Bold Uppercase Title Underneath (like reference image) */}
-              <div className="pt-3.5 text-center">
-                <h3 className="font-heading font-extrabold text-sm sm:text-base tracking-wider uppercase text-navy-950 group-hover:text-gold-600 transition-colors">
-                  {cat.name}
-                </h3>
-              </div>
-            </Link>
-          ))}
-        </div>
+                {/* Bold Uppercase Title Underneath (like reference image) */}
+                <div className="pt-3.5 text-center">
+                  <h3 className="font-heading font-extrabold text-sm sm:text-base tracking-wider uppercase text-navy-950 group-hover:text-gold-600 transition-colors">
+                    {cat.name}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : null}
       </section>
 
       {/* 3. TRENDING NOW — IMAGE BANNER SLIDER (Matching Reference Image) */}

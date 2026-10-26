@@ -123,7 +123,7 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
                 <img
                   src={
                     settings?.bannerImage ||
-                    "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+                    "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"
                   }
                   alt="Deepak Textiles Surat Wholesale"
                   className="absolute inset-0 w-full h-full object-cover object-top opacity-35 mix-blend-overlay"

@@ -9,7 +9,7 @@ export const ProductCard = ({ product }) => {
 
   const primaryImage =
     product.images?.[0] ||
-    "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80";
+    "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif";
 
   const wholesalePrice = product.wholesalePrice || product.price || 499;
   // If retail MRP is provided and higher, use it; otherwise compute Surat mill discount MRP (approx 2.5x wholesale)

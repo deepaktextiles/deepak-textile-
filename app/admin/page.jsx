@@ -836,7 +836,7 @@ export default function AdminDashboardPage() {
 
     const payload = {
       name: categoryForm.name.trim(),
-      image: categoryForm.image.trim() || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80",
+      image: categoryForm.image.trim() || "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
       description: categoryForm.description.trim(),
     };
 
@@ -1343,7 +1343,7 @@ export default function AdminDashboardPage() {
                       <td className="py-3 px-4 flex items-center gap-3">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={prod.images?.[0] || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=150&q=80"}
+                          src={prod.images?.[0] || "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"}
                           alt={prod.name}
                           className="w-12 h-14 object-cover rounded border border-border shrink-0"
                         />
@@ -1463,7 +1463,7 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center gap-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={cat.image || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=150&q=80"}
+                    src={cat.image || "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"}
                     alt={cat.name}
                     className="w-12 h-12 object-cover rounded-lg border border-border shrink-0"
                   />
@@ -1881,7 +1881,7 @@ export default function AdminDashboardPage() {
                 </summary>
                 <div className="pt-2">
                   <Input
-                    placeholder="https://images.unsplash.com/... or /images/..."
+                    placeholder="https://... or /uploads/..."
                     value={settings.bannerImage}
                     onChange={(e) => setSettings({ ...settings, bannerImage: e.target.value })}
                   />
@@ -2113,7 +2113,7 @@ export default function AdminDashboardPage() {
               ) : (
                 <div className="flex gap-2 items-center bg-slate-50 p-2 rounded-lg border border-slate-200">
                   <Input
-                    placeholder="https://images.unsplash.com/photo-..."
+                    placeholder="https://... or /uploads/..."
                     value={newImageUrlInput}
                     onChange={(e) => setNewImageUrlInput(e.target.value)}
                     className="text-xs flex-1"
@@ -2271,7 +2271,7 @@ export default function AdminDashboardPage() {
               </summary>
               <div className="pt-2">
                 <Input
-                  placeholder="https://images.unsplash.com/... or /images/..."
+                  placeholder="https://... or /uploads/..."
                   value={categoryForm.image}
                   onChange={(e) => setCategoryForm({ ...categoryForm, image: e.target.value })}
                 />
