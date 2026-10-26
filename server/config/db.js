@@ -8,7 +8,15 @@ let isConnected = false;
 export const connectDB = async () => {
   if (isConnected) return;
 
-  const primaryUri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/deepak_textiles";
+  let primaryUri = (
+    process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/deepak_textiles"
+  ).trim();
+
+  // Strip accidental "MONGODB_URI=" prefix or surrounding quotes if pasted in hosting dashboard
+  if (primaryUri.startsWith("MONGODB_URI=")) {
+    primaryUri = primaryUri.replace(/^MONGODB_URI=/, "").trim();
+  }
+  primaryUri = primaryUri.replace(/^["']|["']$/g, "").trim();
 
   try {
     const conn = await mongoose.connect(primaryUri, {
