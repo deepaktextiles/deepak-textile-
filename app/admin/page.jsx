@@ -1910,7 +1910,7 @@ export default function AdminDashboardPage() {
         isOpen={productModalOpen}
         onClose={() => setProductModalOpen(false)}
         title={editingProductId ? "Edit Wholesale Product" : "Add New Wholesale Product"}
-        size="lg"
+        size="2xl"
       >
         <form onSubmit={handleSaveProduct} className="space-y-4 pt-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -2314,7 +2314,7 @@ export default function AdminDashboardPage() {
         isOpen={bannerModalOpen}
         onClose={() => setBannerModalOpen(false)}
         title={editingBannerId ? "Edit Promotional Banner" : "Add New Promotional Banner"}
-        size="lg"
+        size="2xl"
       >
         <form onSubmit={handleSaveBanner} className="space-y-4 pt-2">
           {/* Placement and Order */}
@@ -2337,8 +2337,60 @@ export default function AdminDashboardPage() {
             />
           </div>
 
-          {/* DUAL BANNER UPLOAD: 1. DESKTOP & 2. MOBILE SEPARATE FIELDS */}
-          <div className="space-y-4 pt-1">
+          {/* CATEGORY REDIRECT DROPDOWN (Click Destination) */}
+          <div className="p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-red-50 text-[#C00000] flex items-center justify-center font-bold">
+                <ExternalLink className="w-4 h-4" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-navy-500">
+                  Banner Click Redirect (Category Selection) *
+                </label>
+                <span className="text-[11px] text-txt-secondary">
+                  Customer is banner par click karega to kis category ya page par redirect hoga
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <Select
+                label="Choose Category / Destination *"
+                value={
+                  categories.some((c) => `/products?category=${c.slug}` === bannerForm.link)
+                    ? bannerForm.link
+                    : bannerForm.link === "/products" || !bannerForm.link
+                    ? "/products"
+                    : "custom"
+                }
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val !== "custom") {
+                    setBannerForm({ ...bannerForm, link: val });
+                  }
+                }}
+              >
+                <option value="/products">🛒 All Products (/products)</option>
+                {categories.map((cat) => (
+                  <option key={cat._id || cat.slug} value={`/products?category=${cat.slug}`}>
+                    📁 {cat.name} (/products?category={cat.slug})
+                  </option>
+                ))}
+                <option value="custom">🔗 Custom Link / External URL</option>
+              </Select>
+
+              <Input
+                label="Target Link / URL *"
+                value={bannerForm.link || ""}
+                onChange={(e) => setBannerForm({ ...bannerForm, link: e.target.value })}
+                placeholder="/products?category=sarees"
+                helperText="Category chunne par ye link apne aap set ho jayega"
+              />
+            </div>
+          </div>
+
+          {/* DUAL BANNER UPLOAD: 1. DESKTOP & 2. MOBILE SEPARATE FIELDS (2-Column Grid) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-1">
 
             {/* FIELD 1: DESKTOP BANNER IMAGE */}
             <div className="p-4 rounded-2xl border-2 border-slate-200 bg-white space-y-3">

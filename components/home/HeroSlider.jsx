@@ -32,109 +32,70 @@ export const HeroSlider = ({ customSettings }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const defaultSlides = [
-    {
-      id: 1,
-      badge: "Deepak Textiles • Darbhanga",
-      title: "Royal Banarasi & Designer Saree Collection",
-      subtitle:
-        "Pure Katan Silk, Georgette, Organza & Zari Weave Sarees. Direct wholesale rates for retailers & boutique owners across Bihar & India.",
-      image:
-        "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
-      link: "/products?category=sarees",
-      btnText: "Explore Saree Lots",
-      accent: "from-amber-950/90 via-navy-950/80 to-navy-950/60",
-    },
-    {
-      id: 2,
-      badge: "Wholesale Suit Pieces",
-      title: "Designer Dress Materials & Unstitched Suits",
-      subtitle:
-        "Pure Cambric Cotton, Chanderi Silk & Rayon 3-Piece Sets with matching Dupattas. High margin wholesale lots.",
-      image:
-        "/images/selesproductsimages/a3198247-d1d7-47e6-a99b-1e0d14f3ec33.avif",
-      link: "/products?category=dress-materials",
-      btnText: "View Suit Pieces",
-      accent: "from-rose-950/90 via-navy-950/80 to-navy-950/60",
-    },
-    {
-      id: 3,
-      badge: "Festive & Wedding Special",
-      title: "Heavy Zari & Bridal Saree Collection",
-      subtitle:
-        "Handpicked bridal and festive collections ready for dispatch. Fast delivery across North Bihar & Pan-India.",
-      image:
-        "/images/selesproductsimages/869f376e-f235-4b78-824d-6899c1588dd3.avif",
-      link: "/products?category=sarees",
-      btnText: "View Bridal Lots",
-      accent: "from-purple-950/90 via-navy-950/80 to-navy-950/60",
-    },
-    {
-      id: 4,
-      badge: "Ready Wholesale Stock",
-      title: "Shirting & Suiting, Kurtis, Lehenga & Readymade",
-      subtitle:
-        "High-demand men's fabrics, partywear kurtis & festive lehengas. Serving 1,000+ retail stores since 2001.",
-      image:
-        "/images/selesproductsimages/4add71ea-fd79-47b5-8f73-75dd4f6829cd.avif",
-      link: "/products",
-      btnText: "Browse Full Catalog",
-      accent: "from-indigo-950/90 via-navy-950/80 to-navy-950/60",
-    },
-  ];
 
-  const [slides, setSlides] = useState(defaultSlides);
+
+  const [slides, setSlides] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchBanners = async () => {
       try {
         const res = await bannersApi.getAll();
         if (
+          isMounted &&
           res.success &&
           Array.isArray(res.banners) &&
           res.banners.length > 0
         ) {
-          const activeBanners = res.banners.filter((b) => b.active !== false);
-          if (activeBanners.length > 0) {
-            setSlides(activeBanners);
-          }
+          const activeBanners = res.banners.filter(
+            (b) => b.active !== false && (b.type === "hero" || !b.type)
+          );
+          setSlides(activeBanners);
         }
       } catch (err) {
         console.error("Could not load banners:", err);
       }
     };
     fetchBanners();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const nextSlide = useCallback(() => {
+    if (slides.length <= 1) return;
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   }, [slides.length]);
 
   const prevSlide = useCallback(() => {
+    if (slides.length <= 1) return;
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   }, [slides.length]);
 
-  // Autoplay slider every 5.5 seconds
+  // Autoplay slider every 5.5 seconds (only if multiple slides)
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || slides.length <= 1) return;
     const interval = setInterval(() => {
       nextSlide();
     }, 5500);
     return () => clearInterval(interval);
-  }, [isPaused, nextSlide]);
+  }, [isPaused, nextSlide, slides.length]);
 
   const whatsappCleanNumber = (
     customSettings?.whatsapp || "919308066552"
   ).replace(/[^0-9]/g, "");
 
+  const hasSlides = Array.isArray(slides) && slides.length > 0;
+
   return (
     <div className="w-full space-y-0">
-      {/* 1. MAIN HERO SLIDER */}
-      <section
-        className="relative w-full overflow-hidden bg-navy-950 aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[300px] md:min-h-[380px] lg:min-h-[440px] flex items-center select-none"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
+      {/* 1. MAIN HERO SLIDER (Only visible when admin adds banners) */}
+      {hasSlides && (
+        <section
+          className="relative w-full overflow-hidden bg-navy-950 aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[300px] md:min-h-[380px] lg:min-h-[440px] flex items-center select-none"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
         {/* Slides Track */}
         {slides.map((slide, index) => {
           const isActive = index === currentSlide;
@@ -182,108 +143,54 @@ export const HeroSlider = ({ customSettings }) => {
                 />
               </div>
 
-              {/* Slide Content or Full Clickable Graphic Link */}
-              {slide.title ? (
-                <div className="relative z-20 h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
-                  <div className="max-w-3xl space-y-5 sm:space-y-6 py-16">
-                    {/* {slide.badge && (
-                      <span className="inline-block px-3 py-1 rounded-full bg-gold-500/20 text-gold-400 border border-gold-500/30 text-xs font-bold uppercase tracking-wider">
-                        {slide.badge}
-                      </span>
-                    )} */}
-
-                    {/* '   <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading text-white tracking-tight leading-[1.15] drop-shadow-sm">
-                      {slide.title}
-                    </h1>' */}
-
-                    {/* {slide.subtitle && (
-                      <p className="text-sm sm:text-lg text-gray-200 max-w-2xl font-normal leading-relaxed">
-                        {slide.subtitle}
-                      </p>
-                    )} */}
-
-                    {/* CTA Buttons */}
-                    {/* <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                      <Link
-                        href={slide.link || "/products"}
-                        style={{
-                          padding: "18px 24px",
-                          fontWeight: 400,
-                          borderRadius: "4px",
-                          letterSpacing: "0.5px",
-                          fontSize: "14px",
-                        }}
-                        className="inline-flex items-center gap-2 bg-[#C00000] hover:bg-[#A80000] text-white transition-all transform hover:-translate-y-0.5 font-poppins shadow-md leading-none"
-                      >
-                        <span>{slide.btnText || "Explore Wholesale"}</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-
-                      <a
-                        href={`https://wa.me/${whatsappCleanNumber}?text=Hello%20Deepak%20Textiles,%20please%20send%20wholesale%20rates%20for%20${encodeURIComponent(
-                          slide.title
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          padding: "18px 24px",
-                          fontWeight: 400,
-                          borderRadius: "4px",
-                          letterSpacing: "0.5px",
-                          fontSize: "14px",
-                        }}
-                        className="inline-flex items-center gap-2 bg-[#C00000] hover:bg-[#A80000] text-white shadow-md transition-all transform hover:-translate-y-0.5 font-poppins leading-none"
-                      >
-                        <MessageCircle className="w-4 h-4" />
-                        <span>Book Now</span>
-                      </a>
-                    </div> */}
-                  </div>
-                </div>
-              ) : (
-                <Link
-                  href={slide.link || "/products"}
-                  className="absolute inset-0 z-20 block w-full h-full cursor-pointer"
-                  aria-label="View Banner Collection"
-                />
-              )}
+              {/* Full Clickable Banner Link redirecting to assigned Category/Page */}
+              <Link
+                href={slide.link || "/products"}
+                className="absolute inset-0 z-20 block w-full h-full cursor-pointer"
+                aria-label={slide.title || "View Collection"}
+              />
             </div>
           );
         })}
 
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-lg"
-          aria-label="Previous Slide"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-lg"
-          aria-label="Next Slide"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-
-        {/* Bottom Slide Indicators / Bars */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
-          {slides.map((_, idx) => (
+        {/* Navigation Arrows (Only if multiple slides) */}
+        {slides.length > 1 && (
+          <>
             <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`transition-all duration-300 rounded-full h-2.5 ${
-                currentSlide === idx
-                  ? "w-10 bg-gold-400 shadow-md shadow-gold-500/50"
-                  : "w-2.5 bg-white/40 hover:bg-white/80"
-              }`}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
-        </div>
+              onClick={prevSlide}
+              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-lg"
+              aria-label="Previous Slide"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            <button
+              onClick={nextSlide}
+              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 hover:bg-gold-500 hover:text-navy-950 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all shadow-lg"
+              aria-label="Next Slide"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* Bottom Slide Indicators / Bars */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+              {slides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`transition-all duration-300 rounded-full h-2.5 ${
+                    currentSlide === idx
+                      ? "w-10 bg-gold-400 shadow-md shadow-gold-500/50"
+                      : "w-2.5 bg-white/40 hover:bg-white/80"
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </section>
+      )}
 
       {/* 2. RUNNING ICON TICKER BAR (Directly matching user's reference) */}
       <div className="w-full bg-white border-y border-gray-200 py-3.5 shadow-sm overflow-hidden">

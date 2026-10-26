@@ -18,35 +18,8 @@ const getOptimizedBannerUrl = (url, isMobile = false) => {
   return url;
 };
 
-const DEFAULT_SLIDES = [
-  {
-    _id: "default-1",
-    image: "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
-    title: "Royal Banarasi Silk Saree",
-    link: "/products?category=wholesale-sarees",
-  },
-  {
-    _id: "default-2",
-    image: "/images/selesproductsimages/a3198247-d1d7-47e6-a99b-1e0d14f3ec33.avif",
-    title: "Designer Cotton & Chanderi Suit Piece",
-    link: "/products?category=dress-materials",
-  },
-  {
-    _id: "default-3",
-    image: "/images/selesproductsimages/4add71ea-fd79-47b5-8f73-75dd4f6829cd.avif",
-    title: "Rayon Kurti & Pant Sets",
-    link: "/products?category=kurti-sets",
-  },
-  {
-    _id: "default-4",
-    image: "/images/selesproductsimages/7bc3e582-f0d0-4032-8993-7e3d7b22cfa9.avif",
-    title: "Heavy Organza Festive Collection",
-    link: "/products?category=lehenga-choli",
-  },
-];
-
 export const TrendingBannerSlider = () => {
-  const [banners, setBanners] = useState(DEFAULT_SLIDES);
+  const [banners, setBanners] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -66,7 +39,7 @@ export const TrendingBannerSlider = () => {
           setBanners(res.banners);
         }
       } catch (err) {
-        // Fallback to default slides on error
+        // No banners loaded
       }
     }
     fetchTrending();
@@ -76,10 +49,12 @@ export const TrendingBannerSlider = () => {
   }, []);
 
   const nextSlide = useCallback(() => {
+    if (banners.length <= 1) return;
     setCurrentSlide((prev) => (prev + 1) % banners.length);
   }, [banners.length]);
 
   const prevSlide = useCallback(() => {
+    if (banners.length <= 1) return;
     setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
   }, [banners.length]);
 
@@ -176,6 +151,10 @@ export const TrendingBannerSlider = () => {
     }
   };
 
+  if (!Array.isArray(banners) || banners.length === 0) {
+    return null;
+  }
+
   return (
     <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       {/* Centered Heading */}
@@ -212,9 +191,9 @@ export const TrendingBannerSlider = () => {
               : "transform 500ms cubic-bezier(0.25, 1, 0.5, 1)",
           }}
         >
-          {banners.map((banner) => (
+          {banners.map((banner, index) => (
             <div
-              key={banner.id}
+              key={banner._id || banner.id || index}
               className="min-w-full w-full h-full shrink-0 relative select-none"
             >
               <Link

@@ -9,7 +9,8 @@ export const Modal = ({
   title,
   description,
   children,
-  maxWidth = "md",
+  size,
+  maxWidth,
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -24,16 +25,22 @@ export const Modal = ({
 
   if (!isOpen) return null;
 
-  const maxWidths = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-lg",
-    xl: "max-w-xl",
-    "2xl": "max-w-2xl",
+  const activeSize = size || maxWidth || "lg";
+
+  const sizeClasses = {
+    sm: "max-w-md",
+    md: "max-w-xl",
+    lg: "max-w-3xl",
+    xl: "max-w-4xl",
+    "2xl": "max-w-5xl",
+    "3xl": "max-w-6xl",
+    full: "max-w-[95vw]",
   };
 
+  const chosenWidth = sizeClasses[activeSize] || sizeClasses.lg;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-navy-900/60 backdrop-blur-sm transition-opacity"
@@ -42,7 +49,7 @@ export const Modal = ({
 
       {/* Modal Container */}
       <div
-        className={`relative w-full ${maxWidths[maxWidth] || maxWidths.md} bg-white rounded-lg shadow-elevated border border-border overflow-hidden z-10 max-h-[90vh] flex flex-col`}
+        className={`relative w-full ${chosenWidth} bg-white rounded-2xl shadow-2xl border border-border overflow-hidden z-10 max-h-[92vh] flex flex-col my-auto`}
       >
         {(title || description) && (
           <div className="flex items-start justify-between p-5 border-b border-border bg-sitebg/60">
