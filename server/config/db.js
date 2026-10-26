@@ -12,26 +12,31 @@ export const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(primaryUri, {
-      serverSelectionTimeoutMS: 2000,
+      serverSelectionTimeoutMS: 10000,
     });
     isConnected = true;
     console.log(`[MongoDB] Connected successfully to host: ${conn.connection.host} (${conn.connection.name})`);
   } catch (err) {
-    console.warn(`[MongoDB] Connection to "${primaryUri}" failed: ${err.message}`);
-    console.log(`[MongoDB] Starting zero-config in-memory MongoDB fallback...`);
+    console.error(`[MongoDB] Connection to "${primaryUri.replace(/:([^@]+)@/, ':****@')}" failed: ${err.message}`);
 
-    try {
-      const { MongoMemoryServer } = await import("mongodb-memory-server");
-      const mongod = await MongoMemoryServer.create({
-        instance: { dbName: "deepak_textiles", launchTimeout: 60000 },
-      });
-      const memoryUri = mongod.getUri();
-      const conn = await mongoose.connect(memoryUri);
-      isConnected = true;
-      console.log(`[MongoDB] In-memory MongoDB connected: ${memoryUri}`);
-    } catch (memErr) {
-      console.error("[MongoDB] In-memory connection failed:", memErr);
-      throw memErr;
+    const isCloudUri = primaryUri.includes("mongodb+srv://");
+    if (process.env.NODE_ENV !== "production" && !isCloudUri) {
+      console.log(`[MongoDB] Starting zero-config in-memory MongoDB fallback...`);
+      try {
+        const { MongoMemoryServer } = await import("mongodb-memory-server");
+        const mongod = await MongoMemoryServer.create({
+          instance: { dbName: "deepak_textiles", launchTimeout: 60000 },
+        });
+        const memoryUri = mongod.getUri();
+        const conn = await mongoose.connect(memoryUri);
+        isConnected = true;
+        console.log(`[MongoDB] In-memory MongoDB connected: ${memoryUri}`);
+      } catch (memErr) {
+        console.error("[MongoDB] In-memory connection failed:", memErr);
+        throw memErr;
+      }
+    } else {
+      throw err;
     }
   }
 };
