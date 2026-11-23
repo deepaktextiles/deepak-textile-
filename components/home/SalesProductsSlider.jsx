@@ -1,23 +1,46 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
-  MessageCircle,
-  Sparkles,
   ArrowRight,
-  ShieldCheck,
 } from "lucide-react";
 import { WhatsAppIcon } from "../ui/WhatsAppIcon";
-import {
-  SALES_PRODUCT_SHOWCASE,
-  SALES_PRODUCT_IMAGES,
-} from "../../lib/salesImages";
+import { productsApi } from "../../services/api";
 
-export const SalesProductsSlider = () => {
+export const SalesProductsSlider = ({ products: initialProducts, customSettings }) => {
+  const [products, setProducts] = useState(initialProducts || []);
+  const [loading, setLoading] = useState(!initialProducts || initialProducts.length === 0);
   const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts);
+      setLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+    async function loadWholesaleProducts() {
+      try {
+        const res = await productsApi.getAll({ limit: 20 });
+        if (isMounted && res.success && Array.isArray(res.products)) {
+          setProducts(res.products);
+        }
+      } catch (err) {
+        console.error("Could not load wholesale selling collection:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    loadWholesaleProducts();
+    return () => {
+      isMounted = false;
+    };
+  }, [initialProducts]);
 
   const scroll = (direction) => {
     if (scrollRef.current) {
@@ -25,6 +48,16 @@ export const SalesProductsSlider = () => {
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
+
+  if (!loading && (!products || products.length === 0)) {
+    return null;
+  }
+
+  const cleanPhone = (
+    customSettings?.whatsapp ||
+    customSettings?.whatsappNumber ||
+    "919308066552"
+  ).replace(/[^0-9]/g, "");
 
   return (
     <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -66,22 +99,38 @@ export const SalesProductsSlider = () => {
         </div>
       </div>
 
-      {/* Scrollable Track of Selling Products */}
+      {/* Scrollable Track of Real Wholesale Products */}
       <div
         ref={scrollRef}
         className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth scrollbar-thin scrollbar-thumb-gray-200"
       >
-        {SALES_PRODUCT_SHOWCASE.map((item) => {
-          const discount = Math.round(
-            ((item.retailPrice - item.wholesalePrice) / item.retailPrice) * 100,
-          );
+        {products.map((item) => {
+          const title = item.name || item.title || "Wholesale Product";
+          const categoryName =
+            item.category?.name ||
+            (typeof item.category === "string" ? item.category : "Wholesale Lot");
+          const imageUrl =
+            item.images?.[0] || item.image || "/images/logo.jpeg";
+          const wholesalePrice = item.wholesalePrice || item.price || 0;
+          const retailPrice =
+            item.price && item.price > wholesalePrice
+              ? item.price
+              : Math.round(wholesalePrice * 2.2);
+          const moq = item.minimumOrderQuantity || item.moq || 10;
+          const unit = item.unit || "piece";
+          const discount =
+            retailPrice > wholesalePrice
+              ? Math.round(((retailPrice - wholesalePrice) / retailPrice) * 100)
+              : 40;
+          const badge = item.featured ? "Featured Lot" : "Ready Stock";
+
           const whatsappMsg = encodeURIComponent(
-            `Hello Deepak Textiles, I want to inquire about wholesale stock for: *${item.title}* (Wholesale Rate: ₹${item.wholesalePrice}, MOQ: ${item.moq} pcs). Please send catalog & video.`,
+            `Hello Deepak Textiles, I want to inquire about wholesale stock for: *${title}* (SKU: ${item.sku || "N/A"}, Wholesale Rate: ₹${wholesalePrice}/${unit}, MOQ: ${moq} ${unit}). Please send catalog & details.`
           );
 
           return (
             <div
-              key={item.id}
+              key={item._id || item.id}
               className="min-w-[260px] sm:min-w-[290px] max-w-[290px] bg-white rounded-2xl border border-gray-200/80 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden shrink-0 snap-start group"
             >
               {/* Image Container with Badge */}
@@ -89,8 +138,8 @@ export const SalesProductsSlider = () => {
                 <Link href={`/products/${item.slug}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={item.image}
-                    alt={item.title}
+                    src={imageUrl}
+                    alt={title}
                     className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
@@ -98,7 +147,7 @@ export const SalesProductsSlider = () => {
 
                 {/* Badge Top Left */}
                 <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-navy-950/85 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider">
-                  {item.badge}
+                  {badge}
                 </span>
 
                 {/* Profit Margin Bottom Left */}
@@ -111,11 +160,11 @@ export const SalesProductsSlider = () => {
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-gold-700">
-                    {item.category}
+                    {categoryName}
                   </span>
                   <Link href={`/products/${item.slug}`}>
                     <h3 className="font-heading font-bold text-sm text-gray-900 group-hover:text-gold-700 transition-colors line-clamp-2 mt-0.5">
-                      {item.title}
+                      {title}
                     </h3>
                   </Link>
                 </div>
@@ -127,11 +176,13 @@ export const SalesProductsSlider = () => {
                       Wholesale Rate
                     </span>
                     <span className="text-base font-extrabold text-navy-950">
-                      ₹{item.wholesalePrice}
+                      ₹{wholesalePrice.toLocaleString("en-IN")}
                     </span>
-                    <span className="text-xs text-gray-400 line-through ml-1.5">
-                      ₹{item.retailPrice}
-                    </span>
+                    {retailPrice > wholesalePrice && (
+                      <span className="text-xs text-gray-400 line-through ml-1.5">
+                        ₹{retailPrice.toLocaleString("en-IN")}
+                      </span>
+                    )}
                   </div>
                   <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
                     Direct Rate
@@ -140,7 +191,7 @@ export const SalesProductsSlider = () => {
 
                 {/* WhatsApp Quick Order Button */}
                 <a
-                  href={`https://wa.me/919308066552?text=${whatsappMsg}`}
+                  href={`https://wa.me/${cleanPhone}?text=${whatsappMsg}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-xs"

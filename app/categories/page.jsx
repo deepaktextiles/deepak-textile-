@@ -56,7 +56,7 @@ export default function CategoriesPage() {
                 <img
                   src={
                     cat.image ||
-                    "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"
+                    "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
                   }
                   alt={cat.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

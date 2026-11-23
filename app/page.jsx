@@ -2,7 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { MessageCircle, Phone, ArrowRight, ShieldCheck, Truck, Package, Sparkles } from "lucide-react";
+import {
+  MessageCircle,
+  Phone,
+  ArrowRight,
+  ShieldCheck,
+  Truck,
+  Package,
+  Sparkles,
+} from "lucide-react";
 import { productsApi, categoriesApi, settingsApi } from "../services/api";
 import { ProductCard } from "../components/product/ProductCard";
 import { HeroSlider } from "../components/home/HeroSlider";
@@ -16,35 +24,45 @@ import { WhyPartnerSection } from "../components/home/WhyPartnerSection";
 export default function HomePage() {
   const [settings, setSettings] = useState({
     bannerTitle: "Deepak Textiles — Clothing & Fabric Wholesaler",
-    bannerSubtitle: "Darbhanga, Bihar • Bulk Designer Sarees, Suit Pieces, Shirting & Suiting, Lehenga & Readymade • Estd. 2001",
-    bannerImage: "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
+    bannerSubtitle:
+      "Darbhanga, Bihar • Bulk Designer Sarees, Suit Pieces, Shirting & Suiting, Lehenga & Readymade • Estd. 2001",
+    bannerImage:
+      "https://res.cloudinary.com/mqbs9z4j/image/upload/v1793016127/deepak_textiles/gqnnslpmdj9cbvkh1ydp.png",
     phone: "+91 93080 66552",
     whatsapp: "+91 93080 66552",
   });
   const [categories, setCategories] = useState([]);
+  const [wholesaleProducts, setWholesaleProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [settingsRes, categoriesRes, productsRes] = await Promise.allSettled([
-          settingsApi.get(),
-          categoriesApi.getAll(),
-          productsApi.getAll({ limit: 8, featured: true }),
-        ]);
+        const [settingsRes, categoriesRes, productsRes] =
+          await Promise.allSettled([
+            settingsApi.get(),
+            categoriesApi.getAll(),
+            productsApi.getAll({ limit: 24 }),
+          ]);
 
         if (settingsRes.status === "fulfilled") {
           const s = settingsRes.value?.settings || settingsRes.value?.setting;
           if (s) setSettings((prev) => ({ ...prev, ...s }));
         }
 
-        if (categoriesRes.status === "fulfilled" && categoriesRes.value?.categories) {
+        if (
+          categoriesRes.status === "fulfilled" &&
+          categoriesRes.value?.categories
+        ) {
           setCategories(categoriesRes.value.categories);
         }
 
         if (productsRes.status === "fulfilled" && productsRes.value?.products) {
-          setFeaturedProducts(productsRes.value.products);
+          const prods = productsRes.value.products;
+          setWholesaleProducts(prods);
+          const featured = prods.filter((p) => p.featured);
+          setFeaturedProducts(featured.length > 0 ? featured : prods);
         }
       } catch (err) {
         console.error("Error loading home data:", err);
@@ -56,7 +74,10 @@ export default function HomePage() {
     fetchData();
   }, []);
 
-  const whatsappCleanNumber = (settings.whatsapp || "919308066552").replace(/[^0-9]/g, "");
+  const whatsappCleanNumber = (settings.whatsapp || "919308066552").replace(
+    /[^0-9]/g,
+    "",
+  );
 
   return (
     <div className="space-y-7 sm:space-y-14 pb-10 sm:pb-16">
@@ -64,7 +85,10 @@ export default function HomePage() {
       <HeroSlider customSettings={settings} />
 
       {/* 2. REAL SELLING PRODUCTS SHOWCASE SLIDER */}
-      <SalesProductsSlider />
+      <SalesProductsSlider
+        products={wholesaleProducts}
+        customSettings={settings}
+      />
 
       {/* 3. TOP CATEGORIES (Matching Reference Image) */}
       <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
@@ -93,15 +117,15 @@ export default function HomePage() {
                 className="group flex flex-col items-center"
               >
                 {/* Card Image Box with rounded border like reference */}
-                <div className="w-full aspect-[4/4.2] rounded-2xl overflow-hidden border-2 border-navy-900/90 shadow-sm group-hover:shadow-xl group-hover:border-gold-500 transition-all duration-300 bg-white">
+                <div className="w-full aspect-[4/4.2] rounded-2xl overflow-hidden group-hover:border-gold-500 transition-all duration-300 bg-white">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={
                       cat.image ||
-                      "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"
+                      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
                     }
                     alt={cat.name}
-                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-contain object-top group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
 
@@ -140,7 +164,10 @@ export default function HomePage() {
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="bg-white rounded-lg border border-border p-4 animate-pulse h-80" />
+              <div
+                key={n}
+                className="bg-white rounded-lg border border-border p-4 animate-pulse h-80"
+              />
             ))}
           </div>
         ) : featuredProducts.length > 0 ? (
@@ -152,7 +179,9 @@ export default function HomePage() {
         ) : (
           <div className="text-center py-12 bg-white rounded-lg border border-border p-8">
             <Package className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-            <p className="text-sm text-txt-secondary">No products loaded yet. Login as Admin to add products!</p>
+            <p className="text-sm text-txt-secondary">
+              No products loaded yet. Login as Admin to add products!
+            </p>
           </div>
         )}
       </section>
@@ -180,7 +209,9 @@ export default function HomePage() {
               Looking for Bulk Wholesale Lots for Your Shop?
             </h3>
             <p className="text-xs sm:text-sm text-gray-300 max-w-xl">
-              Connect directly with our Surat Wholesale Desk. Get instant catalog PDFs, current stock availability, and special volume discounts.
+              Connect directly with our Surat Wholesale Desk. Get instant
+              catalog PDFs, current stock availability, and special volume
+              discounts.
             </p>
           </div>
 

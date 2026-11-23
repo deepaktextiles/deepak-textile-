@@ -178,7 +178,7 @@ export const MegaMenu = ({ isOpen, onClose, bannerImage }) => {
                     <img
                       src={
                         bannerImage ||
-                        "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"
+                        "https://res.cloudinary.com/mqbs9z4j/image/upload/v1793016127/deepak_textiles/gqnnslpmdj9cbvkh1ydp.png"
                       }
                       alt="Surat Wholesale Saree Collection"
                       className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"

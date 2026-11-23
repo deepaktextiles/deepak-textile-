@@ -102,7 +102,6 @@ export const seedDatabase = async () => {
       shortDescription: "Pure Katan Silk with heavy contrast zari work. Standard wholesale lot of 10 sarees.",
       category: catMap["sarees"],
       images: [
-        "/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif",
         "/images/selesproductsimages/869f376e-f235-4b78-824d-6899c1588dd3.avif",
         "/images/selesproductsimages/c99af3a8-4de0-4934-9bd3-6412c605d0ac.avif",
         "/images/selesproductsimages/f3382385-847b-4bfe-9f4e-04ec15d92fb8.avif",
@@ -127,7 +126,6 @@ export const seedDatabase = async () => {
       shortDescription: "Chanderi top + santoon bottom + printed dupatta. Lot of 15 sets.",
       category: catMap["dress-materials"],
       images: [
-        "/images/selesproductsimages/a3198247-d1d7-47e6-a99b-1e0d14f3ec33.avif",
         "/images/selesproductsimages/74d77734-dbb6-4cbe-b8af-e057e719ea5d.avif",
         "/images/selesproductsimages/1980c85d-cd71-4c64-9f1e-f545a1601d80.avif",
       ],

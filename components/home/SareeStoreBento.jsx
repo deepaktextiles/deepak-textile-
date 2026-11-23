@@ -24,7 +24,7 @@ export const SareeStoreBento = () => {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/selesproductsimages/7ff997fb-c6a3-4333-84d2-907a30cb30f9.avif"
+            src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80"
             alt="Deepak Gold Silk Sarees"
             className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />

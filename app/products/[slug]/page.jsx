@@ -29,7 +29,6 @@ import { EnquiryModal } from "../../../components/wholesale/EnquiryModal";
 import { ProductCard } from "../../../components/product/ProductCard";
 import Image from "next/image";
 import whatsapp from "../../../images/icons/whatsapp221.svg";
-import { SALES_PRODUCT_IMAGES } from "../../../lib/salesImages";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -132,17 +131,10 @@ export default function ProductDetailPage() {
   }
 
   // Gallery images from real Deepak Textiles selling product photos (selesproductsimages)
-  const productCustomImages =
-    product.images && product.images.length > 0
-      ? product.images.filter((img) => !img.includes("unsplash.com"))
-      : [];
-
   const galleryImages =
-    productCustomImages.length >= 4
-      ? productCustomImages
-      : productCustomImages.length > 0
-      ? [...productCustomImages, ...SALES_PRODUCT_IMAGES.slice(0, 6 - productCustomImages.length)]
-      : SALES_PRODUCT_IMAGES.slice(0, 6);
+    product.images && product.images.length > 0
+      ? product.images
+      : ["/images/logo.jpeg"];
 
   const nextImage = () => {
     setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
