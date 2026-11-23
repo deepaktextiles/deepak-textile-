@@ -47,19 +47,14 @@ export const Footer = () => {
         >
           {/* Brand Info */}
           <motion.div variants={itemVariants} className="space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-gray-200 bg-white flex items-center justify-center shrink-0 shadow-xs">
-                <Image
-                  src="/images/icons/logo.jpeg"
-                  alt="Deepak Textiles"
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-contain p-0.5"
-                />
-              </div>
-              <span className="font-extrabold text-lg text-gray-950 tracking-wider">
-                DEEPAK <span className="text-gold-600">TEXTILES</span>
-              </span>
+            <div className="flex items-center">
+              <Image
+                src="/images/icons/logo-horizontal.png"
+                alt="Deepak Textiles"
+                width={200}
+                height={40}
+                className="h-10 w-auto object-contain"
+              />
             </div>
             <p className="text-xs text-gray-600 leading-relaxed">
               Leading Darbhanga-based clothing & fabric wholesaler established in 2001. Supplying bulk Designer Sarees, Suit Pieces & Salwar Suits, Shirting & Suiting, and Lehenga & Readymade collections for retailers, resellers, and boutique owners across Bihar & India.

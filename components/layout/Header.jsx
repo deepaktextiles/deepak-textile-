@@ -81,14 +81,18 @@ export const Header = () => {
               </button>
 
               {/* Logo */}
-              <Link href="/" className="flex items-center shrink-0 group" aria-label="Deepak Textiles Home">
-                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border border-gray-200/80 bg-white flex items-center justify-center shrink-0 shadow-xs group-hover:border-gold-500 group-hover:shadow-md transition-all">
+              <Link
+                href="/"
+                className="flex items-center shrink-0 group focus:outline-none"
+                aria-label="Deepak Textiles Home"
+              >
+                <div className="relative flex items-center py-0.5">
                   <Image
-                    src="/images/icons/logo.jpeg"
+                    src="/images/icons/logo-horizontal.png"
                     alt="Deepak Textiles"
-                    width={56}
-                    height={56}
-                    className="w-full h-full object-contain p-0.5"
+                    width={240}
+                    height={46}
+                    className="h-8 sm:h-10 md:h-11 w-auto max-w-[190px] sm:max-w-none object-contain transition-transform duration-200 group-hover:scale-[1.02]"
                     priority
                   />
                 </div>

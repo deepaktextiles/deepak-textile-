@@ -90,7 +90,7 @@ export function AdminSidebar({ mobileOpen, onCloseMobile }) {
         >
           <div className="w-10 h-10 rounded-xl overflow-hidden bg-white p-1 border border-slate-700/60 shadow-lg shadow-black/20 group-hover:scale-105 transition-transform shrink-0 flex items-center justify-center">
             <Image
-              src="/images/icons/logo.jpeg"
+              src="/images/icons/logo-mark.png"
               alt="Deepak Textiles"
               width={40}
               height={40}
