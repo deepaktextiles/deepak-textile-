@@ -79,7 +79,7 @@ export default function ProductDetailPage() {
             });
             if (relRes.products) {
               setRelatedProducts(
-                relRes.products.filter((p) => p._id !== res.product._id)
+                relRes.products.filter((p) => p._id !== res.product._id),
               );
             }
           }
@@ -141,13 +141,18 @@ export default function ProductDetailPage() {
   };
 
   const prevImage = () => {
-    setActiveImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+    setActiveImageIndex(
+      (prev) => (prev - 1 + galleryImages.length) % galleryImages.length,
+    );
   };
 
   const scrollRelated = (direction) => {
     if (relatedSliderRef.current) {
       const scrollAmount = direction === "left" ? -300 : 300;
-      relatedSliderRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      relatedSliderRef.current.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -158,7 +163,7 @@ export default function ProductDetailPage() {
       : Math.round(wholesalePrice * 2.5);
   const discountPercent = Math.max(
     10,
-    Math.round(((retailPrice - wholesalePrice) / retailPrice) * 100)
+    Math.round(((retailPrice - wholesalePrice) / retailPrice) * 100),
   );
 
   const availableSizes =
@@ -173,7 +178,7 @@ SKU: ${product.sku || "DT-LOT"}
 Wholesale Rate: ₹${wholesalePrice}/${product.unit || "pc"}
 Selected Size: ${selectedSize}
 MOQ: ${product.minimumOrderQuantity || 10} ${product.unit || "pcs"}
-Please send available video clips of this lot and dispatch details.`
+Please send available video clips of this lot and dispatch details.`,
   );
 
   return (
@@ -268,7 +273,8 @@ Please send available video clips of this lot and dispatch details.`
               {/* Top Badges: MOQ (Left) & Slide Counter / Maximize (Right) */}
               <div className="absolute top-3.5 left-3.5 flex items-center gap-2">
                 <span className="bg-navy-950/90 backdrop-blur-xs text-white text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md shadow-xs">
-                  MOQ: {product.minimumOrderQuantity || 10} {product.unit || "pcs"}
+                  MOQ: {product.minimumOrderQuantity || 10}{" "}
+                  {product.unit || "pcs"}
                 </span>
               </div>
 
@@ -295,7 +301,9 @@ Please send available video clips of this lot and dispatch details.`
                 <span className="text-amber-500">★</span>
                 <span>{product.rating || "4.7"}</span>
                 <span className="text-gray-300">|</span>
-                <span className="text-gray-500 font-medium">({product.reviewsCount || "24"})</span>
+                <span className="text-gray-500 font-medium">
+                  ({product.reviewsCount || "24"})
+                </span>
               </div>
 
               <button
@@ -309,7 +317,9 @@ Please send available video clips of this lot and dispatch details.`
               >
                 <Heart
                   className={`w-4 h-4 transition-colors ${
-                    isWishlisted ? "fill-rose-500 text-rose-500" : "text-gray-700"
+                    isWishlisted
+                      ? "fill-rose-500 text-rose-500"
+                      : "text-gray-700"
                   }`}
                 />
               </button>
@@ -406,7 +416,7 @@ Please send available video clips of this lot and dispatch details.`
                     onClick={() => setSelectedSize(sz)}
                     className={`h-10 min-w-10 px-3.5 rounded text-xs font-bold transition-all border ${
                       selectedSize === sz
-                        ? "bg-navy-950 text-white border-navy-950"
+                        ? "bg-navy-950 text-black border-navy-950"
                         : "bg-white text-gray-800 border-gray-300 hover:border-gray-900"
                     }`}
                   >
@@ -507,7 +517,9 @@ Please send available video clips of this lot and dispatch details.`
                   alt="Express Shipping"
                   className="w-5 h-5 object-contain shrink-0"
                 />
-                <span className="font-normal text-gray-900">Express Shipping</span>
+                <span className="font-normal text-gray-900">
+                  Express Shipping
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -516,7 +528,9 @@ Please send available video clips of this lot and dispatch details.`
                   alt="Cash on Delivery Available"
                   className="w-5 h-5 object-contain shrink-0"
                 />
-                <span className="font-normal text-gray-900">Cash on Delivery Available</span>
+                <span className="font-normal text-gray-900">
+                  Cash on Delivery Available
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -539,7 +553,9 @@ Please send available video clips of this lot and dispatch details.`
                     alt="Verified Quality"
                     className="w-4 h-4 object-contain shrink-0"
                   />
-                  <span className="text-[11px] font-semibold text-gray-900">100% Mill Verified</span>
+                  <span className="text-[11px] font-semibold text-gray-900">
+                    100% Mill Verified
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 border border-gray-200">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -548,7 +564,9 @@ Please send available video clips of this lot and dispatch details.`
                     alt="Direct Mill Rate"
                     className="w-4 h-4 object-contain shrink-0"
                   />
-                  <span className="text-[11px] font-semibold text-gray-900">Direct Factory Rates</span>
+                  <span className="text-[11px] font-semibold text-gray-900">
+                    Direct Factory Rates
+                  </span>
                 </div>
               </div>
             </div>
@@ -663,8 +681,8 @@ Please send available video clips of this lot and dispatch details.`
                         <strong>Fit:</strong> Regular Comfort Fit
                       </p>
                       <p>
-                        <strong>Model Specs:</strong> The model (height 5&apos;8&quot;)
-                        is wearing size S.
+                        <strong>Model Specs:</strong> The model (height
+                        5&apos;8&quot;) is wearing size S.
                       </p>
                       <div className="pt-2">
                         <table className="w-full text-left border border-gray-200 text-[11px]">
@@ -905,7 +923,8 @@ Please send available video clips of this lot and dispatch details.`
                     >
                       <p>
                         <strong>Manufacturer & Wholesale Supplier:</strong>{" "}
-                        Deepak Textiles (Clothing & Fabric Wholesaler, Estd. 2001)
+                        Deepak Textiles (Clothing & Fabric Wholesaler, Estd.
+                        2001)
                       </p>
                       <p>
                         <strong>Wholesale Showroom Address:</strong> 5V7R+V63,
@@ -913,10 +932,12 @@ Please send available video clips of this lot and dispatch details.`
                         Mansaar Colony, Darbhanga, Bihar – 846004, India
                       </p>
                       <p>
-                        <strong>Phone / WhatsApp:</strong> 093080 66552 / 85446 63335
+                        <strong>Phone / WhatsApp:</strong> 093080 66552 / 85446
+                        63335
                       </p>
                       <p>
-                        <strong>Business Categories:</strong> Sarees, Suit Pieces, Shirting & Suiting, Lehenga & Readymade
+                        <strong>Business Categories:</strong> Sarees, Suit
+                        Pieces, Shirting & Suiting, Lehenga & Readymade
                       </p>
                       <p>
                         <strong>Country of Origin:</strong> India

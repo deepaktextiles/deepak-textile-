@@ -4,7 +4,13 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Phone, MessageCircle, Menu, ShieldCheck, ChevronDown } from "lucide-react";
+import {
+  Phone,
+  MessageCircle,
+  Menu,
+  ShieldCheck,
+  ChevronDown,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { MegaMenu } from "./MegaMenu";
 import { MobileSideDrawer } from "./MobileSideDrawer";
@@ -44,7 +50,9 @@ export const Header = () => {
               Darbhanga Wholesale Textile Hub • Estd. 2001 (Bihar)
             </span>
             <span className="text-gray-500">•</span>
-            <span className="text-gray-300">Sarees • Suit Pieces • Shirting & Suiting • Lehenga & Readymade</span>
+            <span className="text-gray-300">
+              Sarees • Suit Pieces • Shirting & Suiting • Lehenga & Readymade
+            </span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -92,7 +100,7 @@ export const Header = () => {
                     alt="Deepak Textiles"
                     width={240}
                     height={46}
-                    className="h-8 sm:h-10 md:h-11 w-auto max-w-[190px] sm:max-w-none object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                    className="h-8 sm:h-10 md:h-11 w-[200px] max-w-[190px] sm:max-w-none object-contain transition-transform duration-200 group-hover:scale-[1.02]"
                     priority
                   />
                 </div>
@@ -113,14 +121,13 @@ export const Header = () => {
               </Link>
 
               {/* Animated Desktop Mega Menu Trigger */}
-              <div
-                className="relative"
-                onMouseEnter={handleMouseEnter}
-              >
+              <div className="relative" onMouseEnter={handleMouseEnter}>
                 <button
                   onClick={() => setMegaMenuOpen((prev) => !prev)}
                   className={`inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold transition-all ${
-                    megaMenuOpen || pathname.startsWith("/categories") || pathname.includes("category=")
+                    megaMenuOpen ||
+                    pathname.startsWith("/categories") ||
+                    pathname.includes("category=")
                       ? "text-gold-700 bg-gold-50/80 font-bold border-b-2 border-gold-600"
                       : "text-gray-700 hover:text-navy-900 hover:bg-gray-50"
                   }`}
@@ -180,7 +187,11 @@ export const Header = () => {
                 className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold transition-all shadow-sm hover:shadow"
               >
                 <div className="w-4 h-4 flex items-center justify-center">
-                  <WhatsAppIcon className="w-full h-full" color="#ffffff" phoneColor="#25D366" />
+                  <WhatsAppIcon
+                    className="w-full h-full"
+                    color="#ffffff"
+                    phoneColor="#25D366"
+                  />
                 </div>
                 <span>WhatsApp Desk</span>
               </a>
@@ -194,7 +205,11 @@ export const Header = () => {
                 title="Chat on WhatsApp"
               >
                 <div className="w-6 h-6 flex items-center justify-center">
-                  <WhatsAppIcon className="w-full h-full" color="#ffffff" phoneColor="#25D366" />
+                  <WhatsAppIcon
+                    className="w-full h-full"
+                    color="#ffffff"
+                    phoneColor="#25D366"
+                  />
                 </div>
               </a>
 
@@ -212,7 +227,10 @@ export const Header = () => {
 
         {/* Desktop Mega Menu Dropdown */}
         <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-          <MegaMenu isOpen={megaMenuOpen} onClose={() => setMegaMenuOpen(false)} />
+          <MegaMenu
+            isOpen={megaMenuOpen}
+            onClose={() => setMegaMenuOpen(false)}
+          />
         </div>
       </motion.header>
 
