@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
 import { connectDB } from "../../../lib/db.js";
 import { getAuthenticatedAdmin } from "../../../lib/auth.js";
 import { Product } from "../../../server/models/Product.js";
@@ -30,13 +31,50 @@ export async function GET(request) {
     }
 
     if (category) {
-      const catDoc = await Category.findOne({
-        $or: [{ _id: category }, { slug: category }],
-      }).catch(() => null);
-      if (catDoc) {
-        query.category = catDoc._id;
+      const isObjectId = mongoose.Types.ObjectId.isValid(category);
+      let catDoc = null;
+
+      if (isObjectId) {
+        catDoc = await Category.findOne({
+          $or: [{ _id: category }, { slug: category }],
+        }).catch(() => null);
       } else {
+        const cleanSlug = String(category).trim().toLowerCase();
+        const cleanName = cleanSlug.replace(/[-_]/g, " ");
+        catDoc = await Category.findOne({
+          $or: [
+            { slug: cleanSlug },
+            { slug: category.trim() },
+            { name: new RegExp(`^${cleanName}$`, "i") },
+            { name: new RegExp(`^${category.trim()}$`, "i") },
+          ],
+        }).catch(() => null);
+      }
+
+      if (catDoc) {
+        // Also check if this category has child categories
+        const childCats = await Category.find({ parentCategory: catDoc._id })
+          .select("_id")
+          .catch(() => []);
+        if (childCats && childCats.length > 0) {
+          query.category = { $in: [catDoc._id, ...childCats.map((c) => c._id)] };
+        } else {
+          query.category = catDoc._id;
+        }
+      } else if (isObjectId) {
         query.category = category;
+      } else {
+        // No Category document found matching this slug or name.
+        // Check if products have this slug in their subCategory field
+        const subCatRegex = new RegExp(String(category).replace(/[-_]/g, " ").trim(), "i");
+        const hasSubCat = await Product.exists({ subCategory: subCatRegex }).catch(() => null);
+        if (hasSubCat) {
+          query.subCategory = subCatRegex;
+        } else {
+          // No matching category or subcategory exists — safely query a non-existent ObjectId
+          // so it returns 0 products without throwing a Mongoose CastError on ObjectId!
+          query.category = new mongoose.Types.ObjectId();
+        }
       }
     }
 

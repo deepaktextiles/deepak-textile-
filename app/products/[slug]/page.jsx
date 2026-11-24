@@ -73,9 +73,13 @@ export default function ProductDetailPage() {
           setProduct(res.product);
 
           // Load related products
-          if (res.product.category?.slug || res.product.category?._id) {
+          const relCategory =
+            res.product.category?._id ||
+            res.product.category?.slug ||
+            res.product.category;
+          if (relCategory) {
             const relRes = await productsApi.getAll({
-              category: res.product.category?.slug || res.product.category?._id,
+              category: relCategory,
               limit: 4,
             });
             if (relRes.products) {

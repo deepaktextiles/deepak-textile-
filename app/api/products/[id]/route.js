@@ -26,7 +26,7 @@ export async function GET(request, { params }) {
     }
 
     const related = await Product.find({
-      category: product.category,
+      category: product.category?._id || product.category,
       _id: { $ne: product._id },
       active: true,
     })

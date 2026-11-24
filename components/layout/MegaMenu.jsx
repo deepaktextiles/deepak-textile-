@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { categoriesApi } from "../../services/api";
 
-export const megaMenuData = [
+export const defaultMegaMenuData = [
   {
     title: "Wholesale Sarees",
     slug: "wholesale-sarees",
@@ -60,6 +61,9 @@ export const megaMenuData = [
   },
 ];
 
+// Backwards-compatible export
+export const megaMenuData = defaultMegaMenuData;
+
 const containerVariants = {
   hidden: {
     opacity: 0,
@@ -95,6 +99,108 @@ const columnVariants = {
 };
 
 export const MegaMenu = ({ isOpen, onClose, bannerImage }) => {
+  const [categories, setCategories] = useState([]);
+
+  // Fetch all categories dynamically so newly added categories immediately appear
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchCategories() {
+      try {
+        const res = await categoriesApi.getAll();
+        if (isMounted && res.success && Array.isArray(res.categories)) {
+          setCategories(res.categories);
+        }
+      } catch (err) {
+        // Fallback to defaultMegaMenuData gracefully
+        console.error("Could not load dynamic categories for MegaMenu:", err);
+      }
+    }
+
+    fetchCategories();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Compute dynamic mega menu sections combining default curated sections + newly created categories
+  const menuSections = useMemo(() => {
+    const sections = defaultMegaMenuData.map((sec) => ({
+      ...sec,
+      items: [...sec.items],
+    }));
+
+    if (!Array.isArray(categories) || categories.length === 0) {
+      return sections;
+    }
+
+    const topCategories = categories.filter((c) => !c.parentCategory);
+    const subCategories = categories.filter((c) => Boolean(c.parentCategory));
+
+    topCategories.forEach((cat) => {
+      const catSlug = (cat.slug || "").toLowerCase().trim();
+      const catName = (cat.name || "").trim();
+
+      // Check if this category matches one of the existing default sections
+      const existingSection = sections.find(
+        (sec) =>
+          sec.slug.toLowerCase() === catSlug ||
+          sec.title.toLowerCase() === catName.toLowerCase() ||
+          (catSlug.includes("saree") && sec.slug.includes("saree")) ||
+          (catSlug.includes("suit") && sec.slug.includes("dress")) ||
+          (catSlug.includes("dress") && sec.slug.includes("dress")) ||
+          (catSlug.includes("kurti") && sec.slug.includes("kurti")) ||
+          (catSlug.includes("kurta") && sec.slug.includes("kurti")) ||
+          (catSlug.includes("fabric") && sec.slug.includes("fabric"))
+      );
+
+      // Find any child subcategories in the database belonging to this category
+      const childSubs = subCategories.filter(
+        (sub) =>
+          (sub.parentCategory?._id && String(sub.parentCategory._id) === String(cat._id)) ||
+          (typeof sub.parentCategory === "string" && sub.parentCategory === String(cat._id)) ||
+          sub.parentCategory?.slug === cat.slug
+      );
+
+      if (existingSection) {
+        // Append newly created subcategories if they are not already listed
+        childSubs.forEach((sub) => {
+          const exists = existingSection.items.some(
+            (it) => it.name.toLowerCase() === sub.name.toLowerCase()
+          );
+          if (!exists) {
+            existingSection.items.push({
+              name: sub.name,
+              href: `/products?category=${sub.slug}`,
+            });
+          }
+        });
+      } else {
+        // BRAND NEW CATEGORY created in Admin! Add as a new column in MegaMenu
+        const items =
+          childSubs.length > 0
+            ? childSubs.map((sub) => ({
+                name: sub.name,
+                href: `/products?category=${sub.slug}`,
+              }))
+            : [
+                { name: `All ${catName} Lots`, href: `/products?category=${cat.slug}` },
+                { name: "Fresh Stock & New Arrivals", href: `/products?category=${cat.slug}&sort=newest` },
+                { name: "Wholesale Lot Bundles", href: `/products?category=${cat.slug}&inStock=true` },
+                { name: "Popular Showroom Designs", href: `/products?category=${cat.slug}&sort=popular` },
+              ];
+
+        sections.push({
+          title: catName,
+          slug: cat.slug,
+          items,
+          viewAllHref: `/products?category=${cat.slug}`,
+        });
+      }
+    });
+
+    return sections;
+  }, [categories]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -104,7 +210,7 @@ export const MegaMenu = ({ isOpen, onClose, bannerImage }) => {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="absolute top-full left-0 w-full bg-white border-t border-b border-gray-200 z-50 overflow-hidden"
+          className="absolute top-full left-0 w-full bg-white border-t border-b border-gray-200 z-50 overflow-hidden shadow-xl"
           onMouseEnter={(e) => e.stopPropagation()}
         >
           {/* Subtle Top Gold Accent Line */}
@@ -112,27 +218,33 @@ export const MegaMenu = ({ isOpen, onClose, bannerImage }) => {
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-              {/* 4 Main Wholesale Category Columns (9 cols on lg) */}
-              <div className="md:col-span-8 lg:col-span-9 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                {megaMenuData.map((section) => {
+              {/* Dynamic Wholesale Category Columns with responsive wrapping */}
+              <div className="md:col-span-8 lg:col-span-9 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8 max-h-[72vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 pr-2">
+                {menuSections.map((section) => {
                   return (
                     <motion.div
-                      key={section.title}
+                      key={section.slug || section.title}
                       variants={columnVariants}
                       className="space-y-3.5"
                     >
                       {/* Section Header */}
                       <div className="border-b border-gray-100 pb-2">
-                        <h4 className="font-heading font-extrabold text-sm text-navy-950 uppercase tracking-wide">
-                          {section.title}
-                        </h4>
+                        <Link
+                          href={section.viewAllHref}
+                          onClick={onClose}
+                          className="group inline-block"
+                        >
+                          <h4 className="font-heading font-extrabold text-sm text-navy-950 uppercase tracking-wide group-hover:text-gold-700 transition-colors">
+                            {section.title}
+                          </h4>
+                        </Link>
                       </div>
 
                       {/* Section Sub-items */}
                       <ul className="space-y-2">
                         {section.items.map((item) => (
                           <motion.li
-                            key={item.name}
+                            key={item.name + item.href}
                             whileHover={{ x: 4 }}
                             transition={{ type: "spring", stiffness: 400, damping: 25 }}
                           >
@@ -173,22 +285,41 @@ export const MegaMenu = ({ isOpen, onClose, bannerImage }) => {
               >
                 <div>
                   {/* Top Image Showcase */}
-                  <div className="relative w-full  rounded-lg overflow-hidden ">
+                  <div className="relative w-full rounded-lg overflow-hidden aspect-[4/3] bg-gray-50 border border-gray-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={
                         bannerImage ||
                         "https://res.cloudinary.com/mqbs9z4j/image/upload/v1793016127/deepak_textiles/gqnnslpmdj9cbvkh1ydp.png"
                       }
-                      alt="Surat Wholesale Saree Collection"
+                      alt="Surat Wholesale Collection"
                       className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     />
-                   
                   </div>
 
+                  <div className="mt-3.5 space-y-1">
+                    <span className="text-[10px] font-extrabold tracking-widest text-gold-700 uppercase">
+                      Direct Mill Supply
+                    </span>
+                    <h5 className="font-heading font-bold text-xs text-navy-950">
+                      Surat Factory Rates in Darbhanga
+                    </h5>
+                    <p className="text-[11px] text-gray-500 leading-relaxed">
+                      All catalog lots ready for bulk store dispatch with GST invoice.
+                    </p>
+                  </div>
                 </div>
 
-             
+                <div className="pt-4 mt-3 border-t border-gray-100">
+                  <Link
+                    href="/products"
+                    onClick={onClose}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-gold-700 hover:text-gold-800 uppercase tracking-wider transition-colors"
+                  >
+                    <span>Browse All Lots</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </motion.div>
             </div>
           </div>
