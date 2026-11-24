@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { WhatsAppIcon } from "../ui/WhatsAppIcon";
 import { productsApi } from "../../services/api";
+import { getOptimizedImageUrl } from "../../lib/imageUtils";
 
 export const SalesProductsSlider = ({ products: initialProducts, customSettings }) => {
   const [products, setProducts] = useState(initialProducts || []);
@@ -138,10 +139,11 @@ export const SalesProductsSlider = ({ products: initialProducts, customSettings 
                 <Link href={`/products/${item.slug}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={imageUrl}
+                    src={getOptimizedImageUrl(imageUrl, { width: 600 })}
                     alt={title}
                     className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    decoding="async"
                   />
                 </Link>
 

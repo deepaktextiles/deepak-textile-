@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { productsApi, categoriesApi, settingsApi } from "../services/api";
+import { getOptimizedImageUrl } from "../lib/imageUtils";
 import { ProductCard } from "../components/product/ProductCard";
 import { HeroSlider } from "../components/home/HeroSlider";
 import { SalesProductsSlider } from "../components/home/SalesProductsSlider";
@@ -120,12 +121,15 @@ export default function HomePage() {
                 <div className="w-full aspect-[4/4.2] rounded-2xl overflow-hidden group-hover:border-gold-500 transition-all duration-300 bg-white">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={
+                    src={getOptimizedImageUrl(
                       cat.image ||
-                      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
-                    }
+                        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
+                      { width: 600 }
+                    )}
                     alt={cat.name}
                     className="w-full h-full object-contain object-top group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
 

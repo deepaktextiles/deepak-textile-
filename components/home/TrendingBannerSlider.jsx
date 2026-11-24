@@ -8,10 +8,17 @@ import { bannersApi } from "../../services/api";
 const getOptimizedBannerUrl = (url, isMobile = false) => {
   if (!url || typeof url !== "string") return url;
   if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
-    if (!url.includes("/f_auto") && !url.includes("/q_") && !url.includes("/w_")) {
+    if (url.includes("q_100") || url.includes("e_sharpen")) {
+      return url
+        .replace(/q_100/g, "q_auto:good")
+        .replace(/e_sharpen:\d+/g, "")
+        .replace(/,+/g, ",")
+        .replace(/\/upload\/,/g, "/upload/");
+    }
+    if (!url.includes("/f_auto") && !url.includes("/q_auto")) {
       const transform = isMobile
-        ? "w_1080,c_scale,q_100,f_auto,e_sharpen:40"
-        : "w_1920,c_scale,q_100,f_auto,e_sharpen:50";
+        ? "w_1080,c_limit,q_auto:good,f_auto"
+        : "w_1920,c_limit,q_auto:good,f_auto";
       return url.replace("/upload/", `/upload/${transform}/`);
     }
   }
@@ -66,6 +73,24 @@ export const TrendingBannerSlider = () => {
     }, 4500);
     return () => clearInterval(interval);
   }, [isPaused, isDragging, nextSlide]);
+
+  // Preload trending banner images into browser cache for instant transitions
+  useEffect(() => {
+    if (banners && banners.length > 0) {
+      banners.forEach((banner) => {
+        if (typeof window !== "undefined") {
+          if (banner.image) {
+            const img = new window.Image();
+            img.src = getOptimizedBannerUrl(banner.image, false);
+          }
+          if (banner.mobileImage) {
+            const mImg = new window.Image();
+            mImg.src = getOptimizedBannerUrl(banner.mobileImage, true);
+          }
+        }
+      });
+    }
+  }, [banners]);
 
   // Drag start (Mouse / Touch)
   const handleDragStart = (clientX) => {

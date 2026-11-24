@@ -18,10 +18,17 @@ import { bannersApi } from "../../services/api.js";
 const getOptimizedBannerUrl = (url, isMobile = false) => {
   if (!url || typeof url !== "string") return url;
   if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
-    if (!url.includes("/f_auto") && !url.includes("/q_") && !url.includes("/w_")) {
+    if (url.includes("q_100") || url.includes("e_sharpen")) {
+      return url
+        .replace(/q_100/g, "q_auto:good")
+        .replace(/e_sharpen:\d+/g, "")
+        .replace(/,+/g, ",")
+        .replace(/\/upload\/,/g, "/upload/");
+    }
+    if (!url.includes("/f_auto") && !url.includes("/q_auto")) {
       const transform = isMobile
-        ? "w_1080,c_scale,q_100,f_auto,e_sharpen:40"
-        : "w_1920,c_scale,q_100,f_auto,e_sharpen:50";
+        ? "w_1080,c_limit,q_auto:good,f_auto"
+        : "w_1920,c_limit,q_auto:good,f_auto";
       return url.replace("/upload/", `/upload/${transform}/`);
     }
   }
@@ -80,6 +87,24 @@ export const HeroSlider = ({ customSettings }) => {
     }, 5500);
     return () => clearInterval(interval);
   }, [isPaused, nextSlide, slides.length]);
+
+  // Preload banner slide images into browser cache for instant transitions
+  useEffect(() => {
+    if (slides && slides.length > 0) {
+      slides.forEach((slide) => {
+        if (typeof window !== "undefined") {
+          if (slide.image) {
+            const img = new window.Image();
+            img.src = getOptimizedBannerUrl(slide.image, false);
+          }
+          if (slide.mobileImage) {
+            const mImg = new window.Image();
+            mImg.src = getOptimizedBannerUrl(slide.mobileImage, true);
+          }
+        }
+      });
+    }
+  }, [slides]);
 
   const whatsappCleanNumber = (
     customSettings?.whatsapp || "919308066552"

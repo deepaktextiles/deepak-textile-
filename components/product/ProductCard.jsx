@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Heart, MessageCircle } from "lucide-react";
+import { getOptimizedImageUrl } from "../../lib/imageUtils";
 
 export const ProductCard = ({ product }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -44,10 +45,11 @@ Please share catalog photos and dispatch details.`
         <Link href={`/products/${product.slug}`} className="block w-full h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={primaryImage}
+            src={getOptimizedImageUrl(primaryImage, { width: 600 })}
             alt={product.name}
             className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
             loading="lazy"
+            decoding="async"
           />
         </Link>
 

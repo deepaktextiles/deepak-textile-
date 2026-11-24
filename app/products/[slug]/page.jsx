@@ -29,6 +29,7 @@ import { EnquiryModal } from "../../../components/wholesale/EnquiryModal";
 import { ProductCard } from "../../../components/product/ProductCard";
 import Image from "next/image";
 import whatsapp from "../../../images/icons/whatsapp221.svg";
+import { getOptimizedImageUrl, preloadImages } from "../../../lib/imageUtils";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -136,6 +137,16 @@ export default function ProductDetailPage() {
       ? product.images
       : ["/images/logo.jpeg"];
 
+  // Preload all gallery images in browser cache so switching is 0ms instant
+  useEffect(() => {
+    if (galleryImages && galleryImages.length > 0) {
+      const urlsToPreload = galleryImages.map((img) =>
+        getOptimizedImageUrl(img, { width: 1200 })
+      );
+      preloadImages(urlsToPreload);
+    }
+  }, [galleryImages]);
+
   const nextImage = () => {
     setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
   };
@@ -224,21 +235,27 @@ Please send available video clips of this lot and dispatch details.`,
           {/* ======================================================= */}
           <div className="lg:col-span-7 space-y-3.5">
             {/* Main Featured Carousel Viewport */}
-            <div className="relative aspect-[3/3.9] sm:aspect-[3/3.7] w-full overflow-hidden rounded-2xl bg-gray-50 border border-gray-200 shadow-sm group select-none">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={activeImageIndex}
-                  src={galleryImages[activeImageIndex]}
-                  alt={`${product.name} wholesale lot view ${activeImageIndex + 1}`}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.01 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
-                  className="w-full h-full object-cover object-top cursor-zoom-in"
-                  onClick={() => setIsZoomModalOpen(true)}
-                  loading="eager"
-                />
-              </AnimatePresence>
+            <div className="relative aspect-[3/3.9] sm:aspect-[3/3.7] w-full overflow-hidden rounded-2xl bg-gray-100 border border-gray-200 shadow-sm group select-none">
+              {galleryImages.map((img, idx) => {
+                const isActive = activeImageIndex === idx;
+                const optimizedUrl = getOptimizedImageUrl(img, { width: 1200 });
+                return (
+                  <img
+                    key={img + idx}
+                    src={optimizedUrl}
+                    alt={`${product.name} wholesale lot view ${idx + 1}`}
+                    loading={idx === 0 ? "eager" : "lazy"}
+                    fetchPriority={idx === 0 ? "high" : "low"}
+                    decoding="async"
+                    className={`absolute inset-0 w-full h-full object-cover object-top cursor-zoom-in transition-opacity duration-200 ease-in-out ${
+                      isActive
+                        ? "opacity-100 z-10"
+                        : "opacity-0 z-0 pointer-events-none"
+                    }`}
+                    onClick={() => setIsZoomModalOpen(true)}
+                  />
+                );
+              })}
 
               {/* Prev Slide Arrow */}
               {galleryImages.length > 1 && (
@@ -328,26 +345,31 @@ Please send available video clips of this lot and dispatch details.`,
             {/* Thumbnail Carousel Track */}
             {galleryImages.length > 1 && (
               <div className="flex items-center gap-3 overflow-x-auto pb-1 pt-0.5 scrollbar-thin scrollbar-thumb-gray-200">
-                {galleryImages.map((img, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`relative w-16 h-20 sm:w-20 sm:h-24 rounded-xl overflow-hidden shrink-0 transition-all border-2 ${
-                      activeImageIndex === idx
-                        ? "border-gold-600 ring-2 ring-gold-400/40 scale-102 shadow-sm"
-                        : "border-gray-200 hover:border-gray-400 opacity-70 hover:opacity-100"
-                    }`}
-                    aria-label={`Select product image ${idx + 1}`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={img}
-                      alt={`Thumbnail ${idx + 1}`}
-                      className="w-full h-full object-cover object-top"
-                    />
-                  </button>
-                ))}
+                {galleryImages.map((img, idx) => {
+                  const thumbUrl = getOptimizedImageUrl(img, { width: 160 });
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`relative w-16 h-20 sm:w-20 sm:h-24 rounded-xl overflow-hidden shrink-0 transition-all border-2 ${
+                        activeImageIndex === idx
+                          ? "border-gold-600 ring-2 ring-gold-400/40 scale-102 shadow-sm"
+                          : "border-gray-200 hover:border-gray-400 opacity-70 hover:opacity-100"
+                      }`}
+                      aria-label={`Select product image ${idx + 1}`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={thumbUrl}
+                        alt={`Thumbnail ${idx + 1}`}
+                        loading="eager"
+                        decoding="async"
+                        className="w-full h-full object-cover object-top"
+                      />
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -416,7 +438,7 @@ Please send available video clips of this lot and dispatch details.`,
                     onClick={() => setSelectedSize(sz)}
                     className={`h-10 min-w-10 px-3.5 rounded text-xs font-bold transition-all border ${
                       selectedSize === sz
-                        ? "bg-navy-950 text-black border-navy-950"
+                        ? "bg-navy-950 text-white border-navy-950"
                         : "bg-white text-gray-800 border-gray-300 hover:border-gray-900"
                     }`}
                   >
@@ -1043,8 +1065,11 @@ Please send available video clips of this lot and dispatch details.`,
                   initial={{ scale: 0.94 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.94 }}
-                  src={galleryImages[activeImageIndex]}
+                  src={getOptimizedImageUrl(galleryImages[activeImageIndex], {
+                    width: 1600,
+                  })}
                   alt="High Resolution Wholesale View"
+                  decoding="async"
                   className="max-h-[85vh] max-w-[85vw] object-contain rounded-xl shadow-2xl select-none"
                 />
 
