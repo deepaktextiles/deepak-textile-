@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -53,7 +53,11 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
           settingsApi.get(),
         ]);
 
-        if (isMounted && catRes.status === "fulfilled" && catRes.value?.categories) {
+        if (
+          isMounted &&
+          catRes.status === "fulfilled" &&
+          catRes.value?.categories
+        ) {
           setCategories(catRes.value.categories);
         }
 
@@ -79,17 +83,25 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
     }));
   };
 
-  const whatsappNumber = (settings?.whatsapp || settings?.whatsappNumber || "919308066552").replace(/[^0-9]/g, "");
+  const whatsappNumber = (
+    settings?.whatsapp ||
+    settings?.whatsappNumber ||
+    "919308066552"
+  ).replace(/[^0-9]/g, "");
   const phoneNumber = settings?.phone || "+91 93080 66552";
 
-  // Fallback categories if database has not returned yet
-  const displayCategories = categories.length > 0 ? categories : [
-    { name: "Wholesale Sarees", slug: "wholesale-sarees" },
-    { name: "Salwar Suits & Dress Materials", slug: "dress-materials" },
-    { name: "Kurti Sets & Anarkali", slug: "kurti-sets" },
-    { name: "Lehenga Choli & Bridal Sets", slug: "lehenga-choli" },
-    { name: "Running Fabric Rolls (Thaan)", slug: "fabrics-running-material" },
-  ];
+  // Filter top-level main categories for mobile drawer navigation
+  const mainCategories = useMemo(() => {
+    const list = categories.length > 0 ? categories : [];
+    const top = list.filter((c) => {
+      if (!c.parentCategory) return true;
+      const parentId = c.parentCategory._id || c.parentCategory;
+      return !list.some(
+        (p) => String(p._id) === String(parentId) && String(p._id) !== String(c._id)
+      );
+    });
+    return top;
+  }, [categories]);
 
   return (
     <AnimatePresence>
@@ -146,7 +158,9 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white text-navy-950 text-[10px] font-black shadow-sm">
                     <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
                     <span>4.9</span>
-                    <span className="text-gray-500 font-semibold">• 5,000+ Retailers</span>
+                    <span className="text-gray-500 font-semibold">
+                      • 5,000+ Retailers
+                    </span>
                   </div>
 
                   <span className="font-heading font-black italic text-xs text-gold-300 tracking-wide drop-shadow-sm">
@@ -237,7 +251,7 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
                         transition={{ duration: 0.22, ease: "easeInOut" }}
                         className="bg-gray-50/70 border-t border-gray-100 overflow-hidden divide-y divide-gray-100/60"
                       >
-                        {displayCategories.map((cat) => (
+                        {mainCategories.map((cat) => (
                           <Link
                             key={cat._id || cat.slug}
                             href={`/products?category=${cat.slug}`}
@@ -286,9 +300,15 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
                         transition={{ duration: 0.22, ease: "easeInOut" }}
                         className="bg-gray-50/70 border-t border-gray-100 px-7 py-3 space-y-2 text-[11px] font-bold text-gray-700 tracking-wider overflow-hidden"
                       >
-                        <div className="py-1">★ Direct Factory Mill Rates (Zero Brokerage)</div>
-                        <div className="py-1">★ Minimum Order: 10 to 20 Pcs Lots</div>
-                        <div className="py-1">★ Volume Parcel Discount Available</div>
+                        <div className="py-1">
+                          ★ Direct Factory Mill Rates (Zero Brokerage)
+                        </div>
+                        <div className="py-1">
+                          ★ Minimum Order: 10 to 20 Pcs Lots
+                        </div>
+                        <div className="py-1">
+                          ★ Volume Parcel Discount Available
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -318,13 +338,25 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
                         transition={{ duration: 0.22, ease: "easeInOut" }}
                         className="bg-gray-50/70 border-t border-gray-100 px-7 py-3 space-y-2 text-[11px] font-bold text-gray-700 tracking-wider overflow-hidden"
                       >
-                        <Link href="/products" onClick={onClose} className="block py-1 hover:text-gold-700">
+                        <Link
+                          href="/products"
+                          onClick={onClose}
+                          className="block py-1 hover:text-gold-700"
+                        >
                           • Durga Puja & Wedding 2026 Collection
                         </Link>
-                        <Link href="/products?category=kurti-sets" onClick={onClose} className="block py-1 hover:text-gold-700">
+                        <Link
+                          href="/products?category=kurti-sets"
+                          onClick={onClose}
+                          className="block py-1 hover:text-gold-700"
+                        >
                           • Trending 3-Piece Kurti Sets
                         </Link>
-                        <Link href="/products?category=wholesale-sarees" onClick={onClose} className="block py-1 hover:text-gold-700">
+                        <Link
+                          href="/products?category=wholesale-sarees"
+                          onClick={onClose}
+                          className="block py-1 hover:text-gold-700"
+                        >
                           • Katan & Banarasi Silk Catalog
                         </Link>
                       </motion.div>
@@ -356,10 +388,18 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
                         transition={{ duration: 0.22, ease: "easeInOut" }}
                         className="bg-gray-50/70 border-t border-gray-100 px-7 py-3 space-y-2 text-[11px] font-bold text-gray-700 tracking-wider overflow-hidden"
                       >
-                        <Link href="/about" onClick={onClose} className="block py-1 hover:text-gold-700">
+                        <Link
+                          href="/about"
+                          onClick={onClose}
+                          className="block py-1 hover:text-gold-700"
+                        >
                           • About Our 20+ Years Heritage
                         </Link>
-                        <Link href="/contact" onClick={onClose} className="block py-1 hover:text-gold-700">
+                        <Link
+                          href="/contact"
+                          onClick={onClose}
+                          className="block py-1 hover:text-gold-700"
+                        >
                           • Darbhanga Location & Sales Desk
                         </Link>
                         <div className="py-1 text-gray-500 font-semibold lowercase">
@@ -375,15 +415,21 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
               <div className="p-5 bg-gray-50 border-t border-gray-200 space-y-2 text-xs text-gray-600">
                 <div className="flex items-center gap-2">
                   <Truck className="w-4 h-4 text-gold-600 shrink-0" />
-                  <span className="font-semibold text-[11px]">Pan-India & Bihar Safe Parcel Booking</span>
+                  <span className="font-semibold text-[11px]">
+                    Pan-India & Bihar Safe Parcel Booking
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span className="font-semibold text-[11px]">100% Wholesaler Quality Guarantee</span>
+                  <span className="font-semibold text-[11px]">
+                    100% Wholesaler Quality Guarantee
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-navy-900 shrink-0" />
-                  <span className="font-semibold text-[11px]">Kadirabad Road, Naka No. 2, Darbhanga, Bihar</span>
+                  <span className="font-semibold text-[11px]">
+                    Kadirabad Road, Naka No. 2, Darbhanga, Bihar
+                  </span>
                 </div>
               </div>
             </div>

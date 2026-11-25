@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Image as ImageIcon,
@@ -29,6 +29,7 @@ import {
   ShieldCheck,
   UserCheck,
   Database,
+  Search,
 } from "lucide-react";
 import { useAdmin } from "../../lib/context/AdminContext";
 import { useAdminTab } from "../../lib/context/AdminTabContext";
@@ -136,7 +137,37 @@ export default function AdminDashboardPage() {
     name: "",
     image: "",
     description: "",
+    parentCategory: "",
   });
+  const [categorySearchQuery, setCategorySearchQuery] = useState("");
+  const [categoryParentFilter, setCategoryParentFilter] = useState("all");
+
+  const filteredCategories = useMemo(() => {
+    return categories.filter((cat) => {
+      const q = categorySearchQuery.trim().toLowerCase();
+      const matchesSearch =
+        !q ||
+        cat.name.toLowerCase().includes(q) ||
+        cat.slug.toLowerCase().includes(q);
+      if (!matchesSearch) return false;
+      if (categoryParentFilter === "all") return true;
+      if (categoryParentFilter === "main") {
+        return (
+          !cat.parentCategory ||
+          !categories.some(
+            (p) =>
+              String(p._id) ===
+                String(cat.parentCategory._id || cat.parentCategory) &&
+              String(p._id) !== String(cat._id)
+          )
+        );
+      }
+      return (
+        String(cat.parentCategory?._id || cat.parentCategory) ===
+        categoryParentFilter
+      );
+    });
+  }, [categories, categorySearchQuery, categoryParentFilter]);
 
   // 4. Enquiries state
   const [enquiries, setEnquiries] = useState([]);
@@ -816,7 +847,7 @@ export default function AdminDashboardPage() {
   // Category Handlers (Add, Edit, Delete)
   const handleOpenAddCategory = () => {
     setEditingCategoryId(null);
-    setCategoryForm({ name: "", image: "", description: "" });
+    setCategoryForm({ name: "", image: "", description: "", parentCategory: "" });
     setCategoryModalOpen(true);
   };
 
@@ -826,6 +857,7 @@ export default function AdminDashboardPage() {
       name: cat.name || "",
       image: cat.image || "",
       description: cat.description || "",
+      parentCategory: cat.parentCategory?._id || cat.parentCategory || "",
     });
     setCategoryModalOpen(true);
   };
@@ -838,6 +870,7 @@ export default function AdminDashboardPage() {
       name: categoryForm.name.trim(),
       image: categoryForm.image.trim() || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
       description: categoryForm.description.trim(),
+      parentCategory: categoryForm.parentCategory || null,
     };
 
     try {
@@ -856,7 +889,7 @@ export default function AdminDashboardPage() {
         if (res.success) {
           setSuccessMessage("Category added successfully!");
           setCategoryModalOpen(false);
-          setCategoryForm({ name: "", image: "", description: "" });
+          setCategoryForm({ name: "", image: "", description: "", parentCategory: "" });
           loadAllData();
         } else {
           setErrorMessage(res.message || "Failed to create category.");
@@ -1454,8 +1487,38 @@ export default function AdminDashboardPage() {
             </Button>
           </div>
 
+          {/* Category Filter & Search Toolbar */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-txt-secondary" />
+              <input
+                type="text"
+                placeholder="Search categories & subcategories..."
+                value={categorySearchQuery}
+                onChange={(e) => setCategorySearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 text-xs border border-border rounded-xl bg-sitebg text-navy-950 focus:outline-none focus:border-[#C00000]"
+              />
+            </div>
+
+            <select
+              value={categoryParentFilter}
+              onChange={(e) => setCategoryParentFilter(e.target.value)}
+              className="px-3 py-2 text-xs border border-border rounded-xl bg-sitebg text-navy-950 focus:outline-none focus:border-[#C00000]"
+            >
+              <option value="all">All Categories ({categories.length})</option>
+              <option value="main">Main Categories Only</option>
+              {categories
+                .filter((c) => !c.parentCategory)
+                .map((parent) => (
+                  <option key={parent._id} value={parent._id}>
+                    Subcategories of {parent.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((cat) => (
+            {filteredCategories.map((cat) => (
               <div
                 key={cat._id}
                 className="p-4 rounded-xl border border-border bg-sitebg flex items-center justify-between gap-3 hover:border-gold-500 transition-colors"
@@ -1470,6 +1533,22 @@ export default function AdminDashboardPage() {
                   <div className="min-w-0">
                     <h4 className="font-bold text-navy-500 text-sm truncate">{cat.name}</h4>
                     <span className="text-[11px] text-txt-secondary block truncate font-mono">slug: {cat.slug}</span>
+                    <div className="mt-1">
+                      {cat.parentCategory &&
+                      categories.some(
+                        (p) =>
+                          String(p._id) === String(cat.parentCategory._id || cat.parentCategory) &&
+                          String(p._id) !== String(cat._id)
+                      ) ? (
+                        <span className="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-1.5 py-0.5 rounded font-semibold">
+                          Subcategory of {cat.parentCategory.name || "Parent"}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] bg-navy-50 text-navy-800 border border-navy-200 px-1.5 py-0.5 rounded font-semibold">
+                          Main Category (Menu Column)
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -1493,6 +1572,12 @@ export default function AdminDashboardPage() {
               </div>
             ))}
           </div>
+
+          {filteredCategories.length === 0 && (
+            <div className="py-12 text-center text-txt-secondary text-sm">
+              No categories found matching your search.
+            </div>
+          )}
         </div>
       )}
 
@@ -2286,6 +2371,38 @@ export default function AdminDashboardPage() {
             onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
             placeholder="Bulk wholesale lots directly from Surat mills..."
           />
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-navy-500 mb-1.5">
+              Parent Category (Optional)
+            </label>
+            <select
+              value={categoryForm.parentCategory || ""}
+              onChange={(e) =>
+                setCategoryForm({ ...categoryForm, parentCategory: e.target.value })
+              }
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#C00000]"
+            >
+              <option value="">None (Main Category / Mega Menu Column)</option>
+              {categories
+                .filter((c) => {
+                  if (editingCategoryId && c._id === editingCategoryId) return false;
+                  if (!c.parentCategory) return true;
+                  const parentId = c.parentCategory._id || c.parentCategory;
+                  return !categories.some(
+                    (p) => String(p._id) === String(parentId) && String(p._id) !== String(c._id)
+                  );
+                })
+                .map((parent) => (
+                  <option key={parent._id} value={parent._id}>
+                    Subcategory of {parent.name}
+                  </option>
+                ))}
+            </select>
+            <p className="text-[11px] text-txt-secondary mt-1">
+              Select &quot;None&quot; for a main Mega Menu column, or select a parent category to list this under that column.
+            </p>
+          </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
             <Button

@@ -56,6 +56,10 @@ export async function PUT(request, { params }) {
     const { id } = await params;
     const body = await request.json().catch(() => ({}));
 
+    if (body.parentCategory === "" || body.parentCategory === "none") {
+      body.parentCategory = null;
+    }
+
     const category = await Category.findByIdAndUpdate(
       id,
       { $set: body },

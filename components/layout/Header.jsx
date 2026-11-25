@@ -34,9 +34,10 @@ export const Header = () => {
   };
 
   const handleMouseLeave = () => {
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
     leaveTimerRef.current = setTimeout(() => {
       setMegaMenuOpen(false);
-    }, 180);
+    }, 280);
   };
 
   return (
@@ -72,7 +73,7 @@ export const Header = () => {
         initial={{ y: -6, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 transition-all"
+        className="relative sticky top-0 z-40 w-full bg-white border-b border-gray-200 transition-all"
         onMouseLeave={handleMouseLeave}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3.5">
@@ -121,7 +122,11 @@ export const Header = () => {
               </Link>
 
               {/* Animated Desktop Mega Menu Trigger */}
-              <div className="relative" onMouseEnter={handleMouseEnter}>
+              <div
+                className="relative"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
                 <button
                   onClick={() => setMegaMenuOpen((prev) => !prev)}
                   className={`inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold transition-all ${
@@ -230,6 +235,8 @@ export const Header = () => {
           <MegaMenu
             isOpen={megaMenuOpen}
             onClose={() => setMegaMenuOpen(false)}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           />
         </div>
       </motion.header>

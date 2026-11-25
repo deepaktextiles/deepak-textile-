@@ -39,7 +39,26 @@ export async function GET(request) {
           $or: [{ _id: category }, { slug: category }],
         }).catch(() => null);
       } else {
-        const cleanSlug = String(category).trim().toLowerCase();
+        let cleanSlug = String(category).trim().toLowerCase();
+        // Common alias mapping to ensure legacy and variant queries resolve
+        const slugAliases = {
+          "kurta-sets": "kurti-sets",
+          "kurtas": "kurti-sets",
+          "kurtis": "kurti-sets",
+          "sarees": "wholesale-sarees",
+          "saree": "wholesale-sarees",
+          "fabrics": "fabrics-running-material",
+          "fabric": "fabrics-running-material",
+          "thaan": "fabrics-running-material",
+          "suits": "dress-materials",
+          "dress-material": "dress-materials",
+          "mans-were": "mens-wear",
+          "mans-wear": "mens-wear",
+          "mens": "mens-wear",
+        };
+        if (slugAliases[cleanSlug]) {
+          cleanSlug = slugAliases[cleanSlug];
+        }
         const cleanName = cleanSlug.replace(/[-_]/g, " ");
         catDoc = await Category.findOne({
           $or: [
