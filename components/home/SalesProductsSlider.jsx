@@ -10,6 +10,7 @@ import {
 import { WhatsAppIcon } from "../ui/WhatsAppIcon";
 import { productsApi } from "../../services/api";
 import { getOptimizedImageUrl } from "../../lib/imageUtils";
+import { SkeletonImage, ImageSkeletonBox } from "../ui/SkeletonImage";
 
 export const SalesProductsSlider = ({ products: initialProducts, customSettings }) => {
   const [products, setProducts] = useState(initialProducts || []);
@@ -105,7 +106,31 @@ export const SalesProductsSlider = ({ products: initialProducts, customSettings 
         ref={scrollRef}
         className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth scrollbar-thin scrollbar-thumb-gray-200"
       >
-        {products.map((item) => {
+        {loading
+          ? [1, 2, 3, 4].map((n) => (
+              <div
+                key={n}
+                className="min-w-[260px] sm:min-w-[290px] max-w-[290px] bg-white rounded-2xl border border-gray-200/80 shadow-xs flex flex-col overflow-hidden shrink-0 snap-start"
+              >
+                <ImageSkeletonBox className="relative aspect-[3/3.9] w-full" />
+                <div className="p-4 flex-1 flex flex-col justify-between space-y-3 animate-pulse">
+                  <div className="space-y-1.5">
+                    <div className="h-3 w-20 bg-gray-200 rounded" />
+                    <div className="h-4 w-full bg-gray-200 rounded" />
+                    <div className="h-4 w-2/3 bg-gray-200 rounded" />
+                  </div>
+                  <div className="flex items-baseline justify-between pt-1 border-t border-gray-100">
+                    <div className="space-y-1">
+                      <div className="h-2.5 w-16 bg-gray-200 rounded" />
+                      <div className="h-5 w-24 bg-gray-200 rounded" />
+                    </div>
+                    <div className="h-5 w-20 bg-gray-200 rounded" />
+                  </div>
+                  <div className="w-full h-9 rounded-xl bg-gray-200" />
+                </div>
+              </div>
+            ))
+          : products.map((item) => {
           const title = item.name || item.title || "Wholesale Product";
           const categoryName =
             item.category?.name ||
@@ -136,11 +161,11 @@ export const SalesProductsSlider = ({ products: initialProducts, customSettings 
             >
               {/* Image Container with Badge */}
               <div className="relative aspect-[3/3.9] w-full overflow-hidden bg-gray-100">
-                <Link href={`/products/${item.slug}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                <Link href={`/products/${item.slug}`} className="block w-full h-full">
+                  <SkeletonImage
                     src={getOptimizedImageUrl(imageUrl, { width: 600 })}
                     alt={title}
+                    wrapperClassName="w-full h-full"
                     className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                     decoding="async"

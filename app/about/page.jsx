@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ShieldCheck, Award, Factory, Users, Truck, MessageCircle, Phone } from "lucide-react";
 import { Button } from "../../components/ui/Button";
+import { SkeletonImage } from "../../components/ui/SkeletonImage";
 
 export default function AboutPage() {
   return (
@@ -52,11 +53,11 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="relative rounded-2xl overflow-hidden border border-border shadow-elevated">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+          <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden border border-border shadow-elevated bg-gray-100">
+            <SkeletonImage
               src="https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=1000&q=80"
               alt="Surat Textile Mill"
+              wrapperClassName="w-full h-full"
               className="w-full h-full object-cover"
             />
           </div>

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Package } from "lucide-react";
 import { categoriesApi } from "../../services/api";
+import { SkeletonImage, ImageSkeletonBox } from "../../components/ui/SkeletonImage";
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
@@ -38,9 +39,21 @@ export default function CategoriesPage() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((n) => (
-            <div key={n} className="bg-white rounded-xl h-64 border border-border animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+            <div
+              key={n}
+              className="bg-white rounded-xl overflow-hidden border border-border flex flex-col"
+            >
+              <ImageSkeletonBox className="aspect-[4/3] w-full" />
+              <div className="p-4 flex items-center justify-between animate-pulse">
+                <div className="space-y-1.5">
+                  <div className="h-4 w-32 bg-gray-200 rounded" />
+                  <div className="h-3 w-24 bg-gray-200 rounded" />
+                </div>
+                <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0" />
+              </div>
+            </div>
           ))}
         </div>
       ) : categories.length > 0 ? (
@@ -52,13 +65,13 @@ export default function CategoriesPage() {
               className="group bg-white rounded-xl overflow-hidden border border-border hover:border-gold-400 hover:shadow-elevated transition-all flex flex-col"
             >
               <div className="aspect-[4/3] overflow-hidden bg-sitebg">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SkeletonImage
                   src={
                     cat.image ||
                     "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
                   }
                   alt={cat.name}
+                  wrapperClassName="w-full h-full"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>

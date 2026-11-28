@@ -12,10 +12,10 @@ import {
   Sparkles,
 } from "lucide-react";
 import { productsApi, categoriesApi, settingsApi } from "../services/api";
-import { getOptimizedImageUrl } from "../lib/imageUtils";
-import { ProductCard } from "../components/product/ProductCard";
+import { ProductCard, ProductCardSkeleton } from "../components/product/ProductCard";
 import { HeroSlider } from "../components/home/HeroSlider";
 import { SalesProductsSlider } from "../components/home/SalesProductsSlider";
+import { TopCategoriesSlider } from "../components/home/TopCategoriesSlider";
 import { TrendingBannerSlider } from "../components/home/TrendingBannerSlider";
 import { SareeStoreBento } from "../components/home/SareeStoreBento";
 import { BestSellerMensSlider } from "../components/home/BestSellerMensSlider";
@@ -35,6 +35,7 @@ export default function HomePage() {
   const [categories, setCategories] = useState([]);
   const [wholesaleProducts, setWholesaleProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [visibleFeaturedCount, setVisibleFeaturedCount] = useState(8);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -91,59 +92,8 @@ export default function HomePage() {
         customSettings={settings}
       />
 
-      {/* 3. TOP CATEGORIES (Matching Reference Image) */}
-      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="text-center mb-6 sm:mb-10">
-          <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-900 tracking-wider uppercase">
-            TOP CATEGORIES
-          </h2>
-          <div className="w-16 h-1 bg-gold-500 mx-auto mt-3 rounded-full" />
-        </div>
-
-        {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 sm:gap-8">
-            {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="flex flex-col items-center animate-pulse">
-                <div className="w-full aspect-[4/4.2] rounded-2xl bg-gray-200 border-2 border-gray-300" />
-                <div className="h-4 w-28 bg-gray-200 rounded mt-3.5" />
-              </div>
-            ))}
-          </div>
-        ) : categories.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 sm:gap-8">
-            {categories.slice(0, 4).map((cat) => (
-              <Link
-                key={cat._id || cat.slug}
-                href={`/products?category=${cat.slug}`}
-                className="group flex flex-col items-center"
-              >
-                {/* Card Image Box with rounded border like reference */}
-                <div className="w-full aspect-[4/4.2] rounded-2xl overflow-hidden group-hover:border-gold-500 transition-all duration-300 bg-white">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={getOptimizedImageUrl(
-                      cat.image ||
-                        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
-                      { width: 600 }
-                    )}
-                    alt={cat.name}
-                    className="w-full h-full object-contain object-top group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-
-                {/* Bold Uppercase Title Underneath (like reference image) */}
-                <div className="pt-3.5 text-center">
-                  <h3 className="font-heading font-extrabold text-sm sm:text-base tracking-wider uppercase text-navy-950 group-hover:text-gold-600 transition-colors">
-                    {cat.name}
-                  </h3>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : null}
-      </section>
+      {/* 3. TOP CATEGORIES SLIDER */}
+      <TopCategoriesSlider categories={categories} loading={loading} />
 
       {/* 3. TRENDING NOW — IMAGE BANNER SLIDER (Matching Reference Image) */}
       <TrendingBannerSlider />
@@ -166,19 +116,40 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            {[1, 2, 3, 4].map((n) => (
-              <div
-                key={n}
-                className="bg-white rounded-lg border border-border p-4 animate-pulse h-80"
-              />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+              <ProductCardSkeleton key={n} />
             ))}
           </div>
         ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-            {featuredProducts.map((prod) => (
-              <ProductCard key={prod._id || prod.slug} product={prod} />
-            ))}
+          <div className="space-y-6 sm:space-y-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+              {featuredProducts.slice(0, visibleFeaturedCount).map((prod) => (
+                <ProductCard key={prod._id || prod.slug} product={prod} />
+              ))}
+            </div>
+
+            {featuredProducts.length > 8 && (
+              <div className="flex justify-center pt-1">
+                {visibleFeaturedCount < featuredProducts.length ? (
+                  <button
+                    type="button"
+                    onClick={() => setVisibleFeaturedCount((prev) => prev + 8)}
+                    className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded bg-[#C00000] hover:bg-[#A80000] text-white text-xs sm:text-sm font-semibold tracking-wide transition-colors font-poppins"
+                  >
+                    Show More ({featuredProducts.length - visibleFeaturedCount} more)
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setVisibleFeaturedCount(8)}
+                    className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded border border-navy-500 text-navy-500 hover:bg-navy-50 text-xs sm:text-sm font-semibold tracking-wide transition-colors font-poppins"
+                  >
+                    Show Less
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         ) : (
           <div className="text-center py-12 bg-white rounded-lg border border-border p-8">

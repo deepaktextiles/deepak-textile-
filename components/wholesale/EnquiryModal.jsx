@@ -7,6 +7,7 @@ import { Textarea } from "../ui/Textarea";
 import { Button } from "../ui/Button";
 import { enquiriesApi } from "../../services/api.js";
 import { MessageCircle, CheckCircle2 } from "lucide-react";
+import { SkeletonImage } from "../ui/SkeletonImage";
 
 export const EnquiryModal = ({ isOpen, onClose, product = null }) => {
   const [formData, setFormData] = useState({
@@ -70,11 +71,11 @@ export const EnquiryModal = ({ isOpen, onClose, product = null }) => {
           {product && (
             <div className="flex items-center gap-3 p-3 bg-sitebg rounded-md border border-border">
               {product.images?.[0] && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <SkeletonImage
                   src={product.images[0]}
                   alt={product.name}
-                  className="w-12 h-14 object-cover rounded border border-border"
+                  wrapperClassName="w-12 h-14 rounded border border-border shrink-0"
+                  className="w-full h-full object-cover"
                 />
               )}
               <div className="flex-1 min-w-0">

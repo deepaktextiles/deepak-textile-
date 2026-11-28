@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { categoriesApi } from "../../services/api";
+import { SkeletonImage } from "../ui/SkeletonImage";
 
 const containerVariants = {
   hidden: {
@@ -231,13 +232,13 @@ export const MegaMenu = ({
                 <div>
                   {/* Top Image Showcase */}
                   <div className="relative w-full rounded-lg overflow-hidden aspect-[4/3] bg-gray-50 border border-gray-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <SkeletonImage
                       src={
                         bannerImage ||
                         "https://res.cloudinary.com/mqbs9z4j/image/upload/v1793016127/deepak_textiles/gqnnslpmdj9cbvkh1ydp.png"
                       }
                       alt="Surat Wholesale Collection"
+                      wrapperClassName="w-full h-full"
                       className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>

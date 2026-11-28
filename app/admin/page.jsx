@@ -48,6 +48,7 @@ import { Input } from "../../components/ui/Input";
 import { Textarea } from "../../components/ui/Textarea";
 import { Select } from "../../components/ui/Select";
 import { Modal } from "../../components/ui/Modal";
+import { SkeletonImage } from "../../components/ui/SkeletonImage";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -1229,10 +1230,11 @@ export default function AdminDashboardPage() {
                 >
                   {/* Banner Image Viewport */}
                   <div className="relative aspect-[21/9] w-full bg-navy-950 overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <SkeletonImage
                       src={b.image}
                       alt={b.title}
+                      wrapperClassName="w-full h-full"
+                      skeletonClassName="bg-navy-900"
                       className="w-full h-full object-cover opacity-75"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/40 to-transparent p-4 flex flex-col justify-between text-white">
@@ -1374,11 +1376,11 @@ export default function AdminDashboardPage() {
                   {products.map((prod) => (
                     <tr key={prod._id} className="hover:bg-sitebg/50">
                       <td className="py-3 px-4 flex items-center gap-3">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                        <SkeletonImage
                           src={prod.images?.[0] || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"}
                           alt={prod.name}
-                          className="w-12 h-14 object-cover rounded border border-border shrink-0"
+                          wrapperClassName="w-12 h-14 rounded border border-border shrink-0"
+                          className="w-full h-full object-cover"
                         />
                         <div>
                           <span className="font-bold text-navy-500 block max-w-xs truncate">
@@ -1524,11 +1526,11 @@ export default function AdminDashboardPage() {
                 className="p-4 rounded-xl border border-border bg-sitebg flex items-center justify-between gap-3 hover:border-gold-500 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <SkeletonImage
                     src={cat.image || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"}
                     alt={cat.name}
-                    className="w-12 h-12 object-cover rounded-lg border border-border shrink-0"
+                    wrapperClassName="w-12 h-12 rounded-lg border border-border shrink-0"
+                    className="w-full h-full object-cover"
                   />
                   <div className="min-w-0">
                     <h4 className="font-bold text-navy-500 text-sm truncate">{cat.name}</h4>
@@ -1914,10 +1916,11 @@ export default function AdminDashboardPage() {
                 ) : settings.bannerImage ? (
                   <div className="space-y-3">
                     <div className="relative aspect-[21/9] max-h-48 w-full rounded-xl overflow-hidden border border-border shadow-xs bg-navy-950">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <SkeletonImage
                         src={settings.bannerImage}
                         alt="Showroom Banner Preview"
+                        wrapperClassName="w-full h-full"
+                        skeletonClassName="bg-navy-900"
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -2147,10 +2150,10 @@ export default function AdminDashboardPage() {
                         idx === 0 ? "border-gold-500 ring-2 ring-gold-400/40" : "border-slate-200"
                       }`}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <SkeletonImage
                         src={imgUrl}
                         alt={`Product image ${idx + 1}`}
+                        wrapperClassName="w-full h-full"
                         className="w-full h-full object-cover"
                       />
 
@@ -2299,10 +2302,10 @@ export default function AdminDashboardPage() {
               ) : categoryForm.image ? (
                 <div className="space-y-3">
                   <div className="relative aspect-[16/9] max-h-48 w-full rounded-xl overflow-hidden border border-border shadow-xs bg-slate-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <SkeletonImage
                       src={categoryForm.image}
                       alt="Category Preview"
+                      wrapperClassName="w-full h-full"
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-2 right-2">
@@ -2549,10 +2552,11 @@ export default function AdminDashboardPage() {
                 ) : bannerForm.image ? (
                   <div className="space-y-3">
                     <div className="relative aspect-[21/9] w-full rounded-xl overflow-hidden border border-border shadow-xs bg-navy-950">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <SkeletonImage
                         src={bannerForm.image}
                         alt="Desktop Banner Preview"
+                        wrapperClassName="w-full h-full"
+                        skeletonClassName="bg-navy-900"
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute top-2 right-2 flex items-center gap-2">
@@ -2654,10 +2658,11 @@ export default function AdminDashboardPage() {
                 ) : bannerForm.mobileImage ? (
                   <div className="space-y-3">
                     <div className="relative max-w-xs mx-auto aspect-[4/5] sm:aspect-[9/16] max-h-64 w-full rounded-xl overflow-hidden border border-border shadow-xs bg-navy-950">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <SkeletonImage
                         src={bannerForm.mobileImage}
                         alt="Mobile Banner Preview"
+                        wrapperClassName="w-full h-full"
+                        skeletonClassName="bg-navy-900"
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute top-2 right-2 flex items-center gap-2">

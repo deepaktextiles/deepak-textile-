@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
@@ -30,6 +30,7 @@ import { ProductCard } from "../../../components/product/ProductCard";
 import Image from "next/image";
 import whatsapp from "../../../images/icons/whatsapp221.svg";
 import { getOptimizedImageUrl, preloadImages } from "../../../lib/imageUtils";
+import { SkeletonImage, ImageSkeletonBox } from "../../../components/ui/SkeletonImage";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -99,15 +100,45 @@ export default function ProductDetailPage() {
     fetchProduct();
   }, [slug]);
 
+  // Gallery images from real Deepak Textiles selling product photos (selesproductsimages)
+  const galleryImages = useMemo(
+    () =>
+      product?.images && product.images.length > 0
+        ? product.images
+        : ["/images/logo.jpeg"],
+    [product]
+  );
+
+  // Preload all gallery images in browser cache so switching is 0ms instant
+  useEffect(() => {
+    if (product?.images && product.images.length > 0) {
+      const urlsToPreload = product.images.map((img) =>
+        getOptimizedImageUrl(img, { width: 1200 })
+      );
+      preloadImages(urlsToPreload);
+    }
+  }, [product]);
+
   if (loading) {
     return (
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 animate-pulse">
-          <div className="lg:col-span-7 grid grid-cols-2 gap-3 sm:gap-4">
-            <div className="bg-gray-100 aspect-[3/4.2] rounded" />
-            <div className="bg-gray-100 aspect-[3/4.2] rounded" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14">
+          <div className="lg:col-span-7 space-y-3.5">
+            <ImageSkeletonBox
+              className="aspect-[3/3.9] sm:aspect-[3/3.7] w-full rounded-2xl"
+              logoClassName="w-16 sm:w-20"
+            />
+            <div className="flex items-center gap-3">
+              {[1, 2, 3, 4].map((n) => (
+                <ImageSkeletonBox
+                  key={n}
+                  className="w-16 h-20 sm:w-20 sm:h-24 rounded-xl shrink-0"
+                  logoClassName="w-6"
+                />
+              ))}
+            </div>
           </div>
-          <div className="lg:col-span-5 space-y-4">
+          <div className="lg:col-span-5 space-y-4 animate-pulse">
             <div className="h-6 bg-gray-200 rounded w-1/3" />
             <div className="h-8 bg-gray-200 rounded w-3/4" />
             <div className="h-10 bg-gray-200 rounded w-1/2" />
@@ -134,22 +165,6 @@ export default function ProductDetailPage() {
       </div>
     );
   }
-
-  // Gallery images from real Deepak Textiles selling product photos (selesproductsimages)
-  const galleryImages =
-    product.images && product.images.length > 0
-      ? product.images
-      : ["/images/logo.jpeg"];
-
-  // Preload all gallery images in browser cache so switching is 0ms instant
-  useEffect(() => {
-    if (galleryImages && galleryImages.length > 0) {
-      const urlsToPreload = galleryImages.map((img) =>
-        getOptimizedImageUrl(img, { width: 1200 })
-      );
-      preloadImages(urlsToPreload);
-    }
-  }, [galleryImages]);
 
   const nextImage = () => {
     setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
@@ -244,18 +259,19 @@ Please send available video clips of this lot and dispatch details.`,
                 const isActive = activeImageIndex === idx;
                 const optimizedUrl = getOptimizedImageUrl(img, { width: 1200 });
                 return (
-                  <img
+                  <SkeletonImage
                     key={img + idx}
                     src={optimizedUrl}
                     alt={`${product.name} wholesale lot view ${idx + 1}`}
                     loading={idx === 0 ? "eager" : "lazy"}
                     fetchPriority={idx === 0 ? "high" : "low"}
                     decoding="async"
-                    className={`absolute inset-0 w-full h-full object-cover object-top cursor-zoom-in transition-opacity duration-200 ease-in-out ${
+                    wrapperClassName={`absolute inset-0 w-full h-full transition-opacity duration-200 ease-in-out ${
                       isActive
                         ? "opacity-100 z-10"
                         : "opacity-0 z-0 pointer-events-none"
                     }`}
+                    className="w-full h-full object-cover object-top cursor-zoom-in"
                     onClick={() => setIsZoomModalOpen(true)}
                   />
                 );
@@ -363,12 +379,12 @@ Please send available video clips of this lot and dispatch details.`,
                       }`}
                       aria-label={`Select product image ${idx + 1}`}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <SkeletonImage
                         src={thumbUrl}
                         alt={`Thumbnail ${idx + 1}`}
                         loading="eager"
                         decoding="async"
+                        wrapperClassName="w-full h-full"
                         className="w-full h-full object-cover object-top"
                       />
                     </button>
@@ -537,33 +553,36 @@ Please send available video clips of this lot and dispatch details.`,
             {/* ======================================================= */}
             <div className="pt-4 border-t border-gray-200 space-y-3 text-xs text-gray-800">
               <div className="flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SkeletonImage
                   src="/images/icons/icons8-in-transit-100.gif"
                   alt="Express Shipping"
-                  className="w-5 h-5 object-contain shrink-0"
+                  showLogo={false}
+                  wrapperClassName="w-5 h-5 shrink-0 rounded"
+                  className="w-full h-full object-contain"
                 />
                 <span className="font-normal text-gray-900">
                   Express Shipping
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SkeletonImage
                   src="/images/icons/icons8-cash-on-delivery-100.png"
                   alt="Cash on Delivery Available"
-                  className="w-5 h-5 object-contain shrink-0"
+                  showLogo={false}
+                  wrapperClassName="w-5 h-5 shrink-0 rounded"
+                  className="w-full h-full object-contain"
                 />
                 <span className="font-normal text-gray-900">
                   Cash on Delivery Available
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SkeletonImage
                   src="/images/icons/icons8-loyalty.gif"
                   alt="Easy 7-Days Returns"
-                  className="w-5 h-5 object-contain shrink-0"
+                  showLogo={false}
+                  wrapperClassName="w-5 h-5 shrink-0 rounded"
+                  className="w-full h-full object-contain"
                 />
                 <span className="font-normal text-gray-900">
                   Easy 7-Days Returns — ₹10 convenience fee applies to returns.
@@ -573,22 +592,24 @@ Please send available video clips of this lot and dispatch details.`,
               {/* Mill Protection & Wholesale Discount Badges */}
               <div className="grid grid-cols-2 gap-2.5 pt-1.5">
                 <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 border border-gray-200">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <SkeletonImage
                     src="/images/icons/icons8-protect-100.png"
                     alt="Verified Quality"
-                    className="w-4 h-4 object-contain shrink-0"
+                    showLogo={false}
+                    wrapperClassName="w-4 h-4 shrink-0 rounded"
+                    className="w-full h-full object-contain"
                   />
                   <span className="text-[11px] font-semibold text-gray-900">
                     100% Mill Verified
                   </span>
                 </div>
                 <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 border border-gray-200">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <SkeletonImage
                     src="/images/icons/icons8-discount-100.png"
                     alt="Direct Mill Rate"
-                    className="w-4 h-4 object-contain shrink-0"
+                    showLogo={false}
+                    wrapperClassName="w-4 h-4 shrink-0 rounded"
+                    className="w-full h-full object-contain"
                   />
                   <span className="text-[11px] font-semibold text-gray-900">
                     Direct Factory Rates

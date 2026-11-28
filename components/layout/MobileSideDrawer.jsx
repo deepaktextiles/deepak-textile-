@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { categoriesApi, settingsApi } from "../../services/api";
 import { WhatsAppIcon } from "../ui/WhatsAppIcon";
+import { SkeletonImage } from "../ui/SkeletonImage";
 
 export const MobileSideDrawer = ({ isOpen, onClose }) => {
   const [categories, setCategories] = useState([]);
@@ -131,14 +132,15 @@ export const MobileSideDrawer = ({ isOpen, onClose }) => {
               {/* TOP PROMOTIONAL BANNER (Directly matching reference image layout) */}
               <div className="relative w-full aspect-[16/9] min-h-[170px] bg-gradient-to-br from-[#2a1145] via-[#481c6b] to-[#1c082e] overflow-hidden flex flex-col justify-between p-4 text-white">
                 {/* Background overlay image with fashion model aesthetic */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SkeletonImage
                   src={
                     settings?.bannerImage ||
                     "https://res.cloudinary.com/mqbs9z4j/image/upload/v1793016127/deepak_textiles/gqnnslpmdj9cbvkh1ydp.png"
                   }
                   alt="Deepak Textiles Surat Wholesale"
-                  className="absolute inset-0 w-full h-full object-cover object-top opacity-35 mix-blend-overlay"
+                  wrapperClassName="absolute inset-0 w-full h-full"
+                  skeletonClassName="bg-purple-950/60"
+                  className="w-full h-full object-cover object-top opacity-35 mix-blend-overlay"
                 />
 
                 {/* Top Promo Pills (like "Get the App / Use Code") */}

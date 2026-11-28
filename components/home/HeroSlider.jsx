@@ -14,6 +14,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { bannersApi } from "../../services/api.js";
+import { SkeletonImage, ImageSkeletonBox } from "../ui/SkeletonImage";
 
 const getOptimizedBannerUrl = (url, isMobile = false) => {
   if (!url || typeof url !== "string") return url;
@@ -42,6 +43,7 @@ export const HeroSlider = ({ customSettings }) => {
 
 
   const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -61,6 +63,8 @@ export const HeroSlider = ({ customSettings }) => {
         }
       } catch (err) {
         console.error("Could not load banners:", err);
+      } finally {
+        if (isMounted) setLoading(false);
       }
     };
     fetchBanners();
@@ -114,8 +118,13 @@ export const HeroSlider = ({ customSettings }) => {
 
   return (
     <div className="w-full space-y-0">
-      {/* 1. MAIN HERO SLIDER (Only visible when admin adds banners) */}
-      {hasSlides && (
+      {/* 1. MAIN HERO SLIDER (Skeleton while loading, visible when admin adds banners) */}
+      {loading ? (
+        <ImageSkeletonBox
+          className="relative w-full overflow-hidden aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[300px] md:min-h-[380px] lg:min-h-[440px]"
+          logoClassName="w-16 sm:w-24"
+        />
+      ) : hasSlides && (
         <section
           className="relative w-full overflow-hidden bg-navy-950 aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[300px] md:min-h-[380px] lg:min-h-[440px] flex items-center select-none"
           onMouseEnter={() => setIsPaused(true)}
@@ -136,8 +145,7 @@ export const HeroSlider = ({ customSettings }) => {
               {/* Background Image with Crisp HD rendering */}
               <div className="absolute inset-0 overflow-hidden">
                 {/* Desktop Banner: Strictly hidden on mobile (< 768px), visible on md+ */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SkeletonImage
                   src={getOptimizedBannerUrl(slide.image, false)}
                   alt={slide.title || "Deepak Textiles Desktop Banner"}
                   loading="eager"
@@ -148,12 +156,13 @@ export const HeroSlider = ({ customSettings }) => {
                     WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
                   }}
-                  className="hidden md:block w-full h-full object-cover object-center pointer-events-none"
+                  wrapperClassName="hidden md:block w-full h-full"
+                  skeletonClassName="bg-navy-900"
+                  className="w-full h-full object-cover object-center pointer-events-none"
                 />
 
                 {/* Mobile Banner: Strictly visible on mobile (< 768px), hidden on md+ */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SkeletonImage
                   src={getOptimizedBannerUrl(slide.mobileImage || slide.image, true)}
                   alt={slide.title || "Deepak Textiles Mobile Banner"}
                   loading="eager"
@@ -164,7 +173,9 @@ export const HeroSlider = ({ customSettings }) => {
                     WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
                   }}
-                  className="block md:hidden w-full h-full object-cover object-center pointer-events-none"
+                  wrapperClassName="block md:hidden w-full h-full"
+                  skeletonClassName="bg-navy-900"
+                  className="w-full h-full object-cover object-center pointer-events-none"
                 />
               </div>
 

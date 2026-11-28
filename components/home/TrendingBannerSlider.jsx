@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { bannersApi } from "../../services/api";
+import { SkeletonImage, ImageSkeletonBox } from "../ui/SkeletonImage";
 
 const getOptimizedBannerUrl = (url, isMobile = false) => {
   if (!url || typeof url !== "string") return url;
@@ -27,6 +28,7 @@ const getOptimizedBannerUrl = (url, isMobile = false) => {
 
 export const TrendingBannerSlider = () => {
   const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -47,6 +49,8 @@ export const TrendingBannerSlider = () => {
         }
       } catch (err) {
         // No banners loaded
+      } finally {
+        if (isMounted) setLoading(false);
       }
     }
     fetchTrending();
@@ -176,7 +180,7 @@ export const TrendingBannerSlider = () => {
     }
   };
 
-  if (!Array.isArray(banners) || banners.length === 0) {
+  if (!loading && (!Array.isArray(banners) || banners.length === 0)) {
     return null;
   }
 
@@ -190,7 +194,13 @@ export const TrendingBannerSlider = () => {
         <div className="w-16 h-1 bg-gold-500 mx-auto mt-2.5 rounded-full" />
       </div>
 
-      {/* Wide Rounded Image Slider Container with Mouse Drag & Touch Swipe */}
+      {loading ? (
+        <ImageSkeletonBox
+          className="w-full rounded-2xl sm:rounded-3xl border border-gray-200 aspect-[16/7] sm:aspect-[21/8] md:aspect-[24/8] min-h-[220px] sm:min-h-[280px] md:min-h-[340px]"
+          logoClassName="w-16 sm:w-24"
+        />
+      ) : (
+      /* Wide Rounded Image Slider Container with Mouse Drag & Touch Swipe */
       <div
         ref={containerRef}
         onMouseEnter={() => setIsPaused(true)}
@@ -228,8 +238,7 @@ export const TrendingBannerSlider = () => {
                 className="block w-full h-full relative select-none pointer-events-auto"
               >
                 {/* Desktop Banner: Strictly hidden on mobile (< 768px), visible on md+ */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SkeletonImage
                   src={getOptimizedBannerUrl(banner.image, false)}
                   alt={banner.title || "Trending Banner"}
                   draggable={false}
@@ -240,11 +249,12 @@ export const TrendingBannerSlider = () => {
                     WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
                   }}
-                  className="hidden md:block w-full h-full object-cover object-center pointer-events-none select-none"
+                  wrapperClassName="hidden md:block w-full h-full"
+                  skeletonClassName="bg-navy-900"
+                  className="w-full h-full object-cover object-center pointer-events-none select-none"
                 />
                 {/* Mobile Banner: Strictly visible on mobile (< 768px), hidden on md+ */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SkeletonImage
                   src={getOptimizedBannerUrl(banner.mobileImage || banner.image, true)}
                   alt={banner.title || "Trending Mobile Banner"}
                   draggable={false}
@@ -255,7 +265,9 @@ export const TrendingBannerSlider = () => {
                     WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
                   }}
-                  className="block md:hidden w-full h-full object-cover object-center pointer-events-none select-none"
+                  wrapperClassName="block md:hidden w-full h-full"
+                  skeletonClassName="bg-navy-900"
+                  className="w-full h-full object-cover object-center pointer-events-none select-none"
                 />
               </Link>
             </div>
@@ -307,6 +319,7 @@ export const TrendingBannerSlider = () => {
           ))}
         </div>
       </div>
+      )}
     </section>
   );
 };

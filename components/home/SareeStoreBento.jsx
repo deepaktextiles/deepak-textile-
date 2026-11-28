@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { SkeletonImage } from "../ui/SkeletonImage";
 
 export const SareeStoreBento = () => {
   return (
     <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-      {/* Centered Heading Matching Reference Image */}
+      {/* Centered Heading */}
       <div className="text-center mb-6 sm:mb-10">
         <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-navy-900 tracking-wider uppercase">
           THE SAREE STORE
@@ -15,112 +14,54 @@ export const SareeStoreBento = () => {
         <div className="w-16 h-1 bg-gold-500 mx-auto mt-2.5 rounded-full" />
       </div>
 
-      {/* 3-Column Bento Grid Matching User's Image */}
+      {/* 3-Column Bento Grid using imagescatlogs banners (non-clickable) */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 items-stretch">
-        {/* 1. LEFT COLUMN: Tall Portrait with "Deepak GOLD" Emblem (4 cols) */}
-        <Link
-          href="/products?category=wholesale-sarees"
-          className="md:col-span-4 group relative rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-navy-950/90 shadow-md hover:shadow-2xl transition-all duration-300 min-h-[420px] sm:min-h-[480px] md:min-h-[520px] flex flex-col justify-end bg-navy-950"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80"
-            alt="Deepak Gold Silk Sarees"
-            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+        {/* 1. LEFT COLUMN: Tall Portrait — Wedding Styles */}
+        <div className="md:col-span-4 relative rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-navy-950/90 shadow-md aspect-[3/4.6] md:aspect-auto md:min-h-[520px] bg-navy-950">
+          <SkeletonImage
+            src="/images/imagescatlogs/wedding_97499e88-815e-4f88-a47c-535cda99822a.jpg"
+            alt="Wedding Styles Collection"
+            wrapperClassName="absolute inset-0 w-full h-full"
+            skeletonClassName="bg-navy-900"
+            className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-
-          {/* Ornamental "Deepak GOLD" Seal at bottom */}
-          <div className="relative z-10 p-6 flex flex-col items-center text-center">
-            <div className="w-32 h-20 sm:w-36 sm:h-22 rounded-[50%] bg-gradient-to-b from-[#3a1d0f] to-[#1a0c06] border-2 border-gold-400 flex flex-col items-center justify-center shadow-2xl p-2 transform group-hover:scale-105 transition-transform">
-              <span className="font-heading italic text-gold-300 text-xs sm:text-sm font-semibold tracking-wide">
-                Deepak
-              </span>
-              <span className="font-heading font-black text-gold-400 text-lg sm:text-xl tracking-widest uppercase -mt-0.5">
-                GOLD
-              </span>
-            </div>
-            <span className="mt-3 text-xs font-bold text-[#000000] bg-white/95 backdrop-blur-sm px-3.5 py-1.5 rounded-full uppercase tracking-widest group-hover:bg-white transition-all flex items-center gap-1 shadow-md">
-              <span className="text-[#000000]">Pure Zari Silk Lots</span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#000000] group-hover:translate-x-1 transition-transform" />
-            </span>
-          </div>
-        </Link>
-
-        {/* 2. MIDDLE COLUMN: Two Stacked Landscape Banners (4 cols) */}
-        <div className="md:col-span-4 flex flex-col gap-5 sm:gap-6 justify-between">
-          {/* Top Card: DURGA PUJO */}
-          <Link
-            href="/products?category=wholesale-sarees"
-            className="group relative flex-1 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-navy-950/90 shadow-md hover:shadow-2xl transition-all duration-300 min-h-[200px] sm:min-h-[235px] flex flex-col justify-end bg-navy-950"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/selesproductsimages/c99af3a8-4de0-4934-9bd3-6412c605d0ac.avif"
-              alt="Durga Pujo Saree Collection"
-              className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-            {/* Centered Yellow Text */}
-            <div className="relative z-10 p-5 text-center">
-              <h3 className="font-heading font-black text-lg sm:text-xl md:text-2xl text-yellow-400 tracking-wider uppercase drop-shadow-md group-hover:text-yellow-300 transition-colors">
-                DURGA PUJO
-              </h3>
-              <p className="inline-block text-[11px] text-[#000000] bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full font-bold tracking-wide mt-1.5 shadow-sm">
-                Festive Wholesale Lots
-              </p>
-            </div>
-          </Link>
-
-          {/* Bottom Card: KARWA CHAUTH */}
-          <Link
-            href="/products?category=wholesale-sarees"
-            className="group relative flex-1 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-navy-950/90 shadow-md hover:shadow-2xl transition-all duration-300 min-h-[200px] sm:min-h-[235px] flex flex-col justify-end bg-navy-950"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/selesproductsimages/869f376e-f235-4b78-824d-6899c1588dd3.avif"
-              alt="Karwa Chauth Saree Collection"
-              className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-            {/* Centered Yellow Text */}
-            <div className="relative z-10 p-5 text-center">
-              <h3 className="font-heading font-black text-lg sm:text-xl md:text-2xl text-yellow-400 tracking-wider uppercase drop-shadow-md group-hover:text-yellow-300 transition-colors">
-                KARWA CHAUTH
-              </h3>
-              <p className="inline-block text-[11px] text-[#000000] bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full font-bold tracking-wide mt-1.5 shadow-sm">
-                Red & Bridal Special Saree Lots
-              </p>
-            </div>
-          </Link>
         </div>
 
-        {/* 3. RIGHT COLUMN: Tall Portrait with "READY TO WEAR SAREES" (4 cols) */}
-        <Link
-          href="/products?category=wholesale-sarees"
-          className="md:col-span-4 group relative rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-navy-950/90 shadow-md hover:shadow-2xl transition-all duration-300 min-h-[420px] sm:min-h-[480px] md:min-h-[520px] flex flex-col justify-end bg-navy-950"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/selesproductsimages/f3382385-847b-4bfe-9f4e-04ec15d92fb8.avif"
-            alt="Ready to Wear Sarees"
-            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-
-          {/* Yellow Centered Text at bottom */}
-          <div className="relative z-10 p-6 text-center">
-            <h3 className="font-heading font-black text-lg sm:text-2xl text-yellow-400 tracking-wider uppercase leading-snug drop-shadow-md group-hover:text-yellow-300 transition-colors">
-              READY TO<br />WEAR SAREES
-            </h3>
-            <p className="inline-block text-xs text-[#000000] bg-white/95 backdrop-blur-sm px-3.5 py-1.5 rounded-full font-bold tracking-wide mt-2 shadow-sm">
-              Pre-Stitched & Designer Drape Lots
-            </p>
+        {/* 2. MIDDLE COLUMN: Two Stacked Landscape Banners */}
+        <div className="md:col-span-4 flex flex-col gap-5 sm:gap-6 justify-between">
+          {/* Top Card: Haldi Looks */}
+          <div className="relative flex-1 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-navy-950/90 shadow-md aspect-[4/3] min-h-[200px] sm:min-h-[235px] bg-navy-950">
+            <SkeletonImage
+              src="/images/imagescatlogs/haldi-1.jpg"
+              alt="Haldi Looks Collection"
+              wrapperClassName="absolute inset-0 w-full h-full"
+              skeletonClassName="bg-navy-900"
+              className="w-full h-full object-cover object-center"
+            />
           </div>
-        </Link>
+
+          {/* Bottom Card: Plus Sizes */}
+          <div className="relative flex-1 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-navy-950/90 shadow-md aspect-[4/3] min-h-[200px] sm:min-h-[235px] bg-navy-950">
+            <SkeletonImage
+              src="/images/imagescatlogs/plus-sizes_75ae8ad9-b729-4712-8b15-bc2df5772bb0.jpg"
+              alt="Plus Sizes Ethnic Collection"
+              wrapperClassName="absolute inset-0 w-full h-full"
+              skeletonClassName="bg-navy-900"
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+        </div>
+
+        {/* 3. RIGHT COLUMN: Tall Portrait — Cocktail Sarees */}
+        <div className="md:col-span-4 relative rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-navy-950/90 shadow-md aspect-[3/4.3] md:aspect-auto md:min-h-[520px] bg-navy-950">
+          <SkeletonImage
+            src="/images/imagescatlogs/cocktail_dd7ec918-cd00-4276-bc7b-c599cf6c9313.jpg"
+            alt="Cocktail Sarees Collection"
+            wrapperClassName="absolute inset-0 w-full h-full"
+            skeletonClassName="bg-navy-900"
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
       </div>
     </section>
   );

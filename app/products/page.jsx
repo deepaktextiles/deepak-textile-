@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { productsApi, categoriesApi } from "../../services/api";
-import { ProductCard } from "../../components/product/ProductCard";
+import { ProductCard, ProductCardSkeleton } from "../../components/product/ProductCard";
 import { Button } from "../../components/ui/Button";
 
 function ProductsContent() {
@@ -640,10 +640,7 @@ function ProductsContent() {
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10">
               {[1, 2, 3, 4, 5, 6].map((n) => (
-                <div
-                  key={n}
-                  className="bg-gray-100 animate-pulse aspect-[3/4.2] w-full"
-                />
+                <ProductCardSkeleton key={n} />
               ))}
             </div>
           ) : products.length > 0 ? (

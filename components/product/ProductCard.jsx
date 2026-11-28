@@ -4,6 +4,19 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Heart, MessageCircle } from "lucide-react";
 import { getOptimizedImageUrl } from "../../lib/imageUtils";
+import { SkeletonImage, ImageSkeletonBox } from "../ui/SkeletonImage";
+
+export const ProductCardSkeleton = () => (
+  <div className="flex flex-col bg-white overflow-hidden">
+    <ImageSkeletonBox className="relative aspect-[3/4.2] w-full overflow-hidden" />
+    <div className="pt-2.5 pb-2 px-0.5 space-y-1.5 animate-pulse">
+      <div className="h-4 bg-gray-200 rounded w-4/5" />
+      <div className="h-5 bg-gray-200 rounded w-28" />
+      <div className="h-4 sm:h-5 bg-gray-200 rounded w-3/5" />
+      <div className="h-4 bg-gray-200 rounded w-1/2 pt-0.5" />
+    </div>
+  </div>
+);
 
 export const ProductCard = ({ product }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -43,10 +56,10 @@ Please share catalog photos and dispatch details.`
       {/* 1. Tall Portrait Image with Heart Icon on Bottom Right (Matching Reference Image) */}
       <div className="relative aspect-[3/4.2] w-full overflow-hidden bg-gray-100">
         <Link href={`/products/${product.slug}`} className="block w-full h-full">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <SkeletonImage
             src={getOptimizedImageUrl(primaryImage, { width: 600 })}
             alt={product.name}
+            wrapperClassName="w-full h-full"
             className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
             loading="lazy"
             decoding="async"
