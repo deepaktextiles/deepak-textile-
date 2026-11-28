@@ -115,13 +115,16 @@ Please share catalog photos and dispatch details.`
           </span>
         </div>
 
-        {/* Pricing Row: Strikethrough MRP, Bold Price, Red Discount % */}
-        <div className="flex items-baseline gap-1.5 text-xs sm:text-sm">
-          <span className="line-through text-gray-500 text-[11px] sm:text-xs">
-            ₹{retailPrice.toLocaleString("en-IN")}
+        {/* Pricing Row: Wholesale Price, Strikethrough Retail MRP, Red Discount % */}
+        <div className="flex flex-wrap items-baseline gap-1.5 text-xs sm:text-sm">
+          <span className="text-[11px] font-semibold text-emerald-700">
+            Wholesale:
           </span>
           <span className="font-extrabold text-gray-950 text-xs sm:text-sm">
             ₹{wholesalePrice.toLocaleString("en-IN")}
+          </span>
+          <span className="line-through text-gray-500 text-[11px] sm:text-xs">
+            ₹{retailPrice.toLocaleString("en-IN")}
           </span>
           <span className="text-rose-600 font-bold text-[11px] sm:text-xs">
             {discountPercent}% off
