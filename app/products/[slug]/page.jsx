@@ -402,7 +402,9 @@ Please send available video clips of this lot and dispatch details.`,
             <div className="space-y-1">
               <div className="flex items-center justify-between text-xs text-gray-500">
                 <span className="font-bold text-gold-700 uppercase tracking-widest">
-                  {product.category?.name || "Surat Wholesale Collection"}
+                  {Array.isArray(product.categories) && product.categories.length > 0
+                    ? product.categories.map((c) => c.name).filter(Boolean).join(" • ")
+                    : product.category?.name || "Surat Wholesale Collection"}
                 </span>
                 <span className="font-mono text-gray-400">
                   SKU: {product.sku || "DT-LOT"}

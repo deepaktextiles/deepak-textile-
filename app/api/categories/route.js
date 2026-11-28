@@ -155,7 +155,7 @@ export async function GET(request) {
     const categoriesWithCount = await Promise.all(
       categories.map(async (cat) => {
         const productCount = await Product.countDocuments({
-          category: cat._id,
+          $or: [{ category: cat._id }, { categories: cat._id }],
           active: true,
         }).catch(() => 0);
         return {

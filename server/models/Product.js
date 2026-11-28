@@ -19,6 +19,7 @@ const ProductSchema = new mongoose.Schema(
     description: { type: String, required: true },
     shortDescription: { type: String, default: "" },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true, index: true },
+    categories: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }], default: [], index: true },
     subCategory: { type: String, default: "" },
     images: { type: [String], default: [] },
     price: { type: Number, required: true, min: 0 },
@@ -41,5 +42,9 @@ const ProductSchema = new mongoose.Schema(
 ProductSchema.index({ category: 1, active: 1 });
 ProductSchema.index({ featured: 1, active: 1 });
 ProductSchema.index({ createdAt: -1 });
+
+if (mongoose.models.Product && !mongoose.models.Product.schema.path("categories")) {
+  mongoose.deleteModel("Product");
+}
 
 export const Product = mongoose.models.Product || mongoose.model("Product", ProductSchema);

@@ -76,13 +76,22 @@ export async function GET(request) {
         const childCats = await Category.find({ parentCategory: catDoc._id })
           .select("_id")
           .catch(() => []);
-        if (childCats && childCats.length > 0) {
-          query.category = { $in: [catDoc._id, ...childCats.map((c) => c._id)] };
-        } else {
-          query.category = catDoc._id;
-        }
+        const targetIds =
+          childCats && childCats.length > 0
+            ? [catDoc._id, ...childCats.map((c) => c._id)]
+            : [catDoc._id];
+        query.$and = query.$and || [];
+        query.$and.push({
+          $or: [
+            { category: { $in: targetIds } },
+            { categories: { $in: targetIds } },
+          ],
+        });
       } else if (isObjectId) {
-        query.category = category;
+        query.$and = query.$and || [];
+        query.$and.push({
+          $or: [{ category: category }, { categories: category }],
+        });
       } else {
         // No Category document found matching this slug or name.
         // Check if products have this slug in their subCategory field
@@ -144,14 +153,17 @@ export async function GET(request) {
 
     if (search) {
       const searchRegex = new RegExp(String(search).trim(), "i");
-      query.$or = [
-        { name: searchRegex },
-        { sku: searchRegex },
-        { fabric: searchRegex },
-        { color: searchRegex },
-        { tags: searchRegex },
-        { description: searchRegex },
-      ];
+      query.$and = query.$and || [];
+      query.$and.push({
+        $or: [
+          { name: searchRegex },
+          { sku: searchRegex },
+          { fabric: searchRegex },
+          { color: searchRegex },
+          { tags: searchRegex },
+          { description: searchRegex },
+        ],
+      });
     }
 
     let sortOption = { createdAt: -1 };
@@ -165,6 +177,7 @@ export async function GET(request) {
     const [products, total] = await Promise.all([
       Product.find(query)
         .populate("category", "name slug")
+        .populate({ path: "categories", select: "name slug", strictPopulate: false })
         .sort(sortOption)
         .skip(skip)
         .limit(limit),
@@ -214,6 +227,16 @@ export async function POST(request) {
       uniqueSlug = `${data.slug}-${counter++}`;
     }
     data.slug = uniqueSlug;
+
+    const categoryList = Array.isArray(data.categories)
+      ? [...new Set(data.categories.map(String).filter(Boolean))]
+      : [];
+    if (categoryList.length > 0) {
+      data.categories = categoryList;
+      data.category = data.category || categoryList[0];
+    } else if (data.category) {
+      data.categories = [String(data.category)];
+    }
 
     const product = await Product.create(data);
     return NextResponse.json(
