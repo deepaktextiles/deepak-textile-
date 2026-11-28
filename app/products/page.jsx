@@ -326,7 +326,7 @@ function ProductsContent() {
         {/* LEFT SIDEBAR: FILTERS (DESKTOP & TABLETS - md: and up)   */}
         {/* Directly matching Libas reference image                   */}
         {/* ========================================================= */}
-        <aside className="hidden md:block w-56 lg:w-60 shrink-0 sticky top-20 self-start">
+        <aside className="hidden md:block w-56 lg:w-60 shrink-0 sticky top-20 self-start max-h-[calc(100vh-6rem)] overflow-y-auto pr-1.5">
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-gray-200">
             <div className="flex items-center gap-2">
@@ -396,23 +396,25 @@ function ProductsContent() {
             isOpen={openSections.category}
             onToggle={() => toggleSection("category")}
           >
-            <FilterCheckbox
-              label="All Categories"
-              checked={!selectedCategory}
-              onChange={() => setSelectedCategory("")}
-            />
-            {categories.map((c) => (
+            <div className="max-h-60 overflow-y-auto pr-1.5 space-y-1">
               <FilterCheckbox
-                key={c._id || c.slug}
-                label={c.name}
-                checked={selectedCategory === c.slug}
-                onChange={() =>
-                  setSelectedCategory(
-                    selectedCategory === c.slug ? "" : c.slug
-                  )
-                }
+                label="All Categories"
+                checked={!selectedCategory}
+                onChange={() => setSelectedCategory("")}
               />
-            ))}
+              {categories.map((c) => (
+                <FilterCheckbox
+                  key={c._id || c.slug}
+                  label={c.name}
+                  checked={selectedCategory === c.slug}
+                  onChange={() =>
+                    setSelectedCategory(
+                      selectedCategory === c.slug ? "" : c.slug
+                    )
+                  }
+                />
+              ))}
+            </div>
           </AccordionSection>
 
           {/* 4. FABRIC Accordion */}
@@ -753,23 +755,25 @@ function ProductsContent() {
                 isOpen={openSections.category}
                 onToggle={() => toggleSection("category")}
               >
-                <FilterCheckbox
-                  label="All Categories"
-                  checked={!selectedCategory}
-                  onChange={() => setSelectedCategory("")}
-                />
-                {categories.map((c) => (
+                <div className="max-h-60 overflow-y-auto pr-1.5 space-y-1">
                   <FilterCheckbox
-                    key={c._id || c.slug}
-                    label={c.name}
-                    checked={selectedCategory === c.slug}
-                    onChange={() =>
-                      setSelectedCategory(
-                        selectedCategory === c.slug ? "" : c.slug
-                      )
-                    }
+                    label="All Categories"
+                    checked={!selectedCategory}
+                    onChange={() => setSelectedCategory("")}
                   />
-                ))}
+                  {categories.map((c) => (
+                    <FilterCheckbox
+                      key={c._id || c.slug}
+                      label={c.name}
+                      checked={selectedCategory === c.slug}
+                      onChange={() =>
+                        setSelectedCategory(
+                          selectedCategory === c.slug ? "" : c.slug
+                        )
+                      }
+                    />
+                  ))}
+                </div>
               </AccordionSection>
 
               {/* 4. FABRIC Accordion */}
