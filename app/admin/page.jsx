@@ -1519,64 +1519,118 @@ export default function AdminDashboardPage() {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredCategories.map((cat) => (
-              <div
-                key={cat._id}
-                className="p-4 rounded-xl border border-border bg-sitebg flex items-center justify-between gap-3 hover:border-gold-500 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <SkeletonImage
-                    src={cat.image || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"}
-                    alt={cat.name}
-                    wrapperClassName="w-12 h-12 rounded-lg border border-border shrink-0"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="min-w-0">
-                    <h4 className="font-bold text-navy-500 text-sm truncate">{cat.name}</h4>
-                    <span className="text-[11px] text-txt-secondary block truncate font-mono">slug: {cat.slug}</span>
-                    <div className="mt-1">
-                      {cat.parentCategory &&
+          {filteredCategories.length > 0 ? (
+            <div className="overflow-x-auto border border-border rounded-xl">
+              <table className="w-full text-left text-xs divide-y divide-border">
+                <thead className="bg-sitebg text-txt-secondary font-bold uppercase tracking-wider">
+                  <tr>
+                    <th className="py-3 px-4">Category</th>
+                    <th className="py-3 px-4">Slug</th>
+                    <th className="py-3 px-4">Hierarchy</th>
+                    <th className="py-3 px-4">Products</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border bg-white">
+                  {filteredCategories.map((cat) => {
+                    const isSubcategory =
+                      cat.parentCategory &&
                       categories.some(
                         (p) =>
-                          String(p._id) === String(cat.parentCategory._id || cat.parentCategory) &&
-                          String(p._id) !== String(cat._id)
-                      ) ? (
-                        <span className="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-1.5 py-0.5 rounded font-semibold">
-                          Subcategory of {cat.parentCategory.name || "Parent"}
-                        </span>
-                      ) : (
-                        <span className="text-[10px] bg-navy-50 text-navy-800 border border-navy-200 px-1.5 py-0.5 rounded font-semibold">
-                          Main Category (Menu Column)
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                          String(p._id) ===
+                            String(
+                              cat.parentCategory._id || cat.parentCategory
+                            ) && String(p._id) !== String(cat._id)
+                      );
 
-                <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    onClick={() => handleOpenEditCategory(cat)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                    title="Edit Category"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
+                    return (
+                      <tr key={cat._id} className="hover:bg-sitebg/50">
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-3">
+                            <SkeletonImage
+                              src={
+                                cat.image ||
+                                "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+                              }
+                              alt={cat.name}
+                              wrapperClassName="w-12 h-12 rounded-lg border border-border shrink-0"
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="min-w-0">
+                              <span className="font-bold text-navy-500 text-sm block max-w-xs truncate">
+                                {cat.name}
+                              </span>
+                              {cat.description && (
+                                <span className="text-[11px] text-txt-secondary block max-w-xs truncate">
+                                  {cat.description}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
 
-                  <button
-                    onClick={() => handleDeleteCategory(cat._id, cat.name)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
-                    title="Delete Category"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+                        <td className="py-3 px-4 font-mono text-txt-secondary whitespace-nowrap">
+                          {cat.slug}
+                        </td>
 
-          {filteredCategories.length === 0 && (
-            <div className="py-12 text-center text-txt-secondary text-sm">
+                        <td className="py-3 px-4 whitespace-nowrap">
+                          {isSubcategory ? (
+                            <span className="inline-block text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded font-semibold">
+                              Subcategory of{" "}
+                              {cat.parentCategory.name || "Parent"}
+                            </span>
+                          ) : (
+                            <span className="inline-block text-[10px] bg-navy-50 text-navy-800 border border-navy-200 px-2 py-0.5 rounded font-semibold">
+                              Main Category (Menu Column)
+                            </span>
+                          )}
+                        </td>
+
+                        <td className="py-3 px-4 whitespace-nowrap">
+                          <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-navy-500">
+                            {cat.productCount ?? 0} lots
+                          </span>
+                        </td>
+
+                        <td className="py-3 px-4 text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <a
+                              href={`/products?category=${cat.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 rounded hover:bg-sitebg text-txt-secondary hover:text-navy-500"
+                              title="View Public Category"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </a>
+
+                            <button
+                              onClick={() => handleOpenEditCategory(cat)}
+                              className="p-1.5 rounded hover:bg-blue-50 text-blue-600 hover:text-blue-800 transition-colors"
+                              title="Edit Category"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                handleDeleteCategory(cat._id, cat.name)
+                              }
+                              className="p-1.5 rounded hover:bg-red-50 text-red-600 hover:text-red-800 transition-colors"
+                              title="Delete Category"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="py-12 text-center text-txt-secondary text-sm border border-dashed border-border rounded-xl">
               No categories found matching your search.
             </div>
           )}

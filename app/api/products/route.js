@@ -17,6 +17,7 @@ export async function GET(request) {
     const fabric = searchParams.get("fabric");
     const color = searchParams.get("color");
     const size = searchParams.get("size");
+    const pattern = searchParams.get("pattern");
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
     const inStock = searchParams.get("inStock");
@@ -118,6 +119,13 @@ export async function GET(request) {
     if (size) {
       const sizes = size.split(",");
       query.size = { $in: sizes.map((s) => s.trim()) };
+    }
+
+    if (pattern) {
+      const patterns = pattern.split(",");
+      query.pattern = {
+        $in: patterns.map((p) => new RegExp(`^${p.trim()}$`, "i")),
+      };
     }
 
     if (inStock === "true") {

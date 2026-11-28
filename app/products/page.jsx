@@ -28,9 +28,7 @@ function ProductsContent() {
   const [selectedFabric, setSelectedFabric] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-  const [selectedOccasion, setSelectedOccasion] = useState("");
   const [selectedPattern, setSelectedPattern] = useState("");
-  const [selectedStyle, setSelectedStyle] = useState("");
   const [priceRange, setPriceRange] = useState("all");
   const [sortBy, setSortBy] = useState("featured");
   const [sortOrder, setSortOrder] = useState("desc");
@@ -38,16 +36,28 @@ function ProductsContent() {
   const [showMoreSizes, setShowMoreSizes] = useState(false);
   const [showMoreDescription, setShowMoreDescription] = useState(false);
 
-  // Accordion toggle states matching Libas reference image
+  const [filterOptions, setFilterOptions] = useState({
+    sizes: [],
+    colors: [],
+    fabrics: [],
+    patterns: [],
+    priceCounts: {
+      all: 0,
+      "under-500": 0,
+      "500-1000": 0,
+      "1000-2500": 0,
+      "above-2500": 0,
+    },
+  });
+
+  // Accordion toggle states
   const [openSections, setOpenSections] = useState({
     size: true,
     colors: false,
     category: true,
     fabric: false,
-    occasion: false,
     pattern: false,
     priceRange: false,
-    style: false,
   });
 
   const toggleSection = (sectionKey) => {
@@ -57,69 +67,17 @@ function ProductsContent() {
     }));
   };
 
-  const allSizes = [
-    { label: "XS", count: "989" },
-    { label: "S", count: "3289" },
-    { label: "M", count: "3482" },
-    { label: "L", count: "3488" },
-    { label: "XL", count: "3488" },
-    { label: "XXL", count: "2890" },
-    { label: "3XL", count: "1420" },
-    { label: "Free Size", count: "860" },
-  ];
-
-  const colorsList = [
-    { label: "Red", count: "480" },
-    { label: "Maroon", count: "320" },
-    { label: "Yellow / Mustard", count: "240" },
-    { label: "Pink / Peach", count: "510" },
-    { label: "Green / Mint", count: "380" },
-    { label: "Blue / Navy", count: "290" },
-    { label: "Black", count: "180" },
-    { label: "White", count: "140" },
-  ];
-
-  const fabricsList = [
-    { label: "Pure Silk", count: "145" },
-    { label: "Banarasi Silk", count: "98" },
-    { label: "Cotton Silk", count: "210" },
-    { label: "Georgette", count: "320" },
-    { label: "Chanderi", count: "115" },
-    { label: "Rayon", count: "410" },
-    { label: "Organza", count: "85" },
-    { label: "Cambric Cotton", count: "160" },
-  ];
-
-  const occasionsList = [
-    { label: "Daily Wear", count: "520" },
-    { label: "Festive & Wedding", count: "840" },
-    { label: "Party Wear", count: "290" },
-    { label: "Office Wear", count: "180" },
-  ];
-
-  const patternsList = [
-    { label: "Floral Print", count: "310" },
-    { label: "Embroidered", count: "540" },
-    { label: "Bandhani / Bandhej", count: "190" },
-    { label: "Zari Woven", count: "260" },
-    { label: "Solid / Plain", count: "170" },
-    { label: "Digital Print", count: "220" },
-  ];
+  const allSizes = filterOptions.sizes;
+  const colorsList = filterOptions.colors;
+  const fabricsList = filterOptions.fabrics;
+  const patternsList = filterOptions.patterns;
 
   const priceRanges = [
-    { id: "all", label: "All Prices", count: "3489" },
-    { id: "under-500", label: "Under ₹500", count: "180", min: 0, max: 500 },
-    { id: "500-1000", label: "₹500 - ₹1,000", count: "460", min: 500, max: 1000 },
-    { id: "1000-2500", label: "₹1,000 - ₹2,500", count: "720", min: 1000, max: 2500 },
-    { id: "above-2500", label: "Above ₹2,500", count: "310", min: 2500, max: null },
-  ];
-
-  const stylesList = [
-    { label: "Straight Cut", count: "410" },
-    { label: "Anarkali", count: "290" },
-    { label: "A-Line", count: "240" },
-    { label: "Sharara / Gharara", count: "160" },
-    { label: "Co-Ords", count: "95" },
+    { id: "all", label: "All Prices", count: filterOptions.priceCounts.all },
+    { id: "under-500", label: "Under ₹500", count: filterOptions.priceCounts["under-500"], min: 0, max: 500 },
+    { id: "500-1000", label: "₹500 - ₹1,000", count: filterOptions.priceCounts["500-1000"], min: 500, max: 1000 },
+    { id: "1000-2500", label: "₹1,000 - ₹2,500", count: filterOptions.priceCounts["1000-2500"], min: 1000, max: 2500 },
+    { id: "above-2500", label: "Above ₹2,500", count: filterOptions.priceCounts["above-2500"], min: 2500, max: null },
   ];
 
   // Sync URL params
@@ -131,17 +89,40 @@ function ProductsContent() {
     if (searchParam) setSearch(searchParam);
   }, [searchParam]);
 
-  // Load categories from backend
+  // Load real categories & product filters from backend
   useEffect(() => {
-    const loadCategories = async () => {
+    const loadFiltersAndCategories = async () => {
       try {
-        const res = await categoriesApi.getAll();
-        if (res.categories) setCategories(res.categories);
+        const [catRes, filterRes] = await Promise.allSettled([
+          categoriesApi.getAll(),
+          productsApi.getFilters(),
+        ]);
+
+        if (catRes.status === "fulfilled" && catRes.value?.categories) {
+          setCategories(catRes.value.categories);
+        }
+
+        if (filterRes.status === "fulfilled" && filterRes.value?.filters) {
+          const f = filterRes.value.filters;
+          setFilterOptions({
+            sizes: Array.isArray(f.sizes) ? f.sizes : [],
+            colors: Array.isArray(f.colors) ? f.colors : [],
+            fabrics: Array.isArray(f.fabrics) ? f.fabrics : [],
+            patterns: Array.isArray(f.patterns) ? f.patterns : [],
+            priceCounts: f.priceCounts || {
+              all: 0,
+              "under-500": 0,
+              "500-1000": 0,
+              "1000-2500": 0,
+              "above-2500": 0,
+            },
+          });
+        }
       } catch (err) {
-        console.error("Error loading categories:", err);
+        console.error("Error loading filters:", err);
       }
     };
-    loadCategories();
+    loadFiltersAndCategories();
   }, []);
 
   // Fetch products
@@ -175,6 +156,9 @@ function ProductsContent() {
         }
         if (selectedColor) {
           params.color = selectedColor;
+        }
+        if (selectedPattern) {
+          params.pattern = selectedPattern;
         }
         if (search.trim()) {
           params.search = search.trim();
@@ -210,9 +194,7 @@ function ProductsContent() {
     selectedFabric,
     selectedSize,
     selectedColor,
-    selectedOccasion,
     selectedPattern,
-    selectedStyle,
     priceRange,
     search,
     sortBy,
@@ -225,9 +207,7 @@ function ProductsContent() {
     setSelectedFabric("");
     setSelectedSize("");
     setSelectedColor("");
-    setSelectedOccasion("");
     setSelectedPattern("");
-    setSelectedStyle("");
     setPriceRange("all");
     setSortBy("featured");
     setSortOrder("desc");
@@ -238,16 +218,14 @@ function ProductsContent() {
       selectedFabric ||
       selectedSize ||
       selectedColor ||
-      selectedOccasion ||
       selectedPattern ||
-      selectedStyle ||
       priceRange !== "all" ||
       search.trim()
   );
 
   const currentCategoryName =
     categories.find((c) => c.slug === selectedCategory)?.name ||
-    (selectedCategory ? selectedCategory.replace(/-/g, " ") : "Suits for Women");
+    (selectedCategory ? selectedCategory.replace(/-/g, " ") : "All Wholesale Collections");
 
   // Reusable Checkbox Component matching the Libas reference image
   const FilterCheckbox = ({ checked, onChange, label, count }) => (
@@ -276,7 +254,7 @@ function ProductsContent() {
           {label}
         </span>
       </div>
-      {count && (
+      {count !== undefined && count !== null && (
         <span className="text-[11px] text-gray-400 font-normal shrink-0 ml-1">
           ({count})
         </span>
@@ -346,49 +324,57 @@ function ProductsContent() {
           </div>
 
           {/* 1. SIZE Accordion */}
-          <AccordionSection
-            title="SIZE"
-            isOpen={openSections.size}
-            onToggle={() => toggleSection("size")}
-          >
-            {displayedSizes.map((s) => (
-              <FilterCheckbox
-                key={s.label}
-                label={s.label}
-                count={s.count}
-                checked={selectedSize === s.label}
-                onChange={() =>
-                  setSelectedSize(selectedSize === s.label ? "" : s.label)
-                }
-              />
-            ))}
-            <button
-              type="button"
-              onClick={() => setShowMoreSizes(!showMoreSizes)}
-              className="text-xs text-gray-500 hover:text-navy-950 font-medium pt-1 block cursor-pointer underline"
+          {allSizes.length > 0 && (
+            <AccordionSection
+              title="SIZE"
+              isOpen={openSections.size}
+              onToggle={() => toggleSection("size")}
             >
-              {showMoreSizes ? "Show less" : "Show more"}
-            </button>
-          </AccordionSection>
+              {displayedSizes.map((s) => (
+                <FilterCheckbox
+                  key={s.label}
+                  label={s.label}
+                  count={s.count}
+                  checked={selectedSize === s.label}
+                  onChange={() =>
+                    setSelectedSize(selectedSize === s.label ? "" : s.label)
+                  }
+                />
+              ))}
+              {allSizes.length > 5 && (
+                <button
+                  type="button"
+                  onClick={() => setShowMoreSizes(!showMoreSizes)}
+                  className="text-xs text-gray-500 hover:text-navy-950 font-medium pt-1 block cursor-pointer underline"
+                >
+                  {showMoreSizes ? "Show less" : "Show more"}
+                </button>
+              )}
+            </AccordionSection>
+          )}
 
           {/* 2. COLORS Accordion */}
-          <AccordionSection
-            title="COLORS"
-            isOpen={openSections.colors}
-            onToggle={() => toggleSection("colors")}
-          >
-            {colorsList.map((col) => (
-              <FilterCheckbox
-                key={col.label}
-                label={col.label}
-                count={col.count}
-                checked={selectedColor === col.label}
-                onChange={() =>
-                  setSelectedColor(selectedColor === col.label ? "" : col.label)
-                }
-              />
-            ))}
-          </AccordionSection>
+          {colorsList.length > 0 && (
+            <AccordionSection
+              title="COLORS"
+              isOpen={openSections.colors}
+              onToggle={() => toggleSection("colors")}
+            >
+              <div className="max-h-60 overflow-y-auto pr-1.5 space-y-1">
+                {colorsList.map((col) => (
+                  <FilterCheckbox
+                    key={col.label}
+                    label={col.label}
+                    count={col.count}
+                    checked={selectedColor === col.label}
+                    onChange={() =>
+                      setSelectedColor(selectedColor === col.label ? "" : col.label)
+                    }
+                  />
+                ))}
+              </div>
+            </AccordionSection>
+          )}
 
           {/* 3. CATEGORY Accordion */}
           <AccordionSection
@@ -406,6 +392,7 @@ function ProductsContent() {
                 <FilterCheckbox
                   key={c._id || c.slug}
                   label={c.name}
+                  count={c.productCount}
                   checked={selectedCategory === c.slug}
                   onChange={() =>
                     setSelectedCategory(
@@ -418,67 +405,54 @@ function ProductsContent() {
           </AccordionSection>
 
           {/* 4. FABRIC Accordion */}
-          <AccordionSection
-            title="FABRIC"
-            isOpen={openSections.fabric}
-            onToggle={() => toggleSection("fabric")}
-          >
-            {fabricsList.map((f) => (
-              <FilterCheckbox
-                key={f.label}
-                label={f.label}
-                count={f.count}
-                checked={selectedFabric === f.label}
-                onChange={() =>
-                  setSelectedFabric(selectedFabric === f.label ? "" : f.label)
-                }
-              />
-            ))}
-          </AccordionSection>
+          {fabricsList.length > 0 && (
+            <AccordionSection
+              title="FABRIC"
+              isOpen={openSections.fabric}
+              onToggle={() => toggleSection("fabric")}
+            >
+              <div className="max-h-60 overflow-y-auto pr-1.5 space-y-1">
+                {fabricsList.map((f) => (
+                  <FilterCheckbox
+                    key={f.label}
+                    label={f.label}
+                    count={f.count}
+                    checked={selectedFabric === f.label}
+                    onChange={() =>
+                      setSelectedFabric(selectedFabric === f.label ? "" : f.label)
+                    }
+                  />
+                ))}
+              </div>
+            </AccordionSection>
+          )}
 
-          {/* 5. OCCASION Accordion */}
-          <AccordionSection
-            title="OCCASION"
-            isOpen={openSections.occasion}
-            onToggle={() => toggleSection("occasion")}
-          >
-            {occasionsList.map((occ) => (
-              <FilterCheckbox
-                key={occ.label}
-                label={occ.label}
-                count={occ.count}
-                checked={selectedOccasion === occ.label}
-                onChange={() =>
-                  setSelectedOccasion(
-                    selectedOccasion === occ.label ? "" : occ.label
-                  )
-                }
-              />
-            ))}
-          </AccordionSection>
+          {/* 5. PATTERN AND PRINT Accordion */}
+          {patternsList.length > 0 && (
+            <AccordionSection
+              title="PATTERN AND PRINT"
+              isOpen={openSections.pattern}
+              onToggle={() => toggleSection("pattern")}
+            >
+              <div className="max-h-60 overflow-y-auto pr-1.5 space-y-1">
+                {patternsList.map((pat) => (
+                  <FilterCheckbox
+                    key={pat.label}
+                    label={pat.label}
+                    count={pat.count}
+                    checked={selectedPattern === pat.label}
+                    onChange={() =>
+                      setSelectedPattern(
+                        selectedPattern === pat.label ? "" : pat.label
+                      )
+                    }
+                  />
+                ))}
+              </div>
+            </AccordionSection>
+          )}
 
-          {/* 6. PATTERN AND PRINT Accordion */}
-          <AccordionSection
-            title="PATTERN AND PRINT"
-            isOpen={openSections.pattern}
-            onToggle={() => toggleSection("pattern")}
-          >
-            {patternsList.map((pat) => (
-              <FilterCheckbox
-                key={pat.label}
-                label={pat.label}
-                count={pat.count}
-                checked={selectedPattern === pat.label}
-                onChange={() =>
-                  setSelectedPattern(
-                    selectedPattern === pat.label ? "" : pat.label
-                  )
-                }
-              />
-            ))}
-          </AccordionSection>
-
-          {/* 7. PRICE RANGE Accordion */}
+          {/* 6. PRICE RANGE Accordion */}
           <AccordionSection
             title="PRICE RANGE"
             isOpen={openSections.priceRange}
@@ -491,25 +465,6 @@ function ProductsContent() {
                 count={pr.count}
                 checked={priceRange === pr.id}
                 onChange={() => setPriceRange(pr.id)}
-              />
-            ))}
-          </AccordionSection>
-
-          {/* 8. STYLE Accordion */}
-          <AccordionSection
-            title="STYLE"
-            isOpen={openSections.style}
-            onToggle={() => toggleSection("style")}
-          >
-            {stylesList.map((st) => (
-              <FilterCheckbox
-                key={st.label}
-                label={st.label}
-                count={st.count}
-                checked={selectedStyle === st.label}
-                onChange={() =>
-                  setSelectedStyle(selectedStyle === st.label ? "" : st.label)
-                }
               />
             ))}
           </AccordionSection>
@@ -620,6 +575,15 @@ function ProductsContent() {
                 </span>
               )}
 
+              {selectedPattern && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-gray-100 text-navy-950 font-bold text-[11px]">
+                  Pattern: {selectedPattern}
+                  <button onClick={() => setSelectedPattern("")} className="hover:text-rose-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
               {priceRange !== "all" && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-gray-100 text-navy-950 font-bold text-[11px]">
                   Price: {priceRanges.find((p) => p.id === priceRange)?.label}
@@ -712,42 +676,48 @@ function ProductsContent() {
               </div>
 
               {/* 1. SIZE Accordion */}
-              <AccordionSection
-                title="SIZE"
-                isOpen={openSections.size}
-                onToggle={() => toggleSection("size")}
-              >
-                {allSizes.map((s) => (
-                  <FilterCheckbox
-                    key={s.label}
-                    label={s.label}
-                    count={s.count}
-                    checked={selectedSize === s.label}
-                    onChange={() =>
-                      setSelectedSize(selectedSize === s.label ? "" : s.label)
-                    }
-                  />
-                ))}
-              </AccordionSection>
+              {allSizes.length > 0 && (
+                <AccordionSection
+                  title="SIZE"
+                  isOpen={openSections.size}
+                  onToggle={() => toggleSection("size")}
+                >
+                  {allSizes.map((s) => (
+                    <FilterCheckbox
+                      key={s.label}
+                      label={s.label}
+                      count={s.count}
+                      checked={selectedSize === s.label}
+                      onChange={() =>
+                        setSelectedSize(selectedSize === s.label ? "" : s.label)
+                      }
+                    />
+                  ))}
+                </AccordionSection>
+              )}
 
               {/* 2. COLORS Accordion */}
-              <AccordionSection
-                title="COLORS"
-                isOpen={openSections.colors}
-                onToggle={() => toggleSection("colors")}
-              >
-                {colorsList.map((col) => (
-                  <FilterCheckbox
-                    key={col.label}
-                    label={col.label}
-                    count={col.count}
-                    checked={selectedColor === col.label}
-                    onChange={() =>
-                      setSelectedColor(selectedColor === col.label ? "" : col.label)
-                    }
-                  />
-                ))}
-              </AccordionSection>
+              {colorsList.length > 0 && (
+                <AccordionSection
+                  title="COLORS"
+                  isOpen={openSections.colors}
+                  onToggle={() => toggleSection("colors")}
+                >
+                  <div className="max-h-60 overflow-y-auto pr-1.5 space-y-1">
+                    {colorsList.map((col) => (
+                      <FilterCheckbox
+                        key={col.label}
+                        label={col.label}
+                        count={col.count}
+                        checked={selectedColor === col.label}
+                        onChange={() =>
+                          setSelectedColor(selectedColor === col.label ? "" : col.label)
+                        }
+                      />
+                    ))}
+                  </div>
+                </AccordionSection>
+              )}
 
               {/* 3. CATEGORY Accordion */}
               <AccordionSection
@@ -765,6 +735,7 @@ function ProductsContent() {
                     <FilterCheckbox
                       key={c._id || c.slug}
                       label={c.name}
+                      count={c.productCount}
                       checked={selectedCategory === c.slug}
                       onChange={() =>
                         setSelectedCategory(
@@ -777,25 +748,54 @@ function ProductsContent() {
               </AccordionSection>
 
               {/* 4. FABRIC Accordion */}
-              <AccordionSection
-                title="FABRIC"
-                isOpen={openSections.fabric}
-                onToggle={() => toggleSection("fabric")}
-              >
-                {fabricsList.map((f) => (
-                  <FilterCheckbox
-                    key={f.label}
-                    label={f.label}
-                    count={f.count}
-                    checked={selectedFabric === f.label}
-                    onChange={() =>
-                      setSelectedFabric(
-                        selectedFabric === f.label ? "" : f.label
-                      )
-                    }
-                  />
-                ))}
-              </AccordionSection>
+              {fabricsList.length > 0 && (
+                <AccordionSection
+                  title="FABRIC"
+                  isOpen={openSections.fabric}
+                  onToggle={() => toggleSection("fabric")}
+                >
+                  <div className="max-h-60 overflow-y-auto pr-1.5 space-y-1">
+                    {fabricsList.map((f) => (
+                      <FilterCheckbox
+                        key={f.label}
+                        label={f.label}
+                        count={f.count}
+                        checked={selectedFabric === f.label}
+                        onChange={() =>
+                          setSelectedFabric(
+                            selectedFabric === f.label ? "" : f.label
+                          )
+                        }
+                      />
+                    ))}
+                  </div>
+                </AccordionSection>
+              )}
+
+              {/* 5. PATTERN AND PRINT Accordion */}
+              {patternsList.length > 0 && (
+                <AccordionSection
+                  title="PATTERN AND PRINT"
+                  isOpen={openSections.pattern}
+                  onToggle={() => toggleSection("pattern")}
+                >
+                  <div className="max-h-60 overflow-y-auto pr-1.5 space-y-1">
+                    {patternsList.map((pat) => (
+                      <FilterCheckbox
+                        key={pat.label}
+                        label={pat.label}
+                        count={pat.count}
+                        checked={selectedPattern === pat.label}
+                        onChange={() =>
+                          setSelectedPattern(
+                            selectedPattern === pat.label ? "" : pat.label
+                          )
+                        }
+                      />
+                    ))}
+                  </div>
+                </AccordionSection>
+              )}
 
               {/* 5. PRICE RANGE Accordion */}
               <AccordionSection
